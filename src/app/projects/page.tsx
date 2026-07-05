@@ -21,6 +21,7 @@ import {
 import type { ExecutionProject } from "@/db";
 import { requireCurrentDbUser } from "@/lib/auth-user";
 import { isClerkConfigured } from "@/lib/clerk-config";
+import { formatDate } from "@/lib/dashboard-utils";
 import {
   canUseLocalDatabaseFallback,
   getLocalDevelopmentUser
@@ -565,14 +566,6 @@ function Field({
 
 const inputClassName =
   "h-10 rounded-md border border-stone-200 bg-stone-50 px-3 text-sm text-stone-800 outline-none transition focus:border-stone-400 focus:bg-white disabled:cursor-not-allowed disabled:bg-stone-100";
-
-function formatDate(date: Date) {
-  return new Intl.DateTimeFormat("en", {
-    month: "short",
-    day: "numeric",
-    year: "numeric"
-  }).format(date);
-}
 
 function formatDateInput(date: Date | null) {
   if (!date) {

@@ -10,11 +10,14 @@ import {
 } from "@/app/chat/actions";
 import type { MorningBrief } from "@/lib/morning-brief";
 import type { Message, MemorySuggestionState } from "@/lib/chat-types";
-import { MemorySuggestionCard } from "@/components/chat/memory-suggestion-card";
-import { DeveloperPanel } from "@/components/chat/developer-panel";
-import { MorningBriefHeader } from "@/components/chat/morning-brief-header";
-import { MessageBubble } from "@/components/chat/message-bubble";
-import { LoadingBubble } from "@/components/chat/loading-bubble";
+import {
+  MemorySuggestionCard,
+  DeveloperPanel,
+  MorningBriefHeader,
+  MessageBubble,
+  LoadingBubble
+} from "@/components/chat";
+import { createMemoryTitle } from "@/lib/chat-utils";
 
 export function ChatInterface({
   morningBrief
@@ -324,13 +327,4 @@ export function ChatInterface({
       <DeveloperPanel content={developerPanel} />
     </section>
   );
-}
-
-function createMemoryTitle(content: string) {
-  const firstLine = content
-    .split(/\r?\n/)
-    .map((line) => line.trim().replace(/^#+\s+/, ""))
-    .find(Boolean);
-
-  return (firstLine ?? "Assistant response").slice(0, 80);
 }

@@ -151,7 +151,13 @@ export function nextMilestone(progress: number, label: string) {
 }
 
 export function clampPercentage(value: number) {
-  return Math.max(0, Math.min(100, value));
+  if (!Number.isFinite(value)) return 0;
+  return Math.max(0, Math.min(100, Math.round(value)));
+}
+
+export function clampImportance(value: number) {
+  if (!Number.isFinite(value)) return 3;
+  return Math.min(Math.max(Math.round(value), 1), 5);
 }
 
 export function formatMinutes(minutes: number | null) {
@@ -172,4 +178,8 @@ export function formatDate(date: Date) {
     month: "short",
     year: "numeric"
   }).format(date);
+}
+
+export function truncateInput(value: string, maxLength: number): string {
+  return value.length > maxLength ? value.slice(0, maxLength) : value;
 }

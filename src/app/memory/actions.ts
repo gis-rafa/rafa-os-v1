@@ -5,11 +5,16 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { getDb, memories } from "@/db";
 import { getActionUser } from "@/lib/auth-user";
+import { clampImportance, truncateInput } from "@/lib/dashboard-utils";
 import { createNotification } from "@/app/notifications/actions";
 
 export async function createMemoryAction(formData: FormData) {
   const user = await getActionUser();
   const values = parseMemoryForm(formData);
+
+  if (!values.category || !values.title || !values.content) {
+    redirect("/memory");
+  }
 
   await getDb().insert(memories).values({
     userId: user.id,
@@ -64,18 +69,14 @@ export async function deleteMemoryAction(formData: FormData) {
 }
 
 function parseMemoryForm(formData: FormData) {
-  const category = String(formData.get("category") ?? "").trim();
-  const title = String(formData.get("title") ?? "").trim();
-  const content = String(formData.get("content") ?? "").trim();
+  const category = truncateInput(String(formData.get("category") ?? "").trim(), 100);
+  const title = truncateInput(String(formData.get("title") ?? "").trim(), 200);
+  const content = truncateInput(String(formData.get("content") ?? "").trim(), 10000);
   const tags = String(formData.get("tags") ?? "")
     .split(",")
     .map((tag) => tag.trim())
     .filter(Boolean);
   const importance = clampImportance(Number(formData.get("importance") ?? 3));
-
-  if (!category || !title || !content) {
-    throw new Error("Category, title, and content are required.");
-  }
 
   return {
     category,
@@ -84,12 +85,4 @@ function parseMemoryForm(formData: FormData) {
     tags,
     importance
   };
-}
-
-function clampImportance(value: number) {
-  if (!Number.isFinite(value)) {
-    return 3;
-  }
-
-  return Math.min(Math.max(Math.round(value), 1), 5);
 }

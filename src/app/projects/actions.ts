@@ -15,10 +15,16 @@ import {
 } from "@/lib/projects";
 import { createExecutionTask } from "@/lib/execution-dashboard";
 import { getActionUser } from "@/lib/auth-user";
+import { clampPercentage } from "@/lib/dashboard-utils";
 import { createNotification } from "@/app/notifications/actions";
 
 export async function createProjectAction(formData: FormData) {
   const user = await getActionUser();
+  const name = String(formData.get("name") ?? "").trim();
+
+  if (!name) {
+    redirect("/projects");
+  }
 
   await createProject(user.id, parseProjectForm(formData));
 
@@ -36,8 +42,9 @@ export async function createProjectAction(formData: FormData) {
 export async function updateProjectAction(formData: FormData) {
   const user = await getActionUser();
   const id = String(formData.get("id") ?? "");
+  const name = String(formData.get("name") ?? "").trim();
 
-  if (!id) {
+  if (!id || !name) {
     redirect("/projects");
   }
 
@@ -47,7 +54,6 @@ export async function updateProjectAction(formData: FormData) {
     values: parseProjectForm(formData)
   });
 
-  const name = String(formData.get("name") ?? "").trim() || "Project";
   await createNotification(user.id, {
     type: "info",
     title: "Project Updated",
@@ -128,10 +134,6 @@ function parseProjectForm(formData: FormData): ProjectFormValues {
   const color = String(formData.get("color") ?? "stone").trim() || "stone";
   const icon = String(formData.get("icon") ?? "folder").trim() || "folder";
 
-  if (!name) {
-    throw new Error("Project name is required.");
-  }
-
   return {
     color,
     currentPhase: currentPhase || "Planning",
@@ -155,12 +157,4 @@ function parsePriority(value: string): ProjectPriority {
   return projectPriorities.includes(value as ProjectPriority)
     ? (value as ProjectPriority)
     : "Medium";
-}
-
-function clampPercentage(value: number) {
-  if (!Number.isFinite(value)) {
-    return 0;
-  }
-
-  return Math.min(Math.max(Math.round(value), 0), 100);
 }

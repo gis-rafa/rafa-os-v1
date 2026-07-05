@@ -3,6 +3,8 @@
 import { revalidatePath } from "next/cache";
 import { buildRoutedPrompt } from "@/lib/context-router";
 import { getActionUser } from "@/lib/auth-user";
+import { createMemoryTitle } from "@/lib/chat-utils";
+import { clampImportance } from "@/lib/dashboard-utils";
 import {
   saveMemorySuggestion,
   suggestMemoryFromConversation,
@@ -115,21 +117,4 @@ export async function saveMemorySuggestionAction(formData: FormData) {
     ok: true,
     message: "Saved to Memory."
   };
-}
-
-function createMemoryTitle(content: string) {
-  const firstLine = content
-    .split(/\r?\n/)
-    .map((line) => line.trim())
-    .find(Boolean);
-
-  return (firstLine ?? "Assistant response").slice(0, 80);
-}
-
-function clampImportance(value: number) {
-  if (!Number.isFinite(value)) {
-    return 3;
-  }
-
-  return Math.min(Math.max(Math.round(value), 1), 5);
 }
