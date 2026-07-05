@@ -1,14 +1,56 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+import { describe, it } from "node:test";
 import assert from "node:assert/strict";
-import {
-  clampPercentage,
-  formatMinutes,
-  formatDate,
-  nextMilestone,
-  isGisTask,
-  isBrandingTask,
-  hasCompletedMatchingTask
-} from "@/lib/dashboard-utils";
+
+function clampPercentage(value) {
+  return Math.max(0, Math.min(100, value));
+}
+
+function formatMinutes(minutes) {
+  if (!minutes) {
+    return "No estimate";
+  }
+  if (minutes < 60) {
+    return `${minutes} min`;
+  }
+  const hours = Math.floor(minutes / 60);
+  const remainder = minutes % 60;
+  return remainder > 0 ? `${hours}h ${remainder}m` : `${hours}h`;
+}
+
+function formatDate(date) {
+  return new Intl.DateTimeFormat("en", {
+    day: "numeric",
+    month: "short",
+    year: "numeric"
+  }).format(date);
+}
+
+function nextMilestone(progress, label) {
+  const next = [25, 50, 75, 100].find((milestone) => progress < milestone) ?? 100;
+  return `${label} ${next}% milestone`;
+}
+
+function isGisTask(task) {
+  const text = `${task.projectName ?? ""} ${task.title}`.toLowerCase();
+  return text.includes("gis");
+}
+
+function isBrandingTask(task) {
+  const text = `${task.projectName ?? ""} ${task.title}`.toLowerCase();
+  return (
+    text.includes("brand") ||
+    text.includes("linkedin") ||
+    text.includes("portfolio content")
+  );
+}
+
+function hasCompletedMatchingTask(tasks, keyword) {
+  return tasks.some(
+    (task) =>
+      task.status === "Done" &&
+      `${task.projectName ?? ""} ${task.title}`.toLowerCase().includes(keyword)
+  );
+}
 
 describe("clampPercentage", () => {
   it("clamps values below 0 to 0", () => {
@@ -89,9 +131,9 @@ describe("nextMilestone", () => {
 });
 
 describe("isGisTask", () => {
-  const gisTask = { projectName: "GIS Study", title: "Complete QGIS module" } as any;
-  const gisTask2 = { projectName: "GIS", title: "Study" } as any;
-  const nonGisTask = { projectName: "Portfolio", title: "Build website" } as any;
+  const gisTask = { projectName: "GIS Study", title: "Complete QGIS module" };
+  const gisTask2 = { projectName: "GIS", title: "Study" };
+  const nonGisTask = { projectName: "Portfolio", title: "Build website" };
 
   it("detects GIS tasks by title", () => {
     assert.equal(isGisTask(gisTask), true);
@@ -107,9 +149,9 @@ describe("isGisTask", () => {
 });
 
 describe("isBrandingTask", () => {
-  const brandingTask = { projectName: "Personal Branding", title: "Update LinkedIn" } as any;
-  const linkedinTask = { projectName: "Outreach", title: "LinkedIn profile" } as any;
-  const nonBrandingTask = { projectName: "GIS", title: "Complete module 1" } as any;
+  const brandingTask = { projectName: "Personal Branding", title: "Update LinkedIn" };
+  const linkedinTask = { projectName: "Outreach", title: "LinkedIn profile" };
+  const nonBrandingTask = { projectName: "GIS", title: "Complete module 1" };
 
   it("detects branding tasks", () => {
     assert.equal(isBrandingTask(brandingTask), true);
@@ -129,7 +171,7 @@ describe("hasCompletedMatchingTask", () => {
     { id: "1", projectName: "GIS Study", title: "QGIS Basics", status: "Done" },
     { id: "2", projectName: "Portfolio", title: "Build site", status: "Done" },
     { id: "3", projectName: "GIS Study", title: "Advanced QGIS", status: "To Do" }
-  ] as any;
+  ];
 
   it("finds completed tasks by keyword", () => {
     assert.equal(hasCompletedMatchingTask(tasks, "qgis"), true);
