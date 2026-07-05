@@ -25,13 +25,13 @@ export function AppHeader({ onMenuClick }: { onMenuClick: () => void }) {
         </div>
       </div>
       <div className="flex items-center gap-2">
-        <button
+        <Link
           aria-label="Search"
           className="flex size-10 items-center justify-center rounded-md border border-stone-200 text-stone-600 transition hover:bg-stone-50"
-          type="button"
+          href="/search"
         >
           <Search size={18} strokeWidth={1.8} />
-        </button>
+        </Link>
         <Link
           aria-label="Notifications"
           className="flex size-10 items-center justify-center rounded-md border border-stone-200 text-stone-600 transition hover:bg-stone-50"
