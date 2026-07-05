@@ -1,5 +1,7 @@
 import Link from "next/link";
 import {
+  BarChart3,
+  Bell,
   BookOpen,
   Brain,
   Database,
@@ -9,6 +11,7 @@ import {
   MessageCircle,
   NotebookPen,
   CalendarDays,
+  Search,
   Settings
 } from "lucide-react";
 
@@ -22,6 +25,9 @@ const navigation = [
   { href: "/projects", label: "Projects", icon: FolderKanban },
   { href: "/knowledge", label: "Knowledge", icon: BookOpen },
   { href: "/journal", label: "Journal", icon: NotebookPen },
+  { href: "/search", label: "Search", icon: Search },
+  { href: "/notifications", label: "Notifications", icon: Bell },
+  { href: "/reports", label: "Reports", icon: BarChart3 },
   { href: "/settings", label: "Settings", icon: Settings }
 ];
 
