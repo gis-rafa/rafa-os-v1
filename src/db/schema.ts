@@ -281,7 +281,8 @@ export const usersRelations = relations(users, ({ many }) => ({
   executionProjects: many(executionProjects),
   executionTasks: many(executionTasks),
   projectKnowledgeLinks: many(projectKnowledgeLinks),
-  notifications: many(notifications)
+  notifications: many(notifications),
+  journalEntries: many(journalEntries)
 }));
 
 export const conversationsRelations = relations(conversations, ({ many, one }) => ({
@@ -371,12 +372,49 @@ export const projectKnowledgeLinksRelations = relations(
   })
 );
 
+export const journalEntries = pgTable(
+  "journal_entries",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    title: text("title").notNull(),
+    content: text("content").notNull(),
+    mood: text("mood"),
+    tags: text("tags")
+      .array()
+      .notNull()
+      .default(sql`ARRAY[]::text[]`),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .defaultNow()
+      .notNull(),
+    updatedAt: timestamp("updated_at", { withTimezone: true })
+      .defaultNow()
+      .notNull()
+  },
+  (table) => [
+    index("journal_entries_user_id_idx").on(table.userId),
+    index("journal_entries_created_at_idx").on(table.createdAt)
+  ]
+);
+
 export const notificationsRelations = relations(notifications, ({ one }) => ({
   user: one(users, {
     fields: [notifications.userId],
     references: [users.id]
   })
 }));
+
+export const journalEntriesRelations = relations(
+  journalEntries,
+  ({ one }) => ({
+    user: one(users, {
+      fields: [journalEntries.userId],
+      references: [users.id]
+    })
+  })
+);
 
 export type User = typeof users.$inferSelect;
 export type NewUser = typeof users.$inferInsert;
@@ -398,3 +436,5 @@ export type ProjectKnowledgeLink = typeof projectKnowledgeLinks.$inferSelect;
 export type NewProjectKnowledgeLink = typeof projectKnowledgeLinks.$inferInsert;
 export type Notification = typeof notifications.$inferSelect;
 export type NewNotification = typeof notifications.$inferInsert;
+export type JournalEntry = typeof journalEntries.$inferSelect;
+export type NewJournalEntry = typeof journalEntries.$inferInsert;
