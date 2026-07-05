@@ -2,12 +2,13 @@
 
 import { getDb, journalEntries, memories } from "@/db";
 import { getActionUser } from "@/lib/auth-user";
-import { and, ilike, or, eq, desc } from "drizzle-orm";
+import { and, ilike, or, eq, desc, inArray } from "drizzle-orm";
 import { loadKnowledgeIndex } from "@/lib/knowledge";
 import path from "path";
 import { promises as fs } from "fs";
 import { dataRoot } from "@/lib/paths";
 import { generateEmbedding, searchSimilar, storeEmbedding } from "@/lib/embeddings";
+import { truncateInput } from "@/lib/dashboard-utils";
 
 const knowledgeRoot = path.join(dataRoot, "02-knowledge");
 
@@ -23,7 +24,7 @@ export type SearchResult = {
 
 export async function globalSearchAction(searchTerm: string): Promise<SearchResult[]> {
   const user = await getActionUser();
-  const term = searchTerm.trim();
+  const term = truncateInput(searchTerm.trim(), 500);
 
   if (!term || term.length < 2) {
     return [];
@@ -124,7 +125,7 @@ export async function semanticSearchAction(
   searchTerm: string
 ): Promise<SearchResult[]> {
   const user = await getActionUser();
-  const term = searchTerm.trim();
+  const term = truncateInput(searchTerm.trim(), 500);
 
   if (!term || term.length < 2) {
     return [];
@@ -143,16 +144,26 @@ export async function semanticSearchAction(
 
   const results: SearchResult[] = [];
 
+  const memoryIds = similar.filter(s => s.score >= 0.5 && s.contentType === "memory").map(s => s.contentId);
+  const journalIds = similar.filter(s => s.score >= 0.5 && s.contentType === "journal").map(s => s.contentId);
+
+  const [memRows, journalRows] = await Promise.all([
+    memoryIds.length > 0
+      ? getDb().select().from(memories).where(and(inArray(memories.id, memoryIds), eq(memories.userId, user.id)))
+      : Promise.resolve([]),
+    journalIds.length > 0
+      ? getDb().select().from(journalEntries).where(and(inArray(journalEntries.id, journalIds), eq(journalEntries.userId, user.id)))
+      : Promise.resolve([])
+  ]);
+
+  const memMap = new Map(memRows.map(m => [m.id, m]));
+  const journalMap = new Map(journalRows.map(j => [j.id, j]));
+
   for (const s of similar) {
     if (s.score < 0.5) continue;
 
     if (s.contentType === "memory") {
-      const [mem] = await getDb()
-        .select()
-        .from(memories)
-        .where(and(eq(memories.id, s.contentId), eq(memories.userId, user.id)))
-        .limit(1);
-
+      const mem = memMap.get(s.contentId);
       if (mem) {
         results.push({
           type: "memory",
@@ -165,14 +176,7 @@ export async function semanticSearchAction(
         });
       }
     } else if (s.contentType === "journal") {
-      const [j] = await getDb()
-        .select()
-        .from(journalEntries)
-        .where(
-          and(eq(journalEntries.id, s.contentId), eq(journalEntries.userId, user.id))
-        )
-        .limit(1);
-
+      const j = journalMap.get(s.contentId);
       if (j) {
         results.push({
           type: "journal",
