@@ -33,7 +33,7 @@ export default async function SettingsPage() {
   return (
     <section className="mx-auto max-w-4xl">
       <div className="mb-6">
-        <p className="text-sm font-medium uppercase tracking-[0.14em] text-stone-500">
+        <p className="text-sm font-medium uppercase tracking-[0.14em] text-stone-600">
           Settings
         </p>
         <h2 className="mt-2 text-3xl font-semibold text-stone-950">Settings</h2>
@@ -72,7 +72,7 @@ function ProfileSection({
     <section className="rounded-md border border-stone-200 bg-white p-5 shadow-sm">
       <div className="mb-5">
         <h3 className="text-base font-semibold text-stone-950">Profile</h3>
-        <p className="mt-1 text-sm text-stone-500">
+        <p className="mt-1 text-sm text-stone-600">
           Your name and email are used across the system.
         </p>
       </div>
@@ -135,7 +135,7 @@ function NotificationPreferencesSection({
         <h3 className="text-base font-semibold text-stone-950">
           Notification Preferences
         </h3>
-        <p className="mt-1 text-sm text-stone-500">
+        <p className="mt-1 text-sm text-stone-600">
           Control which notifications you receive and how.
         </p>
       </div>
@@ -225,7 +225,7 @@ function DatabaseSection({
     <section className="rounded-md border border-stone-200 bg-white p-5 shadow-sm">
       <div className="mb-5">
         <h3 className="text-base font-semibold text-stone-950">Database</h3>
-        <p className="mt-1 text-sm text-stone-500">
+        <p className="mt-1 text-sm text-stone-600">
           Current connection status for PostgreSQL.
         </p>
       </div>
@@ -237,7 +237,7 @@ function DatabaseSection({
           <p className="text-sm font-medium text-stone-800">
             {isDatabaseConfigured ? "Connected" : "Not connected"}
           </p>
-          <p className="mt-1 text-sm text-stone-500">
+          <p className="mt-1 text-sm text-stone-600">
             {isDatabaseConfigured
               ? "PostgreSQL is configured and connected."
               : "Set DATABASE_URL and authentication to enable the database."}

@@ -20,7 +20,7 @@ export default async function InboxPage() {
     <section className="mx-auto max-w-4xl">
       <div className="mb-6 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
         <div>
-          <p className="text-sm font-medium uppercase tracking-[0.14em] text-stone-500">
+          <p className="text-sm font-medium uppercase tracking-[0.14em] text-stone-600">
             Quick Capture
           </p>
           <h2 className="mt-2 text-3xl font-semibold text-stone-950">Inbox</h2>
@@ -46,7 +46,7 @@ export default async function InboxPage() {
             <h3 className="text-base font-semibold text-stone-950">
               New Inbox Note
             </h3>
-            <p className="mt-1 text-sm text-stone-500">
+            <p className="mt-1 text-sm text-stone-600">
               Saved to memory/inbox as Markdown.
             </p>
           </div>
@@ -76,7 +76,7 @@ export default async function InboxPage() {
 
       {entries.length > 0 ? (
         <div className="grid gap-3">
-          <p className="text-sm font-medium text-stone-500">
+          <p className="text-sm font-medium text-stone-600">
             {entries.length} saved note{entries.length !== 1 ? "s" : ""}
           </p>
           {entries.map((entry) => (
@@ -86,7 +86,7 @@ export default async function InboxPage() {
             >
               <div className="flex items-start justify-between gap-4">
                 <div className="min-w-0">
-                  <p className="text-xs text-stone-500">
+                  <p className="text-xs text-stone-600">
                     {formatTimestamp(entry.timestamp)}
                   </p>
                   <div className="prose prose-sm mt-3 max-w-none text-stone-700">
@@ -116,7 +116,7 @@ export default async function InboxPage() {
           <p className="text-sm font-medium text-stone-700">
             No inbox notes yet.
           </p>
-          <p className="mt-2 text-sm text-stone-500">
+          <p className="mt-2 text-sm text-stone-600">
             Capture your first thought above.
           </p>
         </div>

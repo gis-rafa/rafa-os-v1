@@ -69,7 +69,7 @@ export default async function ProjectDetailPage({ params }: ProjectDetailProps) 
     <section className="mx-auto max-w-7xl">
       <div className="mb-6">
         <Link
-          className="inline-flex items-center gap-2 text-sm font-medium text-stone-500 transition hover:text-stone-950"
+          className="inline-flex items-center gap-2 text-sm font-medium text-stone-600 transition hover:text-stone-950"
           href="/projects"
         >
           <ArrowLeft size={16} strokeWidth={1.8} />
@@ -81,7 +81,7 @@ export default async function ProjectDetailPage({ params }: ProjectDetailProps) 
         <div className="min-w-0">
           <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
             <div>
-              <p className="text-sm font-medium uppercase tracking-[0.14em] text-stone-500">
+              <p className="text-sm font-medium uppercase tracking-[0.14em] text-stone-600">
                 {project.status}
               </p>
               <h2 className="mt-2 text-3xl font-semibold text-stone-950">
@@ -126,7 +126,7 @@ export default async function ProjectDetailPage({ params }: ProjectDetailProps) 
                 <p className="text-sm font-medium text-stone-700">
                   No tasks yet.
                 </p>
-                <p className="mt-2 text-sm text-stone-500">
+                <p className="mt-2 text-sm text-stone-600">
                   Add a task using the form on the right.
                 </p>
               </div>
@@ -150,7 +150,7 @@ export default async function ProjectDetailPage({ params }: ProjectDetailProps) 
                     key={memory.id}
                   >
                     <p className="text-sm font-semibold text-stone-950">{memory.title}</p>
-                    <p className="mt-1 text-sm text-stone-500">{memory.category}</p>
+                    <p className="mt-1 text-sm text-stone-600">{memory.category}</p>
                   </Link>
                 ))}
               </div>
@@ -173,7 +173,7 @@ export default async function ProjectDetailPage({ params }: ProjectDetailProps) 
                     key={link.id}
                   >
                     <p className="text-sm font-semibold text-stone-950">{link.title}</p>
-                    <p className="mt-1 break-all text-xs text-stone-500">{link.filePath}</p>
+                    <p className="mt-1 break-all text-xs text-stone-600">{link.filePath}</p>
                   </div>
                 ))}
               </div>
@@ -188,7 +188,7 @@ export default async function ProjectDetailPage({ params }: ProjectDetailProps) 
 function StatCard({ label, value }: { label: string; value: string }) {
   return (
     <div className="rounded-md border border-stone-200 bg-white p-4 shadow-sm">
-      <p className="text-xs font-semibold uppercase tracking-[0.12em] text-stone-500">{label}</p>
+      <p className="text-xs font-semibold uppercase tracking-[0.12em] text-stone-600">{label}</p>
       <p className="mt-2 text-xl font-semibold text-stone-950">{value}</p>
     </div>
   );
@@ -209,16 +209,16 @@ function TaskRow({ task }: { task: typeof executionTasks.$inferSelect }) {
             <span className={`rounded-md px-2 py-1 text-xs font-medium ${statusColors[task.status] ?? statusColors.Todo}`}>
               {task.status}
             </span>
-            <span className="text-xs text-stone-500">
+            <span className="text-xs text-stone-600">
               {task.estimatedMinutes} min
             </span>
             {task.taskDate ? (
-              <span className="text-xs text-stone-500">
+              <span className="text-xs text-stone-600">
                 {formatDate(task.taskDate)}
               </span>
             ) : null}
           </div>
-          <p className={`text-sm font-semibold ${task.status === "Done" ? "text-stone-500 line-through" : "text-stone-950"}`}>
+          <p className={`text-sm font-semibold ${task.status === "Done" ? "text-stone-600 line-through" : "text-stone-950"}`}>
             {task.title}
           </p>
         </div>
@@ -236,7 +236,7 @@ function ProjectTaskForm({ projectId }: { projectId: string }) {
         </div>
         <div>
           <h3 className="text-base font-semibold text-stone-950">Add Task</h3>
-          <p className="mt-1 text-sm text-stone-500">Create a new task for this project.</p>
+          <p className="mt-1 text-sm text-stone-600">Create a new task for this project.</p>
         </div>
       </div>
 

@@ -2,12 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { requireCurrentDbUser } from "@/lib/auth-user";
-import { isClerkConfigured } from "@/lib/clerk-config";
-import {
-  canUseLocalDatabaseFallback,
-  getLocalDevelopmentUser
-} from "@/lib/local-dev-user";
+import { getActionUser } from "@/lib/auth-user";
 import {
   createJournalEntry,
   deleteJournalEntry,
@@ -52,18 +47,6 @@ export async function deleteJournalEntryAction(formData: FormData) {
 
   revalidatePath("/journal");
   redirect("/journal");
-}
-
-async function getActionUser() {
-  if (isClerkConfigured()) {
-    return requireCurrentDbUser();
-  }
-
-  if (canUseLocalDatabaseFallback()) {
-    return getLocalDevelopmentUser();
-  }
-
-  throw new Error("Authentication is required.");
 }
 
 function parseJournalForm(formData: FormData) {

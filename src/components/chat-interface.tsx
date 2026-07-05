@@ -265,7 +265,7 @@ export function ChatInterface({
     <section className="mx-auto grid max-h-none min-h-[calc(100dvh-7rem)] max-w-7xl gap-4 overflow-visible xl:h-[calc(100vh-8.5rem)] xl:grid-cols-[minmax(0,1fr)_420px] xl:overflow-hidden">
       <div className="flex min-h-[70dvh] flex-col overflow-hidden rounded-md border border-stone-200 bg-white shadow-sm xl:min-h-0">
         <div className="border-b border-stone-200 px-4 py-4 sm:px-5">
-          <p className="text-sm font-medium uppercase tracking-[0.14em] text-stone-500">
+          <p className="text-sm font-medium uppercase tracking-[0.14em] text-stone-600">
             RAFA AI
           </p>
           <h2 className="mt-1 text-xl font-semibold text-stone-950 sm:text-2xl">
@@ -389,7 +389,7 @@ function MemorySuggestionCard({
         </div>
         <button
           aria-label="Dismiss memory suggestion"
-          className="inline-flex size-8 items-center justify-center rounded-md text-stone-500 transition hover:bg-amber-100 hover:text-stone-900"
+          className="inline-flex size-8 items-center justify-center rounded-md text-stone-600 transition hover:bg-amber-100 hover:text-stone-900"
           onClick={onDismiss}
           type="button"
         >
@@ -399,7 +399,7 @@ function MemorySuggestionCard({
 
       <div className="grid gap-3">
         <label className="grid gap-1.5">
-          <span className="text-xs font-semibold uppercase tracking-[0.1em] text-stone-500">
+          <span className="text-xs font-semibold uppercase tracking-[0.1em] text-stone-600">
             Title
           </span>
           <input
@@ -412,7 +412,7 @@ function MemorySuggestionCard({
         </label>
         <div className="grid gap-3 sm:grid-cols-[1fr_120px]">
           <label className="grid gap-1.5">
-            <span className="text-xs font-semibold uppercase tracking-[0.1em] text-stone-500">
+            <span className="text-xs font-semibold uppercase tracking-[0.1em] text-stone-600">
               Category
             </span>
             <input
@@ -427,7 +427,7 @@ function MemorySuggestionCard({
             />
           </label>
           <label className="grid gap-1.5">
-            <span className="text-xs font-semibold uppercase tracking-[0.1em] text-stone-500">
+            <span className="text-xs font-semibold uppercase tracking-[0.1em] text-stone-600">
               Importance
             </span>
             <input
@@ -446,7 +446,7 @@ function MemorySuggestionCard({
           </label>
         </div>
         <label className="grid gap-1.5">
-          <span className="text-xs font-semibold uppercase tracking-[0.1em] text-stone-500">
+          <span className="text-xs font-semibold uppercase tracking-[0.1em] text-stone-600">
             Content
           </span>
           <textarea
@@ -458,7 +458,7 @@ function MemorySuggestionCard({
           />
         </label>
         <label className="grid gap-1.5">
-          <span className="text-xs font-semibold uppercase tracking-[0.1em] text-stone-500">
+          <span className="text-xs font-semibold uppercase tracking-[0.1em] text-stone-600">
             Tags
           </span>
           <input
@@ -570,12 +570,12 @@ function MorningBriefHeader({
             <h3 className="text-sm font-semibold text-stone-950">
               Current Morning Brief
             </h3>
-            <p className="mt-1 text-xs text-stone-500">
+            <p className="mt-1 text-xs text-stone-600">
               {morningBrief.dateLabel} | Roadmap day {morningBrief.roadmapDay}
             </p>
           </div>
         </div>
-        <p className="text-xs font-medium uppercase tracking-[0.12em] text-stone-500">
+        <p className="text-xs font-medium uppercase tracking-[0.12em] text-stone-600">
           Local context
         </p>
       </div>
@@ -588,7 +588,7 @@ function MorningBriefHeader({
               className="rounded-md border border-stone-200 bg-white p-3"
               key={item.title}
             >
-              <div className="mb-2 flex items-center gap-2 text-stone-500">
+              <div className="mb-2 flex items-center gap-2 text-stone-600">
                 <Icon size={15} strokeWidth={1.8} />
                 <p className="text-xs font-semibold uppercase tracking-[0.1em]">
                   {item.title}
@@ -641,7 +641,7 @@ function MessageBubble({
         </div>
         <div className="mt-2 flex flex-wrap gap-2 opacity-100 transition sm:opacity-0 sm:group-hover:opacity-100">
           <button
-            className="inline-flex h-8 items-center gap-2 rounded-md px-2 text-xs font-medium text-stone-500 transition hover:bg-stone-100 hover:text-stone-800"
+            className="inline-flex h-8 items-center gap-2 rounded-md px-2 text-xs font-medium text-stone-600 transition hover:bg-stone-100 hover:text-stone-800"
             onClick={onCopy}
             type="button"
           >
@@ -654,7 +654,7 @@ function MessageBubble({
           </button>
           {!isUser ? (
             <button
-              className="inline-flex h-8 items-center gap-2 rounded-md px-2 text-xs font-medium text-stone-500 transition hover:bg-stone-100 hover:text-stone-800 disabled:cursor-not-allowed disabled:text-stone-400"
+              className="inline-flex h-8 items-center gap-2 rounded-md px-2 text-xs font-medium text-stone-600 transition hover:bg-stone-100 hover:text-stone-800 disabled:cursor-not-allowed disabled:text-stone-400"
               disabled={savedToMemory || savingToMemory || !message.content.trim()}
               onClick={onSaveToMemory}
               type="button"

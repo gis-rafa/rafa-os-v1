@@ -3,12 +3,7 @@
 import { eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { getDb, users } from "@/db";
-import { requireCurrentDbUser } from "@/lib/auth-user";
-import { isClerkConfigured } from "@/lib/clerk-config";
-import {
-  canUseLocalDatabaseFallback,
-  getLocalDevelopmentUser
-} from "@/lib/local-dev-user";
+import { getActionUser } from "@/lib/auth-user";
 import { updateNotificationPreferences } from "@/lib/notification-preferences";
 
 export async function updateProfileAction(formData: FormData) {
@@ -45,16 +40,4 @@ export async function updateNotificationPreferencesAction(formData: FormData) {
   });
 
   revalidatePath("/settings");
-}
-
-async function getActionUser() {
-  if (isClerkConfigured()) {
-    return requireCurrentDbUser();
-  }
-
-  if (canUseLocalDatabaseFallback()) {
-    return getLocalDevelopmentUser();
-  }
-
-  throw new Error("Authentication is required.");
 }

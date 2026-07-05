@@ -349,27 +349,29 @@ async function adaptExecutionPlan(userId: string) {
     );
   }
 
-  for (const task of staleTasks) {
-    const targetDate = findNextAvailableMissionDay({
-      estimatedMinutes: task.estimatedMinutes,
-      scheduledByDay,
-      startDate: today
-    });
-    const key = dayKey(targetDate);
+  await Promise.all(
+    staleTasks.map((task) => {
+      const targetDate = findNextAvailableMissionDay({
+        estimatedMinutes: task.estimatedMinutes,
+        scheduledByDay,
+        startDate: today
+      });
+      const key = dayKey(targetDate);
 
-    scheduledByDay.set(
-      key,
-      (scheduledByDay.get(key) ?? 0) + task.estimatedMinutes
-    );
+      scheduledByDay.set(
+        key,
+        (scheduledByDay.get(key) ?? 0) + task.estimatedMinutes
+      );
 
-    await db
-      .update(executionTasks)
-      .set({
-        taskDate: targetDate,
-        updatedAt: new Date()
-      })
-      .where(eq(executionTasks.id, task.id));
-  }
+      return db
+        .update(executionTasks)
+        .set({
+          taskDate: targetDate,
+          updatedAt: new Date()
+        })
+        .where(eq(executionTasks.id, task.id));
+    })
+  );
 }
 
 function findNextAvailableMissionDay({

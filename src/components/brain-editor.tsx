@@ -11,7 +11,7 @@ export function BrainEditor({ document }: { document: MasterBrainDocument }) {
 
         <div className="mb-6 flex flex-col justify-between gap-3 sm:flex-row sm:items-end">
           <div>
-            <p className="text-sm font-medium uppercase tracking-[0.14em] text-stone-500">
+            <p className="text-sm font-medium uppercase tracking-[0.14em] text-stone-600">
               Master Brain Editor
             </p>
             <h2 className="mt-2 text-2xl font-semibold text-stone-950 sm:text-3xl">

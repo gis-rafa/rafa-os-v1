@@ -102,7 +102,7 @@ function MemoryShell({
       <div className="min-w-0">
         <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <p className="text-sm font-medium uppercase tracking-[0.14em] text-stone-500">
+            <p className="text-sm font-medium uppercase tracking-[0.14em] text-stone-600">
               Memory Engine
             </p>
             <h2 className="mt-2 text-3xl font-semibold text-stone-950">
@@ -171,7 +171,7 @@ function MemoryShell({
               <p className="text-sm font-medium text-stone-700">
                 No memories found.
               </p>
-              <p className="mt-2 text-sm text-stone-500">
+              <p className="mt-2 text-sm text-stone-600">
                 Create the first memory from the panel on the right.
               </p>
             </div>
@@ -187,7 +187,7 @@ function MemoryShell({
                       <span className="rounded-md bg-stone-100 px-2 py-1 text-xs font-medium text-stone-700">
                         {memory.category}
                       </span>
-                      <span className="text-xs text-stone-500">
+                      <span className="text-xs text-stone-600">
                         Importance {memory.importance}/5
                       </span>
                     </div>
@@ -201,7 +201,7 @@ function MemoryShell({
                       <div className="mt-4 flex flex-wrap gap-2">
                         {memory.tags.map((tag) => (
                           <span
-                            className="rounded-md border border-stone-200 px-2 py-1 text-xs text-stone-500"
+                            className="rounded-md border border-stone-200 px-2 py-1 text-xs text-stone-600"
                             key={tag}
                           >
                             {tag}
@@ -263,7 +263,7 @@ function MemoryForm({
           <h3 className="text-base font-semibold text-stone-950">
             {editingMemory ? "Edit Memory" : "Create Memory"}
           </h3>
-          <p className="mt-1 text-sm text-stone-500">
+          <p className="mt-1 text-sm text-stone-600">
             Saved to PostgreSQL for this account.
           </p>
         </div>
@@ -333,7 +333,7 @@ function MemoryForm({
         <div className="flex items-center justify-between gap-3">
           {editingMemory ? (
             <Link
-              className="text-sm font-medium text-stone-500 transition hover:text-stone-950"
+              className="text-sm font-medium text-stone-600 transition hover:text-stone-950"
               href="/memory"
             >
               Cancel

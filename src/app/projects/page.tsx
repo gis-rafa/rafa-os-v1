@@ -109,7 +109,7 @@ function ProjectsShell({
       <div className="min-w-0">
         <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <p className="text-sm font-medium uppercase tracking-[0.14em] text-stone-500">
+            <p className="text-sm font-medium uppercase tracking-[0.14em] text-stone-600">
               Projects Hub
             </p>
             <h2 className="mt-2 text-3xl font-semibold text-stone-950">
@@ -150,7 +150,7 @@ function ProjectsShell({
               <p className="text-sm font-medium text-stone-700">
                 No projects found.
               </p>
-              <p className="mt-2 text-sm text-stone-500">
+              <p className="mt-2 text-sm text-stone-600">
                 Create the first project from the panel on the right.
               </p>
             </div>
@@ -197,7 +197,7 @@ function ProjectCard({
               {project.description}
             </p>
           ) : null}
-          <div className="mt-4 flex flex-wrap gap-2 text-xs text-stone-500">
+          <div className="mt-4 flex flex-wrap gap-2 text-xs text-stone-600">
             <InfoPill icon={Layers3} label={project.currentPhase} />
             <InfoPill
               icon={CalendarDays}
@@ -307,7 +307,7 @@ function ProjectForm({
           <h3 className="text-base font-semibold text-stone-950">
             {editingProject ? "Edit Project" : "Create Project"}
           </h3>
-          <p className="mt-1 text-sm text-stone-500">
+          <p className="mt-1 text-sm text-stone-600">
             Saved to PostgreSQL for this account.
           </p>
         </div>
@@ -427,7 +427,7 @@ function ProjectForm({
         <div className="flex items-center justify-between gap-3">
           {editingProject ? (
             <Link
-              className="text-sm font-medium text-stone-500 transition hover:text-stone-950"
+              className="text-sm font-medium text-stone-600 transition hover:text-stone-950"
               href="/projects"
             >
               Cancel
@@ -451,7 +451,7 @@ function ProjectForm({
 function SummaryCard({ label, value }: { label: string; value: number }) {
   return (
     <div className="rounded-md border border-stone-200 bg-white p-4 shadow-sm">
-      <p className="text-sm text-stone-500">{label}</p>
+      <p className="text-sm text-stone-600">{label}</p>
       <p className="mt-2 text-3xl font-semibold text-stone-950">{value}</p>
     </div>
   );
@@ -468,9 +468,9 @@ function MetricCard({
 }) {
   return (
     <div className="rounded-md border border-stone-200 bg-stone-50 p-3">
-      <Icon className="mb-2 text-stone-500" size={17} strokeWidth={1.8} />
+      <Icon className="mb-2 text-stone-600" size={17} strokeWidth={1.8} />
       <p className="text-sm font-semibold text-stone-950">{value}</p>
-      <p className="mt-1 text-xs font-medium uppercase tracking-[0.12em] text-stone-500">
+      <p className="mt-1 text-xs font-medium uppercase tracking-[0.12em] text-stone-600">
         {label}
       </p>
     </div>

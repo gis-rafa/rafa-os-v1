@@ -48,7 +48,7 @@ export default async function StudyPlanPage() {
     <section className="mx-auto max-w-7xl">
       <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <p className="text-sm font-medium uppercase tracking-[0.14em] text-stone-500">
+          <p className="text-sm font-medium uppercase tracking-[0.14em] text-stone-600">
             Execution Engine
           </p>
           <h2 className="mt-2 text-3xl font-semibold text-stone-950">
@@ -92,7 +92,7 @@ export default async function StudyPlanPage() {
           <h3 className="text-base font-semibold text-stone-950">
             Roadmap Tasks
           </h3>
-          <p className="mt-1 text-sm text-stone-500">
+          <p className="mt-1 text-sm text-stone-600">
             {isAuthenticatedMode
               ? "Progress is stored in PostgreSQL per authenticated user."
               : isLocalDatabaseMode
@@ -127,14 +127,14 @@ function MetricCard({
 }) {
   return (
     <article className="rounded-md border border-stone-200 bg-white p-4 shadow-sm">
-      <div className="mb-3 flex items-center gap-2 text-stone-500">
+      <div className="mb-3 flex items-center gap-2 text-stone-600">
         <Icon size={17} strokeWidth={1.8} />
         <p className="text-xs font-semibold uppercase tracking-[0.1em]">
           {label}
         </p>
       </div>
       <p className="text-xl font-semibold text-stone-950">{value}</p>
-      <p className="mt-2 text-sm leading-6 text-stone-500">{detail}</p>
+      <p className="mt-2 text-sm leading-6 text-stone-600">{detail}</p>
     </article>
   );
 }
@@ -148,7 +148,7 @@ function TaskPreviewCard({
 }) {
   return (
     <article className="rounded-md border border-stone-200 bg-white p-4 shadow-sm">
-      <div className="mb-3 flex items-center gap-2 text-stone-500">
+      <div className="mb-3 flex items-center gap-2 text-stone-600">
         <Clock size={17} strokeWidth={1.8} />
         <p className="text-xs font-semibold uppercase tracking-[0.1em]">
           {label}
@@ -159,12 +159,12 @@ function TaskPreviewCard({
           <p className="text-sm font-semibold text-stone-950">
             Day {task.day}: {task.gisTask}
           </p>
-          <p className="mt-2 text-sm leading-6 text-stone-500">
+          <p className="mt-2 text-sm leading-6 text-stone-600">
             {task.deliverable}
           </p>
         </>
       ) : (
-        <p className="text-sm text-stone-500">No task available.</p>
+        <p className="text-sm text-stone-600">No task available.</p>
       )}
     </article>
   );
@@ -181,7 +181,7 @@ function RoadmapTaskRow({
     <article className="grid gap-4 px-4 py-4 sm:px-5 lg:grid-cols-[90px_minmax(0,1fr)_220px] lg:items-start">
       <div>
         <p className="text-sm font-semibold text-stone-950">Day {task.day}</p>
-        <p className="mt-1 text-xs text-stone-500">Week {task.week}</p>
+        <p className="mt-1 text-xs text-stone-600">Week {task.week}</p>
       </div>
       <div className="min-w-0">
         <div className="mb-2 flex flex-wrap items-center gap-2">
@@ -190,7 +190,7 @@ function RoadmapTaskRow({
           >
             {task.status}
           </span>
-          <span className="text-xs text-stone-500">{task.phase}</span>
+          <span className="text-xs text-stone-600">{task.phase}</span>
         </div>
         <h4 className="text-base font-semibold text-stone-950">
           {task.gisTask}

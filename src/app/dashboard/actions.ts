@@ -1,18 +1,13 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { requireCurrentDbUser } from "@/lib/auth-user";
-import { isClerkConfigured } from "@/lib/clerk-config";
+import { getActionUser } from "@/lib/auth-user";
 import {
   executionTaskStatuses,
   updateExecutionTaskStatus,
   updatePriorityCompletion,
   type ExecutionTaskStatus
 } from "@/lib/execution-dashboard";
-import {
-  canUseLocalDatabaseFallback,
-  getLocalDevelopmentUser
-} from "@/lib/local-dev-user";
 
 export async function updatePriorityCompletionAction(formData: FormData) {
   const user = await getActionUser();
@@ -48,16 +43,4 @@ export async function updateExecutionTaskStatusAction(formData: FormData) {
   });
 
   revalidatePath("/dashboard");
-}
-
-async function getActionUser() {
-  if (isClerkConfigured()) {
-    return requireCurrentDbUser();
-  }
-
-  if (canUseLocalDatabaseFallback()) {
-    return getLocalDevelopmentUser();
-  }
-
-  throw new Error("Authentication is required.");
 }

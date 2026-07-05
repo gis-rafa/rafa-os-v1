@@ -86,7 +86,7 @@ function JournalShell({
       <div className="min-w-0">
         <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <p className="text-sm font-medium uppercase tracking-[0.14em] text-stone-500">
+            <p className="text-sm font-medium uppercase tracking-[0.14em] text-stone-600">
               Journal
             </p>
             <h2 className="mt-2 text-3xl font-semibold text-stone-950">
@@ -135,7 +135,7 @@ function JournalShell({
               <p className="text-sm font-medium text-stone-700">
                 No journal entries yet.
               </p>
-              <p className="mt-2 text-sm text-stone-500">
+              <p className="mt-2 text-sm text-stone-600">
                 Write your first entry using the form on the right.
               </p>
             </div>
@@ -148,7 +148,7 @@ function JournalShell({
                 <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
                   <div className="min-w-0">
                     <div className="mb-2 flex flex-wrap items-center gap-2">
-                      <span className="text-xs text-stone-500">
+                      <span className="text-xs text-stone-600">
                         {formatDate(entry.createdAt)}
                       </span>
                       {entry.mood ? (
@@ -167,7 +167,7 @@ function JournalShell({
                       <div className="mt-4 flex flex-wrap gap-2">
                         {entry.tags.map((tag) => (
                           <span
-                            className="rounded-md border border-stone-200 px-2 py-1 text-xs text-stone-500"
+                            className="rounded-md border border-stone-200 px-2 py-1 text-xs text-stone-600"
                             key={tag}
                           >
                             {tag}
@@ -229,7 +229,7 @@ function JournalForm({
           <h3 className="text-base font-semibold text-stone-950">
             {editingEntry ? "Edit Entry" : "New Entry"}
           </h3>
-          <p className="mt-1 text-sm text-stone-500">
+          <p className="mt-1 text-sm text-stone-600">
             Saved to PostgreSQL for this account.
           </p>
         </div>
@@ -286,7 +286,7 @@ function JournalForm({
         <div className="flex items-center justify-between gap-3">
           {editingEntry ? (
             <Link
-              className="text-sm font-medium text-stone-500 transition hover:text-stone-950"
+              className="text-sm font-medium text-stone-600 transition hover:text-stone-950"
               href="/journal"
             >
               Cancel

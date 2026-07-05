@@ -2,12 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { buildRoutedPrompt } from "@/lib/context-router";
-import { requireCurrentDbUser } from "@/lib/auth-user";
-import { isClerkConfigured } from "@/lib/clerk-config";
-import {
-  canUseLocalDatabaseFallback,
-  getLocalDevelopmentUser
-} from "@/lib/local-dev-user";
+import { getActionUser } from "@/lib/auth-user";
 import {
   saveMemorySuggestion,
   suggestMemoryFromConversation,
@@ -105,18 +100,6 @@ export async function saveMemorySuggestionAction(formData: FormData) {
     ok: true,
     message: "Saved to Memory."
   };
-}
-
-async function getActionUser() {
-  if (isClerkConfigured()) {
-    return requireCurrentDbUser();
-  }
-
-  if (canUseLocalDatabaseFallback()) {
-    return getLocalDevelopmentUser();
-  }
-
-  throw new Error("Authentication is required.");
 }
 
 function createMemoryTitle(content: string) {

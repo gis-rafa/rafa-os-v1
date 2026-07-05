@@ -15,7 +15,7 @@ export default async function KnowledgePage() {
     <section className="mx-auto max-w-6xl">
       <div className="mb-6 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
         <div>
-          <p className="text-sm font-medium uppercase tracking-[0.14em] text-stone-500">
+          <p className="text-sm font-medium uppercase tracking-[0.14em] text-stone-600">
             Knowledge System
           </p>
           <h2 className="mt-2 text-3xl font-semibold text-stone-950">
@@ -104,19 +104,19 @@ export default async function KnowledgePage() {
 
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
         <div className="rounded-md border border-stone-200 bg-white p-4">
-          <p className="text-sm text-stone-500">Knowledge files</p>
+          <p className="text-sm text-stone-600">Knowledge files</p>
           <p className="mt-2 text-3xl font-semibold text-stone-950">
             {knowledge.files.length}
           </p>
         </div>
         <div className="rounded-md border border-stone-200 bg-white p-4">
-          <p className="text-sm text-stone-500">Tags</p>
+          <p className="text-sm text-stone-600">Tags</p>
           <p className="mt-2 text-3xl font-semibold text-stone-950">
             {knowledge.tags.length}
           </p>
         </div>
         <div className="rounded-md border border-stone-200 bg-white p-4 md:col-span-2">
-          <p className="text-sm text-stone-500">Duplicate handling</p>
+          <p className="text-sm text-stone-600">Duplicate handling</p>
           <p className="mt-2 text-sm leading-6 text-stone-700">
             {knowledge.duplicateSections[0]?.handling}
           </p>
@@ -128,7 +128,7 @@ export default async function KnowledgePage() {
           <section id={tag.toLowerCase()} key={tag}>
             <div className="mb-3 flex items-end justify-between gap-3">
               <h3 className="text-xl font-semibold text-stone-950">{tag}</h3>
-              <p className="text-sm text-stone-500">
+              <p className="text-sm text-stone-600">
                 {knowledge.filesByTag[tag]?.length ?? 0} files
               </p>
             </div>
@@ -142,7 +142,7 @@ export default async function KnowledgePage() {
                   <p className="text-sm font-semibold text-stone-950">
                     {file.title}
                   </p>
-                  <p className="mt-2 break-all text-xs leading-5 text-stone-500">
+                  <p className="mt-2 break-all text-xs leading-5 text-stone-600">
                     {file.file}
                   </p>
                 </a>
@@ -175,7 +175,7 @@ export default async function KnowledgePage() {
                 </span>
               ))}
             </div>
-            <p className="mt-3 break-all text-xs text-stone-500">
+            <p className="mt-3 break-all text-xs text-stone-600">
               {file.file}
             </p>
             <pre className="mt-4 max-h-[36rem] overflow-auto whitespace-pre-wrap rounded-md bg-stone-950 p-4 text-sm leading-6 text-stone-100">

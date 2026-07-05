@@ -21,7 +21,7 @@ export default async function NotificationsPage() {
     <section className="mx-auto max-w-4xl">
       <div className="mb-6 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
         <div>
-          <p className="text-sm font-medium uppercase tracking-[0.14em] text-stone-500">
+          <p className="text-sm font-medium uppercase tracking-[0.14em] text-stone-600">
             Notifications
           </p>
           <h2 className="mt-2 text-3xl font-semibold text-stone-950">
@@ -54,7 +54,7 @@ export default async function NotificationsPage() {
             <p className="text-sm font-medium text-stone-700">
               No notifications yet.
             </p>
-            <p className="mt-2 text-sm text-stone-500">
+            <p className="mt-2 text-sm text-stone-600">
               Notifications will appear here when there are updates.
             </p>
           </div>
@@ -75,7 +75,7 @@ export default async function NotificationsPage() {
                     {notification.read === 0 ? (
                       <span className="size-2 rounded-full bg-stone-950" />
                     ) : null}
-                    <span className="text-xs text-stone-500">
+                    <span className="text-xs text-stone-600">
                       {formatDate(notification.createdAt)}
                     </span>
                   </div>

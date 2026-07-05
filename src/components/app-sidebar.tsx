@@ -45,6 +45,9 @@ export function AppSidebar({
           isOpen ? "opacity-100" : "pointer-events-none opacity-0"
         }`}
         onClick={onClose}
+        onKeyDown={(e) => { if (e.key === "Escape") onClose(); }}
+        role="presentation"
+        tabIndex={-1}
       />
       <aside
         className={`fixed inset-y-0 left-0 z-50 w-[min(82vw,300px)] border-r border-stone-800 bg-stone-950 text-white transition-transform lg:static lg:z-auto lg:w-auto lg:translate-x-0 ${

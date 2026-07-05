@@ -1,0 +1,1 @@
+CREATE UNIQUE INDEX "content_embeddings_user_content_idx" ON "content_embeddings" USING btree ("user_id","content_type","content_id");

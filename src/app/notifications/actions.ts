@@ -1,12 +1,7 @@
 "use server";
 
 import { getDb, notifications } from "@/db";
-import { requireCurrentDbUser } from "@/lib/auth-user";
-import { isClerkConfigured } from "@/lib/clerk-config";
-import {
-  canUseLocalDatabaseFallback,
-  getLocalDevelopmentUser
-} from "@/lib/local-dev-user";
+import { getActionUser } from "@/lib/auth-user";
 import { and, desc, eq } from "drizzle-orm";
 
 export type NotificationType = "info" | "success" | "warning" | "error";
@@ -86,16 +81,4 @@ export async function deleteNotification(formData: FormData) {
   await getDb()
     .delete(notifications)
     .where(and(eq(notifications.id, id), eq(notifications.userId, user.id)));
-}
-
-async function getActionUser() {
-  if (isClerkConfigured()) {
-    return requireCurrentDbUser();
-  }
-
-  if (canUseLocalDatabaseFallback()) {
-    return getLocalDevelopmentUser();
-  }
-
-  throw new Error("Authentication is required.");
 }

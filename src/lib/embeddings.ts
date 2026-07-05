@@ -40,7 +40,8 @@ export async function storeEmbedding(
   await db.execute(sql`
     INSERT INTO content_embeddings (user_id, content_type, content_id, embedding)
     VALUES (${userId}, ${contentType}, ${contentId}, ${embeddingStr}::vector)
-    ON CONFLICT (id) DO NOTHING
+    ON CONFLICT (user_id, content_type, content_id)
+    DO UPDATE SET embedding = ${embeddingStr}::vector, updated_at = NOW()
   `);
 }
 

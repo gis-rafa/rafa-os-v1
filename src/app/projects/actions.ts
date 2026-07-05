@@ -14,12 +14,7 @@ import {
   type ProjectStatus
 } from "@/lib/projects";
 import { createExecutionTask } from "@/lib/execution-dashboard";
-import { requireCurrentDbUser } from "@/lib/auth-user";
-import { isClerkConfigured } from "@/lib/clerk-config";
-import {
-  canUseLocalDatabaseFallback,
-  getLocalDevelopmentUser
-} from "@/lib/local-dev-user";
+import { getActionUser } from "@/lib/auth-user";
 
 export async function createProjectAction(formData: FormData) {
   const user = await getActionUser();
@@ -100,18 +95,6 @@ export async function createTaskAction(formData: FormData) {
   revalidatePath(`/projects/${projectId}`);
   revalidatePath("/projects");
   revalidatePath("/dashboard");
-}
-
-async function getActionUser() {
-  if (isClerkConfigured()) {
-    return requireCurrentDbUser();
-  }
-
-  if (canUseLocalDatabaseFallback()) {
-    return getLocalDevelopmentUser();
-  }
-
-  throw new Error("Authentication is required.");
 }
 
 function parseProjectForm(formData: FormData): ProjectFormValues {

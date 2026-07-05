@@ -71,6 +71,13 @@
       "when": 1783251205319,
       "tag": "0009_content_embeddings",
       "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1783254994770,
+      "tag": "0010_embeddings_unique_constraint",
+      "breakpoints": true
     }
   ]
 }

@@ -115,7 +115,7 @@ function DashboardHeader({
   return (
     <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-end">
       <div>
-        <p className="text-sm font-medium uppercase tracking-[0.14em] text-stone-500 dark:text-stone-400">
+        <p className="text-sm font-medium uppercase tracking-[0.14em] text-stone-600 dark:text-stone-400">
           Remote GIS Career OS
         </p>
         <h2 className="mt-2 text-2xl font-semibold text-stone-950 dark:text-stone-50 sm:text-3xl">
@@ -223,7 +223,7 @@ function TodaysMission({
 function IntelligencePoint({ label, value }: { label: string; value: string }) {
   return (
     <div className="rounded-md border border-stone-200 bg-stone-50 p-3 dark:border-stone-800 dark:bg-stone-900">
-      <p className="text-xs font-semibold uppercase tracking-[0.12em] text-stone-500">
+      <p className="text-xs font-semibold uppercase tracking-[0.12em] text-stone-600">
         {label}
       </p>
       <p className="mt-2 text-sm leading-6 text-stone-800 dark:text-stone-200">
@@ -252,7 +252,7 @@ function ObjectiveCard({
     >
       <p
         className={`text-xs font-semibold uppercase tracking-[0.12em] ${
-          emphasized ? "text-stone-300 dark:text-stone-600" : "text-stone-500"
+          emphasized ? "text-stone-300 dark:text-stone-600" : "text-stone-600"
         }`}
       >
         {label}
@@ -279,7 +279,7 @@ function MorningBrief({
           <h3 className="text-base font-semibold text-stone-950 dark:text-stone-50">
             Morning Brief
           </h3>
-          <p className="mt-1 text-sm text-stone-500 dark:text-stone-400">
+          <p className="mt-1 text-sm text-stone-600 dark:text-stone-400">
             Good morning Abdallah.
           </p>
         </div>
@@ -333,7 +333,7 @@ function MissionIntelligence({
         <h3 className="text-base font-semibold text-stone-950 dark:text-stone-50">
           Execution Intelligence
         </h3>
-        <p className="mt-1 text-sm text-stone-500 dark:text-stone-400">
+        <p className="mt-1 text-sm text-stone-600 dark:text-stone-400">
           RAFA OS recalculates the plan from PostgreSQL before showing the
           dashboard.
         </p>
@@ -391,7 +391,7 @@ function MissionWarnings({ data }: { data: ExecutionDashboardData }) {
 function BriefMetric({ label, value }: { label: string; value: number | string }) {
   return (
     <div className="rounded-md border border-stone-200 bg-stone-50 p-3 dark:border-stone-800 dark:bg-stone-900">
-      <p className="text-xs font-semibold uppercase tracking-[0.12em] text-stone-500">
+      <p className="text-xs font-semibold uppercase tracking-[0.12em] text-stone-600">
         {label}
       </p>
       <p className="mt-2 text-sm font-semibold text-stone-950 dark:text-stone-50">
@@ -507,7 +507,7 @@ function MissionProgress({ mission }: { mission: MissionView }) {
           <h3 className="text-base font-semibold text-stone-950 dark:text-stone-50">
             Mission Progress
           </h3>
-          <p className="mt-1 text-sm text-stone-500 dark:text-stone-400">
+          <p className="mt-1 text-sm text-stone-600 dark:text-stone-400">
             Progress toward becoming a remote GIS professional.
           </p>
         </div>
@@ -564,7 +564,7 @@ function ProgressBarCard({
           <p className="text-sm font-semibold text-stone-950 dark:text-stone-50">
             {label}
           </p>
-          <p className="mt-1 text-xs text-stone-500 dark:text-stone-400">
+          <p className="mt-1 text-xs text-stone-600 dark:text-stone-400">
             Next milestone: {milestone}
           </p>
         </div>
@@ -603,7 +603,7 @@ function ExecutionQueue({
           <h3 className="text-base font-semibold text-stone-950 dark:text-stone-50">
             Mission Task Queue
           </h3>
-          <p className="mt-1 text-sm text-stone-500 dark:text-stone-400">
+          <p className="mt-1 text-sm text-stone-600 dark:text-stone-400">
             Ordered by mission priority: GIS first, then portfolio, branding,
             English, and training.
           </p>
@@ -621,14 +621,14 @@ function ExecutionQueue({
                 <span className="rounded-md border border-stone-200 bg-white px-2 py-1 text-xs font-semibold text-stone-600 dark:border-stone-700 dark:bg-stone-950 dark:text-stone-300">
                   {task.projectName ?? "Mission"}
                 </span>
-                <span className="text-xs text-stone-500">
+                <span className="text-xs text-stone-600">
                   {formatMinutes(task.estimatedMinutes)}
                 </span>
               </div>
               <p
                 className={`text-sm font-semibold ${
                   task.status === "Done"
-                    ? "text-stone-500 line-through"
+                    ? "text-stone-600 line-through"
                     : "text-stone-950 dark:text-stone-50"
                 }`}
               >
@@ -682,7 +682,7 @@ function FocusMode({
       <div className="rounded-md border border-stone-200 bg-white p-6 shadow-sm dark:border-stone-800 dark:bg-stone-950 sm:p-8">
         <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <p className="text-sm font-semibold uppercase tracking-[0.14em] text-stone-500">
+            <p className="text-sm font-semibold uppercase tracking-[0.14em] text-stone-600">
               Focus Mode
             </p>
             <h2 className="mt-2 text-3xl font-semibold">
@@ -750,7 +750,7 @@ function StatusDot({ status }: { status: string }) {
         ? "bg-amber-500"
         : "bg-stone-400";
 
-  return <span className={`size-2.5 rounded-full ${className}`} />;
+  return <span aria-label={`Status: ${status}`} className={`size-2.5 rounded-full ${className}`} role="status" />;
 }
 
 type MissionView = ReturnType<typeof buildMissionView>;

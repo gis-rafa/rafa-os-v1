@@ -19,10 +19,7 @@ export function AppHeader({ onMenuClick }: { onMenuClick: () => void }) {
           <Menu size={19} strokeWidth={1.8} />
         </button>
         <div className="min-w-0">
-          <p className="text-sm font-medium text-stone-500">RAFA OS</p>
-          <h1 className="truncate text-lg font-semibold text-stone-950">
-            Dashboard
-          </h1>
+          <p className="text-sm font-medium text-stone-600">RAFA OS</p>
         </div>
       </div>
       <div className="flex items-center gap-2">

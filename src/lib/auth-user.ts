@@ -1,6 +1,8 @@
 import { currentUser } from "@clerk/nextjs/server";
 import { eq } from "drizzle-orm";
 import { getDb, users } from "@/db";
+import { isClerkConfigured } from "@/lib/clerk-config";
+import { canUseLocalDatabaseFallback, getLocalDevelopmentUser } from "@/lib/local-dev-user";
 
 export async function requireCurrentDbUser() {
   const clerkUser = await currentUser();
@@ -55,4 +57,16 @@ export async function requireCurrentDbUser() {
     .returning();
 
   return createdUser;
+}
+
+export async function getActionUser() {
+  if (isClerkConfigured()) {
+    return requireCurrentDbUser();
+  }
+
+  if (canUseLocalDatabaseFallback()) {
+    return getLocalDevelopmentUser();
+  }
+
+  throw new Error("Authentication is required.");
 }

@@ -1,12 +1,7 @@
 "use server";
 
 import { getDb, journalEntries, memories } from "@/db";
-import { requireCurrentDbUser } from "@/lib/auth-user";
-import { isClerkConfigured } from "@/lib/clerk-config";
-import {
-  canUseLocalDatabaseFallback,
-  getLocalDevelopmentUser
-} from "@/lib/local-dev-user";
+import { getActionUser } from "@/lib/auth-user";
 import { and, ilike, or, eq, desc } from "drizzle-orm";
 import { loadKnowledgeIndex } from "@/lib/knowledge";
 import path from "path";
@@ -234,14 +229,4 @@ export async function reindexEmbeddingsAction(): Promise<{ indexed: number }> {
 function truncate(text: string, maxLength: number): string {
   if (text.length <= maxLength) return text;
   return text.slice(0, maxLength).replace(/\s+\S*$/, "") + "...";
-}
-
-async function getActionUser() {
-  if (isClerkConfigured()) {
-    return requireCurrentDbUser();
-  }
-  if (canUseLocalDatabaseFallback()) {
-    return getLocalDevelopmentUser();
-  }
-  throw new Error("Authentication is required.");
 }

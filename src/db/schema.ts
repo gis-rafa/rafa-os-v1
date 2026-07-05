@@ -298,6 +298,11 @@ export const contentEmbeddings = pgTable(
       .notNull()
   },
   (table) => [
+    uniqueIndex("content_embeddings_user_content_idx").on(
+      table.userId,
+      table.contentType,
+      table.contentId
+    ),
     index("content_embeddings_user_id_idx").on(table.userId),
     index("content_embeddings_content_type_idx").on(table.contentType),
     index("content_embeddings_content_id_idx").on(table.contentId)
@@ -323,7 +328,10 @@ export const usersRelations = relations(users, ({ many }) => ({
   executionTasks: many(executionTasks),
   projectKnowledgeLinks: many(projectKnowledgeLinks),
   notifications: many(notifications),
-  journalEntries: many(journalEntries)
+  journalEntries: many(journalEntries),
+  contentEmbeddings: many(contentEmbeddings),
+  auditLog: many(auditLog),
+  notificationPreferences: many(notificationPreferences)
 }));
 
 export const conversationsRelations = relations(conversations, ({ many, one }) => ({

@@ -23,7 +23,7 @@ export default async function ReportsPage() {
     <section className="mx-auto max-w-5xl">
       <div className="mb-8 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
         <div>
-          <p className="text-sm font-medium uppercase tracking-[0.14em] text-stone-500">
+          <p className="text-sm font-medium uppercase tracking-[0.14em] text-stone-600">
             Analytics
           </p>
           <h2 className="mt-2 text-3xl font-semibold text-stone-950">
@@ -70,7 +70,7 @@ export default async function ReportsPage() {
             Memories by Category
           </h3>
           {data.memoryStats.byCategory.length === 0 ? (
-            <p className="text-sm text-stone-500">No memories yet.</p>
+            <p className="text-sm text-stone-600">No memories yet.</p>
           ) : (
             <div className="space-y-3">
               {data.memoryStats.byCategory.map((cat) => (
@@ -79,7 +79,7 @@ export default async function ReportsPage() {
                     <span className="font-medium text-stone-700">
                       {cat.category}
                     </span>
-                    <span className="text-stone-500">{cat.count}</span>
+                    <span className="text-stone-600">{cat.count}</span>
                   </div>
                   <div className="h-2 rounded-full bg-stone-100">
                     <div
@@ -101,7 +101,7 @@ export default async function ReportsPage() {
             Projects by Status
           </h3>
           {data.projectStats.byStatus.length === 0 ? (
-            <p className="text-sm text-stone-500">No projects yet.</p>
+            <p className="text-sm text-stone-600">No projects yet.</p>
           ) : (
             <div className="space-y-3">
               {data.projectStats.byStatus.map((s) => (
@@ -110,7 +110,7 @@ export default async function ReportsPage() {
                     <span className="font-medium text-stone-700">
                       {s.status}
                     </span>
-                    <span className="text-stone-500">{s.count}</span>
+                    <span className="text-stone-600">{s.count}</span>
                   </div>
                   <div className="h-2 rounded-full bg-stone-100">
                     <div
@@ -132,7 +132,7 @@ export default async function ReportsPage() {
             Journal Entries per Month
           </h3>
           {data.journalStats.byMonth.length === 0 ? (
-            <p className="text-sm text-stone-500">No journal entries yet.</p>
+            <p className="text-sm text-stone-600">No journal entries yet.</p>
           ) : (
             <div className="space-y-3">
               {data.journalStats.byMonth.map((m) => {
@@ -146,7 +146,7 @@ export default async function ReportsPage() {
                       <span className="font-medium text-stone-700">
                         {monthLabel}
                       </span>
-                      <span className="text-stone-500">{m.count}</span>
+                      <span className="text-stone-600">{m.count}</span>
                     </div>
                     <div className="h-2 rounded-full bg-stone-100">
                       <div
@@ -169,7 +169,7 @@ export default async function ReportsPage() {
             Priority Completion
           </h3>
           {data.priorityStats.total === 0 ? (
-            <p className="text-sm text-stone-500">No priorities yet.</p>
+            <p className="text-sm text-stone-600">No priorities yet.</p>
           ) : (
             <div className="flex flex-col items-center gap-4 py-6">
               <div className="relative flex size-32 items-center justify-center">
@@ -197,7 +197,7 @@ export default async function ReportsPage() {
                   {data.priorityStats.rate}%
                 </span>
               </div>
-              <p className="text-sm text-stone-500">
+              <p className="text-sm text-stone-600">
                 {data.priorityStats.completed} of {data.priorityStats.total}{" "}
                 completed
               </p>
@@ -222,7 +222,7 @@ function StatCard({
 }) {
   return (
     <div className="rounded-md border border-stone-200 bg-white p-5 shadow-sm">
-      <div className="mb-2 flex items-center gap-2 text-stone-500">
+      <div className="mb-2 flex items-center gap-2 text-stone-600">
         <Icon size={16} strokeWidth={1.8} />
         <span className="text-xs font-medium uppercase tracking-[0.1em]">
           {label}
@@ -230,7 +230,7 @@ function StatCard({
       </div>
       <p className="text-2xl font-semibold text-stone-950">{value}</p>
       {subtext ? (
-        <p className="mt-1 text-sm text-stone-500">{subtext}</p>
+        <p className="mt-1 text-sm text-stone-600">{subtext}</p>
       ) : null}
     </div>
   );

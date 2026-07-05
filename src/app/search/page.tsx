@@ -28,7 +28,7 @@ export default async function SearchPage({
     <section className="mx-auto max-w-4xl">
       <div className="mb-6 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
         <div>
-          <p className="text-sm font-medium uppercase tracking-[0.14em] text-stone-500">
+          <p className="text-sm font-medium uppercase tracking-[0.14em] text-stone-600">
             Search
           </p>
           <h2 className="mt-2 text-3xl font-semibold text-stone-950">
@@ -73,7 +73,7 @@ export default async function SearchPage({
           <p className="text-sm font-medium text-stone-700">
             No results found for &ldquo;{query}&rdquo;.
           </p>
-          <p className="mt-2 text-sm text-stone-500">
+          <p className="mt-2 text-sm text-stone-600">
             {isSemantic
               ? "Try keyword search instead, or ensure embeddings have been generated."
               : "Try different keywords or browse from the sidebar."}
@@ -83,7 +83,7 @@ export default async function SearchPage({
 
       {results.length > 0 ? (
         <div className="grid gap-3">
-          <p className="text-sm text-stone-500">
+          <p className="text-sm text-stone-600">
             {results.length} result{results.length !== 1 ? "s" : ""} for
             &ldquo;{query}&rdquo;
             {isSemantic ? " (semantic)" : ""}
@@ -169,7 +169,7 @@ function ResultCard({
             <h3 className="text-base font-semibold text-stone-950">
               {result.title}
             </h3>
-            <p className="mt-1 text-sm leading-6 text-stone-500">
+            <p className="mt-1 text-sm leading-6 text-stone-600">
               {result.excerpt || result.title}
             </p>
           </div>

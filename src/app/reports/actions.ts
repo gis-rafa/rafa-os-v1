@@ -1,9 +1,7 @@
 "use server";
 
 import { getDb, journalEntries, memories, executionTasks, executionProjects, executionPriorities } from "@/db";
-import { requireCurrentDbUser } from "@/lib/auth-user";
-import { isClerkConfigured } from "@/lib/clerk-config";
-import { canUseLocalDatabaseFallback, getLocalDevelopmentUser } from "@/lib/local-dev-user";
+import { getActionUser } from "@/lib/auth-user";
 import { eq, sql, desc } from "drizzle-orm";
 
 export type ReportData = {
@@ -96,10 +94,4 @@ export async function getReportDataAction(): Promise<ReportData> {
       rate: priorityStats.total > 0 ? Math.round((priorityStats.completed / priorityStats.total) * 100) : 0
     }
   };
-}
-
-async function getActionUser() {
-  if (isClerkConfigured()) return requireCurrentDbUser();
-  if (canUseLocalDatabaseFallback()) return getLocalDevelopmentUser();
-  throw new Error("Authentication is required.");
 }
