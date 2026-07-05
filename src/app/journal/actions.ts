@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { getActionUser } from "@/lib/auth-user";
+import { truncateInput } from "@/lib/dashboard-utils";
 import {
   createJournalEntry,
   deleteJournalEntry,
@@ -13,6 +14,10 @@ import {
 export async function createJournalEntryAction(formData: FormData) {
   const user = await getActionUser();
   const values = parseJournalForm(formData);
+
+  if (!values.title || !values.content) {
+    redirect("/journal");
+  }
 
   const entry = await createJournalEntry(user.id, values);
 
@@ -26,6 +31,10 @@ export async function updateJournalEntryAction(formData: FormData) {
   const values = parseJournalForm(formData);
 
   if (!id) {
+    redirect("/journal");
+  }
+
+  if (!values.title || !values.content) {
     redirect("/journal");
   }
 
@@ -50,17 +59,13 @@ export async function deleteJournalEntryAction(formData: FormData) {
 }
 
 function parseJournalForm(formData: FormData) {
-  const title = String(formData.get("title") ?? "").trim();
-  const content = String(formData.get("content") ?? "").trim();
-  const mood = String(formData.get("mood") ?? "").trim();
+  const title = truncateInput(String(formData.get("title") ?? "").trim(), 200);
+  const content = truncateInput(String(formData.get("content") ?? "").trim(), 50000);
+  const mood = truncateInput(String(formData.get("mood") ?? "").trim(), 100);
   const tags = String(formData.get("tags") ?? "")
     .split(",")
     .map((tag) => tag.trim())
     .filter(Boolean);
-
-  if (!title || !content) {
-    throw new Error("Title and content are required.");
-  }
 
   return {
     title,

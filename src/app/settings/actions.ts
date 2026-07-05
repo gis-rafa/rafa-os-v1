@@ -2,6 +2,7 @@
 
 import { eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 import { getDb, users } from "@/db";
 import { getActionUser } from "@/lib/auth-user";
 import { updateNotificationPreferences } from "@/lib/notification-preferences";
@@ -12,7 +13,7 @@ export async function updateProfileAction(formData: FormData) {
   const email = String(formData.get("email") ?? "").trim();
 
   if (!name || !email) {
-    throw new Error("Name and email are required.");
+    redirect("/settings");
   }
 
   await getDb()

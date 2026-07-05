@@ -5,11 +5,12 @@ import { redirect } from "next/navigation";
 import { and, count, desc, eq } from "drizzle-orm";
 import { getDb, inboxEntries } from "@/db";
 import { getActionUser } from "@/lib/auth-user";
+import { truncateInput } from "@/lib/dashboard-utils";
 import { createNotification } from "@/app/notifications/actions";
 
 export async function saveInboxEntryAction(formData: FormData) {
   const user = await getActionUser();
-  const entry = String(formData.get("entry") ?? "").trim();
+  const entry = truncateInput(String(formData.get("entry") ?? "").trim(), 10000);
 
   if (!entry) {
     redirect("/inbox");
