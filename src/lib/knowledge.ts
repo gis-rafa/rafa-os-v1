@@ -1,3 +1,4 @@
+import { cache } from "react";
 import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { dataRoot } from "@/lib/paths";
@@ -124,11 +125,11 @@ const tagKeywords: Record<string, string[]> = {
   ]
 };
 
-export async function loadKnowledgeIndex(): Promise<KnowledgeIndex> {
+export const loadKnowledgeIndex = cache(async function loadKnowledgeIndex(): Promise<KnowledgeIndex> {
   const rawIndex = await readFile(indexPath, "utf8");
 
   return JSON.parse(rawIndex.replace(/^\uFEFF/, "")) as KnowledgeIndex;
-}
+});
 
 export async function getKnowledgeLibrary(): Promise<KnowledgeLibrary> {
   const index = await loadKnowledgeIndex();

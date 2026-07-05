@@ -1,3 +1,4 @@
+import { cache } from "react";
 import { eq } from "drizzle-orm";
 import { getDb, users } from "@/db";
 import { isClerkConfigured } from "@/lib/clerk-config";
@@ -12,7 +13,7 @@ export function canUseLocalDatabaseFallback() {
   );
 }
 
-export async function getLocalDevelopmentUser() {
+export const getLocalDevelopmentUser = cache(async function getLocalDevelopmentUser() {
   const db = getDb();
   const [existingUser] = await db
     .select()
@@ -34,4 +35,4 @@ export async function getLocalDevelopmentUser() {
     .returning();
 
   return createdUser;
-}
+});
