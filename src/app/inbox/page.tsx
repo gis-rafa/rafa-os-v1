@@ -1,25 +1,37 @@
-import { Inbox, Save } from "lucide-react";
-import { saveInboxEntryAction } from "@/app/inbox/actions";
+import { Inbox, Save, Trash2 } from "lucide-react";
+import {
+  saveInboxEntryAction,
+  deleteInboxEntryAction,
+  getInboxEntriesAction
+} from "@/app/inbox/actions";
+
 
 export const dynamic = "force-dynamic";
 
-export default function InboxPage() {
+export default async function InboxPage() {
+  const entries = await getInboxEntriesAction();
+
   return (
     <section className="mx-auto max-w-4xl">
-      <div className="mb-6">
-        <p className="text-sm font-medium uppercase tracking-[0.14em] text-stone-500">
-          Quick Capture
-        </p>
-        <h2 className="mt-2 text-3xl font-semibold text-stone-950">Inbox</h2>
-        <p className="mt-3 max-w-2xl text-base leading-7 text-stone-600">
-          Dump thoughts, ideas, problems, or goals here as timestamped Markdown
-          notes.
-        </p>
+      <div className="mb-6 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
+        <div>
+          <p className="text-sm font-medium uppercase tracking-[0.14em] text-stone-500">
+            Quick Capture
+          </p>
+          <h2 className="mt-2 text-3xl font-semibold text-stone-950">Inbox</h2>
+          <p className="mt-3 max-w-2xl text-base leading-7 text-stone-600">
+            Dump thoughts, ideas, problems, or goals here as timestamped
+            Markdown notes.
+          </p>
+        </div>
+        <div className="flex size-12 shrink-0 items-center justify-center rounded-md bg-stone-950 text-white">
+          <Inbox size={22} strokeWidth={1.8} />
+        </div>
       </div>
 
       <form
         action={saveInboxEntryAction}
-        className="rounded-md border border-stone-200 bg-white p-5 shadow-sm"
+        className="mb-8 rounded-md border border-stone-200 bg-white p-5 shadow-sm"
       >
         <div className="mb-4 flex items-center gap-3">
           <div className="flex size-10 items-center justify-center rounded-md bg-stone-100 text-stone-700">
@@ -56,7 +68,81 @@ export default function InboxPage() {
           </button>
         </div>
       </form>
+
+      {entries.length > 0 ? (
+        <div className="grid gap-3">
+          <p className="text-sm font-medium text-stone-500">
+            {entries.length} saved note{entries.length !== 1 ? "s" : ""}
+          </p>
+          {entries.map((entry) => (
+            <article
+              className="rounded-md border border-stone-200 bg-white p-5 shadow-sm"
+              key={entry.fileName}
+            >
+              <div className="flex items-start justify-between gap-4">
+                <div className="min-w-0">
+                  <p className="text-xs text-stone-500">
+                    {formatTimestamp(entry.timestamp)}
+                  </p>
+                  <div className="prose prose-sm mt-3 max-w-none text-stone-700">
+                    {renderEntryContent(entry.content)}
+                  </div>
+                </div>
+                <form action={deleteInboxEntryAction}>
+                  <input
+                    name="fileName"
+                    type="hidden"
+                    value={entry.fileName}
+                  />
+                  <button
+                    aria-label="Delete entry"
+                    className="inline-flex size-9 shrink-0 items-center justify-center rounded-md border border-stone-200 text-red-600 transition hover:bg-red-50"
+                    type="submit"
+                  >
+                    <Trash2 size={16} strokeWidth={1.8} />
+                  </button>
+                </form>
+              </div>
+            </article>
+          ))}
+        </div>
+      ) : (
+        <div className="rounded-md border border-dashed border-stone-300 bg-white p-8 text-center">
+          <p className="text-sm font-medium text-stone-700">
+            No inbox notes yet.
+          </p>
+          <p className="mt-2 text-sm text-stone-500">
+            Capture your first thought above.
+          </p>
+        </div>
+      )}
     </section>
   );
 }
 
+function formatTimestamp(isoString: string) {
+  try {
+    const date = new Date(isoString);
+    return date.toLocaleDateString("en", {
+      day: "numeric",
+      month: "short",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit"
+    });
+  } catch {
+    return isoString;
+  }
+}
+
+function renderEntryContent(content: string) {
+  const body = content.replace(/^# Inbox Note\n\n## Timestamp\n.*\n\n## Entry\n/, "");
+  const lines = body.split("\n").filter(Boolean);
+  return (
+    <div>
+      {lines.map((line, i) => (
+        <p key={i}>{line}</p>
+      ))}
+    </div>
+  );
+}
