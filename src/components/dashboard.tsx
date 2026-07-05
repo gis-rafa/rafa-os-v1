@@ -32,6 +32,8 @@ export function Dashboard({
   );
 
   function updateTask(taskId: string, status: "In Progress" | "Done") {
+    const previousData = dashboardData;
+
     setDashboardData((current) => {
       const tasks = current.todaysTasks.map((task) =>
         task.id === taskId ? { ...task, status } : task
@@ -47,11 +49,15 @@ export function Dashboard({
     });
 
     startTransition(async () => {
-      const formData = new FormData();
-      formData.set("taskId", taskId);
-      formData.set("status", status);
-      await updateExecutionTaskStatusAction(formData);
-      router.refresh();
+      try {
+        const formData = new FormData();
+        formData.set("taskId", taskId);
+        formData.set("status", status);
+        await updateExecutionTaskStatusAction(formData);
+        router.refresh();
+      } catch {
+        setDashboardData(previousData);
+      }
     });
   }
 

@@ -1,4 +1,4 @@
-import { and, eq, gte, lt } from "drizzle-orm";
+import { and, eq, gte, lt, sql } from "drizzle-orm";
 import {
   executionPriorities,
   executionProjects,
@@ -22,6 +22,16 @@ type ProjectSeed = {
 };
 
 export async function seedDevelopmentWorkspace(userId: string) {
+  const db = getDb();
+  const [existingProjects] = await db
+    .select({ count: sql<number>`count(*)` })
+    .from(executionProjects)
+    .where(eq(executionProjects.userId, userId));
+
+  if (Number(existingProjects?.count ?? 0) > 0) {
+    return;
+  }
+
   const today = startOfDay(new Date());
   const tomorrow = addDays(today, 1);
   const gisStudyProject = await ensureProject(userId, {
