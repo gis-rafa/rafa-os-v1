@@ -32,12 +32,6 @@ export type StudyPlanSummary = {
   totalCount: number;
 };
 
-const canonicalSourcePath = path.join(
-  dataRoot,
-  "import",
-  "URUGUAY_AGRICULTURAL_GIS_EXECUTION_PLAN.md"
-);
-
 const executionPlanFolder = path.join(
   dataRoot,
   "02-knowledge",
@@ -128,17 +122,6 @@ export async function updateStudyTaskStatus({
     });
 }
 
-export async function readRoadmapStartDate() {
-  const source = await readFile(canonicalSourcePath, "utf8");
-  const match = source.match(/\*\*Current date:\*\*\s+(\d{4}-\d{2}-\d{2})/);
-
-  if (!match) {
-    return new Date();
-  }
-
-  return parseDateOnly(match[1]);
-}
-
 export async function readRoadmapTasks() {
   const files = await Promise.all(
     executionFiles.map(async (file) =>
@@ -199,10 +182,4 @@ function phaseForDay(day: number) {
   }
 
   return "90-Day Review";
-}
-
-function parseDateOnly(value: string) {
-  const [year, month, day] = value.split("-").map(Number);
-
-  return new Date(year, month - 1, day);
 }

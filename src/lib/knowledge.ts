@@ -131,7 +131,7 @@ export const loadKnowledgeIndex = cache(async function loadKnowledgeIndex(): Pro
   return JSON.parse(rawIndex.replace(/^\uFEFF/, "")) as KnowledgeIndex;
 });
 
-export async function getKnowledgeLibrary(): Promise<KnowledgeLibrary> {
+async function getKnowledgeLibrary(): Promise<KnowledgeLibrary> {
   const index = await loadKnowledgeIndex();
   const filesByTag = Object.fromEntries(
     index.tags.map((tag) => [
