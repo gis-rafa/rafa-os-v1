@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { Save, Send } from "lucide-react";
+import { Send } from "lucide-react";
 import {
   buildChatPromptAction,
   saveAssistantMemoryAction,

@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 import { updateExecutionTaskStatusAction } from "@/app/dashboard/actions";
 import type { ExecutionDashboardData } from "@/lib/execution-dashboard";
 import { buildMissionView } from "@/lib/dashboard-utils";
-import type { MissionView } from "@/lib/dashboard-utils";
 import { DashboardHeader } from "@/components/dashboard/dashboard-header";
 import { TodaysMission } from "@/components/dashboard/todays-mission";
 import { MorningBrief } from "@/components/dashboard/morning-brief";
@@ -16,7 +15,6 @@ import { MissionProgress } from "@/components/dashboard/mission-progress";
 import { MissionScore } from "@/components/dashboard/mission-score";
 import { ExecutionQueue } from "@/components/dashboard/execution-queue";
 import { FocusMode } from "@/components/dashboard/focus-mode";
-import type {} from "@/lib/dashboard-utils";
 
 export function Dashboard({
   data,
