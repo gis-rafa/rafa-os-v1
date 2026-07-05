@@ -1,5 +1,5 @@
-import { Search, FileText, Brain, BookOpen } from "lucide-react";
-import { globalSearchAction } from "@/app/search/actions";
+import { Search, FileText, Brain, BookOpen, Sparkles, AlignLeft } from "lucide-react";
+import { globalSearchAction, semanticSearchAction } from "@/app/search/actions";
 import Link from "next/link";
 import type { Metadata } from "next";
 
@@ -13,11 +13,16 @@ export const dynamic = "force-dynamic";
 export default async function SearchPage({
   searchParams
 }: {
-  searchParams: Promise<{ q?: string }>;
+  searchParams: Promise<{ q?: string; mode?: string }>;
 }) {
-  const { q } = await searchParams;
+  const { q, mode } = await searchParams;
   const query = q ?? "";
-  const results = query ? await globalSearchAction(query) : [];
+  const isSemantic = mode === "semantic";
+  const results = query
+    ? isSemantic
+      ? await semanticSearchAction(query)
+      : await globalSearchAction(query)
+    : [];
 
   return (
     <section className="mx-auto max-w-4xl">
@@ -30,7 +35,9 @@ export default async function SearchPage({
             Global Search
           </h2>
           <p className="mt-3 max-w-2xl text-base leading-7 text-stone-600">
-            Search across memories, journal entries, and knowledge files.
+            {isSemantic
+              ? "Semantic search finds conceptually related results using vector embeddings."
+              : "Search across memories, journal entries, and knowledge files."}
           </p>
         </div>
         <div className="flex size-12 shrink-0 items-center justify-center rounded-md bg-stone-950 text-white">
@@ -47,6 +54,7 @@ export default async function SearchPage({
             placeholder="Search memories, journal entries, knowledge..."
             type="search"
           />
+          <input name="mode" type="hidden" value={isSemantic ? "semantic" : "keyword"} />
           <button
             className="inline-flex h-12 shrink-0 items-center gap-2 rounded-md bg-stone-950 px-5 text-sm font-medium text-white transition hover:bg-stone-800"
             type="submit"
@@ -54,6 +62,9 @@ export default async function SearchPage({
             <Search size={16} strokeWidth={1.8} />
             Search
           </button>
+        </div>
+        <div className="mt-3 flex items-center gap-4">
+          <ModeToggle current={isSemantic ? "semantic" : "keyword"} query={query} />
         </div>
       </form>
 
@@ -63,7 +74,9 @@ export default async function SearchPage({
             No results found for &ldquo;{query}&rdquo;.
           </p>
           <p className="mt-2 text-sm text-stone-500">
-            Try different keywords or browse from the sidebar.
+            {isSemantic
+              ? "Try keyword search instead, or ensure embeddings have been generated."
+              : "Try different keywords or browse from the sidebar."}
           </p>
         </div>
       ) : null}
@@ -73,13 +86,52 @@ export default async function SearchPage({
           <p className="text-sm text-stone-500">
             {results.length} result{results.length !== 1 ? "s" : ""} for
             &ldquo;{query}&rdquo;
+            {isSemantic ? " (semantic)" : ""}
           </p>
-          {results.map((result) => (
-            <ResultCard key={`${result.type}-${result.id}`} result={result} />
+          {results.map((result, i) => (
+            <ResultCard
+              key={`${result.type}-${result.id}-${i}`}
+              result={result}
+            />
           ))}
         </div>
       ) : null}
     </section>
+  );
+}
+
+function ModeToggle({
+  current,
+  query
+}: {
+  current: "keyword" | "semantic";
+  query: string;
+}) {
+  return (
+    <div className="inline-flex rounded-md border border-stone-200 bg-white p-0.5">
+      <Link
+        className={`inline-flex items-center gap-1.5 rounded px-3 py-1.5 text-xs font-medium transition ${
+          current === "keyword"
+            ? "bg-stone-950 text-white"
+            : "text-stone-600 hover:text-stone-950"
+        }`}
+        href={`/search?q=${encodeURIComponent(query)}&mode=keyword`}
+      >
+        <AlignLeft size={13} strokeWidth={1.8} />
+        Keyword
+      </Link>
+      <Link
+        className={`inline-flex items-center gap-1.5 rounded px-3 py-1.5 text-xs font-medium transition ${
+          current === "semantic"
+            ? "bg-stone-950 text-white"
+            : "text-stone-600 hover:text-stone-950"
+        }`}
+        href={`/search?q=${encodeURIComponent(query)}&mode=semantic`}
+      >
+        <Sparkles size={13} strokeWidth={1.8} />
+        Semantic
+      </Link>
+    </div>
   );
 }
 

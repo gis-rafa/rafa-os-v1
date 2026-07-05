@@ -1,5 +1,6 @@
 import { relations, sql } from "drizzle-orm";
 import {
+  customType,
   index,
   jsonb,
   pgTable,
@@ -9,6 +10,12 @@ import {
   uniqueIndex,
   uuid
 } from "drizzle-orm/pg-core";
+
+const vectorType = customType<{ data: number[]; driverData: string }>({
+  dataType: () => "vector(1536)",
+  toDriver: (value: number[]) => `[${value.join(",")}]`,
+  fromDriver: (value: string) => JSON.parse(value)
+});
 
 export const users = pgTable(
   "users",
@@ -273,6 +280,40 @@ export const notifications = pgTable(
   ]
 );
 
+export const contentEmbeddings = pgTable(
+  "content_embeddings",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    contentType: text("content_type").notNull(),
+    contentId: text("content_id").notNull(),
+    embedding: vectorType("embedding").notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .defaultNow()
+      .notNull(),
+    updatedAt: timestamp("updated_at", { withTimezone: true })
+      .defaultNow()
+      .notNull()
+  },
+  (table) => [
+    index("content_embeddings_user_id_idx").on(table.userId),
+    index("content_embeddings_content_type_idx").on(table.contentType),
+    index("content_embeddings_content_id_idx").on(table.contentId)
+  ]
+);
+
+export const contentEmbeddingsRelations = relations(
+  contentEmbeddings,
+  ({ one }) => ({
+    user: one(users, {
+      fields: [contentEmbeddings.userId],
+      references: [users.id]
+    })
+  })
+);
+
 export const usersRelations = relations(users, ({ many }) => ({
   conversations: many(conversations),
   memories: many(memories),
@@ -507,3 +548,5 @@ export type AuditLog = typeof auditLog.$inferSelect;
 export type NewAuditLog = typeof auditLog.$inferInsert;
 export type NotificationPreference = typeof notificationPreferences.$inferSelect;
 export type NewNotificationPreference = typeof notificationPreferences.$inferInsert;
+export type ContentEmbedding = typeof contentEmbeddings.$inferSelect;
+export type NewContentEmbedding = typeof contentEmbeddings.$inferInsert;
