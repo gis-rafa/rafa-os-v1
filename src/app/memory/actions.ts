@@ -5,6 +5,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { getDb, memories } from "@/db";
 import { getActionUser } from "@/lib/auth-user";
+import { createNotification } from "@/app/notifications/actions";
 
 export async function createMemoryAction(formData: FormData) {
   const user = await getActionUser();
@@ -13,6 +14,12 @@ export async function createMemoryAction(formData: FormData) {
   await getDb().insert(memories).values({
     userId: user.id,
     ...values
+  });
+
+  await createNotification(user.id, {
+    type: "success",
+    title: "Memory Saved",
+    message: `"${values.title}" has been saved to your memory.`
   });
 
   revalidatePath("/memory");

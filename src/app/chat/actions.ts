@@ -8,6 +8,7 @@ import {
   suggestMemoryFromConversation,
   type MemorySuggestion
 } from "@/lib/memories";
+import { createNotification } from "@/app/notifications/actions";
 
 export async function buildChatPromptAction(userMessage: string) {
   const user = await getActionUser();
@@ -40,6 +41,12 @@ export async function saveAssistantMemoryAction(formData: FormData) {
     content,
     tags,
     importance
+  });
+
+  await createNotification(user.id, {
+    type: "success",
+    title: "Memory Saved",
+    message: `"${title}" saved from conversation.`
   });
 
   revalidatePath("/memory");
@@ -95,6 +102,13 @@ export async function saveMemorySuggestionAction(formData: FormData) {
   }
 
   await saveMemorySuggestion(user.id, suggestion);
+
+  await createNotification(user.id, {
+    type: "success",
+    title: "Memory Saved",
+    message: `"${suggestion.title}" has been saved.`
+  });
+
   revalidatePath("/memory");
 
   return {

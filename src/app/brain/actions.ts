@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { saveMasterBrainDocument } from "@/lib/master-brain";
 import { getActionUser } from "@/lib/auth-user";
+import { createNotification } from "@/app/notifications/actions";
 
 export async function saveMasterBrainAction(formData: FormData) {
   const user = await getActionUser();
@@ -17,6 +18,12 @@ export async function saveMasterBrainAction(formData: FormData) {
       title,
       content: contents[index] ?? "TODO"
     }))
+  });
+
+  await createNotification(user.id, {
+    type: "success",
+    title: "Master Brain Updated",
+    message: `"${documentTitle}" has been saved.`
   });
 
   revalidatePath("/");

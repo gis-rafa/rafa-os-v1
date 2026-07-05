@@ -15,11 +15,18 @@ import {
 } from "@/lib/projects";
 import { createExecutionTask } from "@/lib/execution-dashboard";
 import { getActionUser } from "@/lib/auth-user";
+import { createNotification } from "@/app/notifications/actions";
 
 export async function createProjectAction(formData: FormData) {
   const user = await getActionUser();
 
   await createProject(user.id, parseProjectForm(formData));
+
+  await createNotification(user.id, {
+    type: "success",
+    title: "Project Created",
+    message: `"${formData.get("name")}" has been created.`
+  });
 
   revalidatePath("/projects");
   revalidatePath("/dashboard");
@@ -40,6 +47,13 @@ export async function updateProjectAction(formData: FormData) {
     values: parseProjectForm(formData)
   });
 
+  const name = String(formData.get("name") ?? "").trim() || "Project";
+  await createNotification(user.id, {
+    type: "info",
+    title: "Project Updated",
+    message: `"${name}" has been updated.`
+  });
+
   revalidatePath("/projects");
   revalidatePath("/dashboard");
   redirect("/projects");
@@ -54,6 +68,12 @@ export async function archiveProjectAction(formData: FormData) {
   }
 
   await archiveProject(id, user.id);
+
+  await createNotification(user.id, {
+    type: "warning",
+    title: "Project Archived",
+    message: "The project has been archived."
+  });
 
   revalidatePath("/projects");
   revalidatePath("/dashboard");
