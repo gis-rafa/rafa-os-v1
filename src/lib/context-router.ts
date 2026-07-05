@@ -302,13 +302,13 @@ async function loadContext(key: ContextKey, userMessage: string, userId: string)
         .join("\n");
     }
     case "Knowledge Index":
-      return getKnowledgeIndexSummary();
+      return getKnowledgeIndexSummary(userId);
     case "Inbox":
       return listInboxEntriesForContext(userId);
     case "Projects":
       return listProjectsForContext(userId);
     case "Knowledge":
-      return readRelevantKnowledge(userMessage);
+      return readRelevantKnowledge(userId, userMessage);
     case "Memory":
       return readRelevantMemories(userId, userMessage);
   }
@@ -339,8 +339,8 @@ async function readRelevantMemories(userId: string, userMessage: string) {
   ].join("\n\n");
 }
 
-async function readRelevantKnowledge(userMessage: string) {
-  const selected = await selectKnowledgeForMessage(userMessage);
+async function readRelevantKnowledge(userId: string, userMessage: string) {
+  const selected = await selectKnowledgeForMessage(userId, userMessage);
 
   if (selected.files.length === 0) {
     return "";

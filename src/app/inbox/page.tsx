@@ -47,7 +47,7 @@ export default async function InboxPage() {
               New Inbox Note
             </h3>
             <p className="mt-1 text-sm text-stone-600">
-              Saved to memory/inbox as Markdown.
+              Capture thoughts, ideas, and quick notes.
             </p>
           </div>
         </div>
@@ -82,22 +82,22 @@ export default async function InboxPage() {
           {entries.map((entry) => (
             <article
               className="rounded-md border border-stone-200 bg-white p-5 shadow-sm"
-              key={entry.fileName}
+              key={entry.id}
             >
               <div className="flex items-start justify-between gap-4">
                 <div className="min-w-0">
                   <p className="text-xs text-stone-600">
-                    {formatTimestamp(entry.timestamp)}
+                    {formatTimestamp(entry.createdAt.toISOString())}
                   </p>
                   <div className="prose prose-sm mt-3 max-w-none text-stone-700">
-                    {renderEntryContent(entry.content)}
+                    <p>{entry.content}</p>
                   </div>
                 </div>
                 <form action={deleteInboxEntryAction}>
                   <input
-                    name="fileName"
+                    name="entryId"
                     type="hidden"
-                    value={entry.fileName}
+                    value={entry.id}
                   />
                   <button
                     aria-label="Delete entry"
@@ -138,16 +138,4 @@ function formatTimestamp(isoString: string) {
   } catch {
     return isoString;
   }
-}
-
-function renderEntryContent(content: string) {
-  const body = content.replace(/^# Inbox Note\n\n## Timestamp\n.*\n\n## Entry\n/, "");
-  const lines = body.split("\n").filter(Boolean);
-  return (
-    <div>
-      {lines.map((line, i) => (
-        <p key={i}>{line}</p>
-      ))}
-    </div>
-  );
 }

@@ -1,73 +1,61 @@
 "use server";
 
-import { mkdir, writeFile, readdir, readFile, unlink } from "node:fs/promises";
-import path from "node:path";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { dataRoot } from "@/lib/paths";
-
-const inboxPath = path.join(dataRoot, "memory", "inbox");
+import { and, desc, eq } from "drizzle-orm";
+import { getDb, inboxEntries } from "@/db";
+import { getActionUser } from "@/lib/auth-user";
 
 export async function saveInboxEntryAction(formData: FormData) {
+  const user = await getActionUser();
   const entry = String(formData.get("entry") ?? "").trim();
 
   if (!entry) {
     redirect("/inbox");
   }
 
-  const timestamp = new Date();
-  const isoTimestamp = timestamp.toISOString();
-  const filenameTimestamp = isoTimestamp.replace(/[:.]/g, "-");
-  const filePath = path.join(inboxPath, `${filenameTimestamp}.md`);
-  const markdown = `# Inbox Note\n\n## Timestamp\n${isoTimestamp}\n\n## Entry\n${entry}\n`;
-
-  await mkdir(inboxPath, { recursive: true });
-  await writeFile(filePath, markdown, "utf8");
+  await getDb().insert(inboxEntries).values({
+    userId: user.id,
+    content: entry
+  });
 
   revalidatePath("/inbox");
   redirect("/inbox");
 }
 
 export async function deleteInboxEntryAction(formData: FormData) {
-  const fileName = String(formData.get("fileName") ?? "").trim();
+  const user = await getActionUser();
+  const entryId = String(formData.get("entryId") ?? "").trim();
 
-  if (!fileName) {
+  if (!entryId) {
     return;
   }
 
-  const filePath = path.join(inboxPath, fileName);
-  await unlink(filePath).catch(() => {});
+  await getDb()
+    .delete(inboxEntries)
+    .where(
+      and(
+        eq(inboxEntries.id, entryId),
+        eq(inboxEntries.userId, user.id)
+      )
+    );
 
   revalidatePath("/inbox");
 }
 
 export type InboxEntry = {
-  fileName: string;
-  timestamp: string;
+  id: string;
   content: string;
+  createdAt: Date;
 };
 
-export async function getInboxEntriesAction(): Promise<InboxEntry[]> {
-  await mkdir(inboxPath, { recursive: true });
-
-  const files = await readdir(inboxPath);
-  const mdFiles = files
-    .filter((f) => f.endsWith(".md"))
-    .sort()
-    .reverse();
-
-  const entries: InboxEntry[] = [];
-
-  for (const fileName of mdFiles) {
-    try {
-      const content = await readFile(path.join(inboxPath, fileName), "utf8");
-      const timestampMatch = content.match(/## Timestamp\n(.+)/);
-      const timestamp = timestampMatch?.[1] ?? fileName.replace(/\.md$/, "");
-      entries.push({ fileName, timestamp, content });
-    } catch {
-      entries.push({ fileName, timestamp: fileName.replace(/\.md$/, ""), content: "" });
-    }
-  }
+export async function getInboxEntriesAction() {
+  const user = await getActionUser();
+  const entries = await getDb()
+    .select()
+    .from(inboxEntries)
+    .where(eq(inboxEntries.userId, user.id))
+    .orderBy(desc(inboxEntries.createdAt));
 
   return entries;
 }

@@ -1,7 +1,6 @@
 import { cache } from "react";
-import { readFile } from "node:fs/promises";
-import path from "node:path";
-import { dataRoot } from "@/lib/paths";
+import { eq } from "drizzle-orm";
+import { getDb, documents } from "@/db";
 
 export type KnowledgeFile = {
   title: string;
@@ -40,126 +39,102 @@ export type SelectedKnowledge = {
   files: (KnowledgeFile & { content: string })[];
 };
 
-const knowledgeRoot = path.join(dataRoot, "02-knowledge");
-const indexPath = path.join(knowledgeRoot, "knowledge-index.json");
-
 const tagKeywords: Record<string, string[]> = {
   GIS: [
-    "gis",
-    "qgis",
-    "remote sensing",
-    "ndvi",
-    "soil",
-    "soil mapping",
-    "coneat",
-    "land suitability",
-    "agriculture",
-    "agricultural",
-    "uruguay",
-    "google earth engine",
-    "gee",
-    "map",
-    "mapping"
+    "gis", "qgis", "remote sensing", "ndvi", "soil", "soil mapping",
+    "coneat", "land suitability", "agriculture", "agricultural",
+    "uruguay", "google earth engine", "gee", "map", "mapping"
   ],
   Portfolio: [
-    "portfolio",
-    "case study",
-    "case studies",
-    "deliverable",
-    "github",
-    "website",
-    "project sequence"
+    "portfolio", "case study", "case studies", "deliverable",
+    "github", "website", "project sequence"
   ],
   Masters: [
-    "master",
-    "masters",
-    "maestria",
-    "admission",
-    "fagro",
-    "udelar",
-    "advisor",
-    "thesis",
-    "academic",
-    "application"
+    "master", "masters", "maestria", "admission", "fagro",
+    "udelar", "advisor", "thesis", "academic", "application"
   ],
   Freelancing: [
-    "freelance",
-    "freelancing",
-    "upwork",
-    "proposal",
-    "client",
-    "income",
-    "service package",
-    "outreach",
-    "$1,000",
-    "remote job"
+    "freelance", "freelancing", "upwork", "proposal", "client",
+    "income", "service package", "outreach", "$1,000", "remote job"
   ],
   Spanish: ["spanish", "b1", "b2", "language", "fluency"],
   Branding: [
-    "branding",
-    "brand",
-    "linkedin",
-    "profile",
-    "headline",
-    "positioning",
-    "platform"
+    "branding", "brand", "linkedin", "profile", "headline",
+    "positioning", "platform"
   ],
   Resources: [
-    "resource",
-    "resources",
-    "links",
-    "source",
-    "data source",
-    "official",
-    "course"
+    "resource", "resources", "links", "source", "data source",
+    "official", "course"
   ],
   Career: [
-    "career",
-    "job",
-    "role",
-    "title",
-    "position",
-    "remote",
-    "salary",
-    "income"
+    "career", "job", "role", "title", "position", "remote",
+    "salary", "income"
   ]
 };
 
-export const loadKnowledgeIndex = cache(async function loadKnowledgeIndex(): Promise<KnowledgeIndex> {
-  const rawIndex = await readFile(indexPath, "utf8");
+const KNOWLEDGE_INDEX_KEY = "knowledge-index";
+const KNOWLEDGE_FILE_PREFIX = "knowledge-file:";
 
-  return JSON.parse(rawIndex.replace(/^\uFEFF/, "")) as KnowledgeIndex;
+async function getDocumentContent(userId: string, key: string): Promise<string | null> {
+  const db = getDb();
+  const [row] = await db
+    .select()
+    .from(documents)
+    .where(eq(documents.key, key))
+    .limit(1);
+  return row?.content ?? null;
+}
+
+export const loadKnowledgeIndex = cache(async function loadKnowledgeIndex(
+  _userId?: string
+): Promise<KnowledgeIndex> {
+  const userId = _userId ?? "seed";
+  const content = await getDocumentContent(userId, KNOWLEDGE_INDEX_KEY);
+  if (!content) {
+    return {
+      version: 1,
+      canonicalSource: "",
+      duplicateSources: [],
+      duplicateSections: [],
+      tags: [],
+      topics: {},
+      files: []
+    };
+  }
+  return JSON.parse(content) as KnowledgeIndex;
 });
 
-async function getKnowledgeLibrary(): Promise<KnowledgeLibrary> {
-  const index = await loadKnowledgeIndex();
+async function getKnowledgeLibrary(userId: string): Promise<KnowledgeLibrary> {
+  const index = await loadKnowledgeIndex(userId);
   const filesByTag = Object.fromEntries(
     index.tags.map((tag) => [
       tag,
       index.files.filter((file) => file.tags.includes(tag))
     ])
   );
-
   return { ...index, filesByTag };
 }
 
-export async function getKnowledgeLibraryWithContent(): Promise<KnowledgeLibraryWithContent> {
-  const library = await getKnowledgeLibrary();
+async function getKnowledgeFileContent(userId: string, fileKey: string): Promise<string> {
+  const content = await getDocumentContent(userId, `${KNOWLEDGE_FILE_PREFIX}${fileKey}`);
+  return content ?? "";
+}
+
+export async function getKnowledgeLibraryWithContent(userId: string): Promise<KnowledgeLibraryWithContent> {
+  const library = await getKnowledgeLibrary(userId);
   const files = await Promise.all(
     library.files.map(async (file) => ({
       ...file,
-      content: await readFile(path.join(knowledgeRoot, file.file), "utf8")
+      content: await getKnowledgeFileContent(userId, file.file)
     }))
   );
-
   return { ...library, files };
 }
 
-export async function getKnowledgeIndexSummary(): Promise<string> {
-  const index = await loadKnowledgeIndex();
+export async function getKnowledgeIndexSummary(userId: string): Promise<string> {
+  const index = await loadKnowledgeIndex(userId);
   const topicLines = index.tags.map((tag) => {
     const files = index.topics[tag] ?? [];
-
     return `- ${tag}: ${files.length} indexed files`;
   });
   const fileLines = index.files.map((file) =>
@@ -179,10 +154,11 @@ export async function getKnowledgeIndexSummary(): Promise<string> {
 }
 
 export async function selectKnowledgeForMessage(
+  userId: string,
   userMessage: string,
   limit = 8
 ): Promise<SelectedKnowledge> {
-  const index = await loadKnowledgeIndex();
+  const index = await loadKnowledgeIndex(userId);
   const selectedTags = selectTags(userMessage, index.tags);
   const normalizedMessage = userMessage.toLowerCase();
   const candidates = index.files
@@ -199,7 +175,7 @@ export async function selectKnowledgeForMessage(
   const files = await Promise.all(
     candidates.map(async (file) => ({
       ...file,
-      content: await readFile(path.join(knowledgeRoot, file.file), "utf8")
+      content: await getKnowledgeFileContent(userId, file.file)
     }))
   );
 
@@ -211,7 +187,6 @@ function selectTags(userMessage: string, availableTags: string[]) {
   const selected = availableTags.filter((tag) =>
     tagKeywords[tag]?.some((keyword) => message.includes(keyword))
   );
-
   return selected.length > 0 ? selected : ["GIS"];
 }
 
@@ -225,17 +200,9 @@ function scoreKnowledgeFile(
   const pathValue = file.file.toLowerCase();
 
   for (const word of normalizedMessage.split(/[^a-z0-9$]+/).filter(Boolean)) {
-    if (word.length < 3) {
-      continue;
-    }
-
-    if (title.includes(word)) {
-      score += 5;
-    }
-
-    if (pathValue.includes(word)) {
-      score += 2;
-    }
+    if (word.length < 3) continue;
+    if (title.includes(word)) score += 5;
+    if (pathValue.includes(word)) score += 2;
   }
 
   return score;

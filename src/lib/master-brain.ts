@@ -1,4 +1,4 @@
-import { eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import { getDb, documents } from "@/db";
 
 export type MasterBrainSection = {
@@ -33,7 +33,12 @@ async function getMasterBrainContent(userId: string): Promise<string> {
   const [row] = await db
     .select()
     .from(documents)
-    .where(eq(documents.key, MASTER_BRAIN_KEY))
+    .where(
+      and(
+        eq(documents.userId, userId),
+        eq(documents.key, MASTER_BRAIN_KEY)
+      )
+    )
     .limit(1);
 
   return row?.content ?? "";

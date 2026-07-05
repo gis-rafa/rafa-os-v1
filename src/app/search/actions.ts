@@ -85,7 +85,7 @@ export async function globalSearchAction(searchTerm: string): Promise<SearchResu
   }
 
   try {
-    const index = await loadKnowledgeIndex();
+    const index = await loadKnowledgeIndex(user.id);
     const knowledgeTerm = term.toLowerCase();
     const knowledgeFiles = index.files.filter(
       (f) =>

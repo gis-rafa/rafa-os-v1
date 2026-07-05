@@ -1,32 +1,26 @@
 "use server";
 
-import { mkdir, writeFile } from "node:fs/promises";
-import path from "node:path";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { dataRoot } from "@/lib/paths";
-
-const knowledgeRoot = path.join(dataRoot, "02-knowledge");
+import { getDb, documents } from "@/db";
+import { getActionUser } from "@/lib/auth-user";
 
 export async function createKnowledgeFileAction(formData: FormData) {
+  const user = await getActionUser();
   const title = String(formData.get("title") ?? "").trim();
-  const tags = String(formData.get("tags") ?? "")
-    .split(",")
-    .map((t) => t.trim())
-    .filter(Boolean);
   const content = String(formData.get("content") ?? "").trim();
 
   if (!title || !content) {
     redirect("/knowledge");
   }
 
-  const tag = tags[0] ?? "General";
-  const tagFolder = tag.toLowerCase().replace(/\s+/g, "-");
-  const fileName = `${Date.now()}-${title.toLowerCase().replace(/[^a-z0-9]+/g, "-")}.md`;
-  const filePath = path.join(knowledgeRoot, tagFolder, fileName);
+  const fileKey = `knowledge-file:${Date.now()}-${title.toLowerCase().replace(/[^a-z0-9]+/g, "-")}.md`;
 
-  await mkdir(path.dirname(filePath), { recursive: true });
-  await writeFile(filePath, content, "utf8");
+  await getDb().insert(documents).values({
+    userId: user.id,
+    key: fileKey,
+    content
+  });
 
   revalidatePath("/knowledge");
   redirect("/knowledge");

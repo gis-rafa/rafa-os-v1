@@ -1,6 +1,7 @@
 import { getKnowledgeLibraryWithContent } from "@/lib/knowledge";
 import { Plus, X } from "lucide-react";
 import { createKnowledgeFileAction } from "@/app/knowledge/actions";
+import { requireCurrentDbUser } from "@/lib/auth-user";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -9,7 +10,8 @@ export const metadata: Metadata = {
 };
 
 export default async function KnowledgePage() {
-  const knowledge = await getKnowledgeLibraryWithContent();
+  const user = await requireCurrentDbUser();
+  const knowledge = await getKnowledgeLibraryWithContent(user.id);
 
   return (
     <section className="mx-auto max-w-6xl">
