@@ -27,6 +27,12 @@ import {
 } from "@/lib/local-dev-user";
 import { getProjectForUser, listProjectsWithStats } from "@/lib/projects";
 import { seedDevelopmentWorkspace } from "@/lib/seed-data";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Projects | RAFA OS",
+  description: "Manage projects and track execution tasks."
+};
 
 export const dynamic = "force-dynamic";
 

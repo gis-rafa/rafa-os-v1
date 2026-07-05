@@ -5,6 +5,12 @@ import {
   markAllNotificationsRead as markAllNotificationsReadAction,
   markNotificationRead as markNotificationReadAction
 } from "@/app/notifications/actions";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Notifications | RAFA OS",
+  description: "System alerts, reminders, and updates."
+};
 
 export const dynamic = "force-dynamic";
 

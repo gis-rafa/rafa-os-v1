@@ -1,6 +1,12 @@
 import { getKnowledgeLibraryWithContent } from "@/lib/knowledge";
 import { Plus, X } from "lucide-react";
 import { createKnowledgeFileAction } from "@/app/knowledge/actions";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Knowledge | RAFA OS",
+  description: "Imported knowledge library with tags and content."
+};
 
 export default async function KnowledgePage() {
   const knowledge = await getKnowledgeLibraryWithContent();

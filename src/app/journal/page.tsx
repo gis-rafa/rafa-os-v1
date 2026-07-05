@@ -16,6 +16,12 @@ import {
   getJournalEntryForUser,
   listJournalEntries
 } from "@/lib/journal";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Journal | RAFA OS",
+  description: "Daily journal entries with mood tracking and tags."
+};
 
 export const dynamic = "force-dynamic";
 

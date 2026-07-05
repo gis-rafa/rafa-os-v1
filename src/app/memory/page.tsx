@@ -18,6 +18,12 @@ import {
 } from "@/lib/memories";
 import { seedDevelopmentWorkspace } from "@/lib/seed-data";
 import type { Memory } from "@/db";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Memory | RAFA OS",
+  description: "Structured memory with categories, tags, and search."
+};
 
 export const dynamic = "force-dynamic";
 

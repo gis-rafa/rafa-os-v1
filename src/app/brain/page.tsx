@@ -4,6 +4,12 @@ import {
   getMasterBrainDocument,
   getMasterBrainSections
 } from "@/lib/master-brain";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Brain | RAFA OS",
+  description: "Master Brain document with identity, mission rules, and active context."
+};
 
 const brainSections = [
   "Identity",

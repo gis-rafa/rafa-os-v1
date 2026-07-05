@@ -10,6 +10,12 @@ import {
   getLocalDevelopmentUser
 } from "@/lib/local-dev-user";
 import { seedDevelopmentWorkspace } from "@/lib/seed-data";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Dashboard | RAFA OS",
+  description: "Execution dashboard with morning brief, mission score, and daily tasks."
+};
 
 export const dynamic = "force-dynamic";
 

@@ -4,7 +4,12 @@ import {
   deleteInboxEntryAction,
   getInboxEntriesAction
 } from "@/app/inbox/actions";
+import type { Metadata } from "next";
 
+export const metadata: Metadata = {
+  title: "Inbox | RAFA OS",
+  description: "Quick capture for thoughts, ideas, and notes."
+};
 
 export const dynamic = "force-dynamic";
 

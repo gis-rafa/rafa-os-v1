@@ -7,6 +7,12 @@ import {
   Flag
 } from "lucide-react";
 import { getReportDataAction } from "@/app/reports/actions";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Reports | RAFA OS",
+  description: "Analytics and data summaries across the system."
+};
 
 export const dynamic = "force-dynamic";
 

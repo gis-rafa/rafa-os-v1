@@ -11,6 +11,12 @@ import {
 } from "@/lib/local-dev-user";
 import { getProjectForUser } from "@/lib/projects";
 import { createTaskAction } from "@/app/projects/actions";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Project Details | RAFA OS",
+  description: "View project tasks, memories, and knowledge links."
+};
 
 export const dynamic = "force-dynamic";
 

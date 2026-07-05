@@ -9,6 +9,12 @@ import {
   updateProfileAction,
   updateNotificationPreferencesAction
 } from "@/app/settings/actions";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Settings | RAFA OS",
+  description: "Profile, notification preferences, and configuration."
+};
 
 export const dynamic = "force-dynamic";
 

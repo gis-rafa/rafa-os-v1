@@ -13,6 +13,12 @@ import {
   type StudyTaskStatus,
   type StudyTaskWithProgress
 } from "@/lib/study-plan";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Study Plan | RAFA OS",
+  description: "GIS roadmap with day-by-day task tracking and progress."
+};
 
 export const dynamic = "force-dynamic";
 

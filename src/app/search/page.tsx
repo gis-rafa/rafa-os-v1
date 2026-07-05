@@ -1,6 +1,12 @@
 import { Search, FileText, Brain, BookOpen } from "lucide-react";
 import { globalSearchAction } from "@/app/search/actions";
 import Link from "next/link";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Search | RAFA OS",
+  description: "Search across memories, journal entries, and knowledge."
+};
 
 export const dynamic = "force-dynamic";
 
