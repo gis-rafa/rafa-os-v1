@@ -4,7 +4,11 @@ import {
   canUseLocalDatabaseFallback,
   getLocalDevelopmentUser
 } from "@/lib/local-dev-user";
-import { updateProfileAction } from "@/app/settings/actions";
+import { getNotificationPreferences } from "@/lib/notification-preferences";
+import {
+  updateProfileAction,
+  updateNotificationPreferencesAction
+} from "@/app/settings/actions";
 
 export const dynamic = "force-dynamic";
 
@@ -17,6 +21,8 @@ export default async function SettingsPage() {
     : isLocalDatabaseMode
       ? await getLocalDevelopmentUser()
       : null;
+
+  const prefs = user ? await getNotificationPreferences(user.id) : null;
 
   return (
     <section className="mx-auto max-w-4xl">
@@ -34,6 +40,11 @@ export default async function SettingsPage() {
         <ProfileSection
           isDatabaseConfigured={Boolean(user)}
           user={user}
+        />
+
+        <NotificationPreferencesSection
+          isDatabaseConfigured={Boolean(user)}
+          prefs={prefs}
         />
 
         <DatabaseSection
@@ -95,6 +106,107 @@ function ProfileSection({
         </div>
       </form>
     </section>
+  );
+}
+
+function NotificationPreferencesSection({
+  isDatabaseConfigured,
+  prefs
+}: {
+  isDatabaseConfigured: boolean;
+  prefs: {
+    emailNotifications: number;
+    pushNotifications: number;
+    dailyDigest: number;
+    notifyOnMemorySuggestions: number;
+    notifyOnTaskReminders: number;
+    notifyOnProjectUpdates: number;
+  } | null;
+}) {
+  return (
+    <section className="rounded-md border border-stone-200 bg-white p-5 shadow-sm">
+      <div className="mb-5">
+        <h3 className="text-base font-semibold text-stone-950">
+          Notification Preferences
+        </h3>
+        <p className="mt-1 text-sm text-stone-500">
+          Control which notifications you receive and how.
+        </p>
+      </div>
+
+      <form action={updateNotificationPreferencesAction} className="grid gap-4 sm:max-w-lg">
+        <ToggleField
+          defaultChecked={prefs?.emailNotifications === 1}
+          disabled={!isDatabaseConfigured}
+          label="Email notifications"
+          name="emailNotifications"
+        />
+        <ToggleField
+          defaultChecked={prefs?.pushNotifications === 1}
+          disabled={!isDatabaseConfigured}
+          label="Push notifications"
+          name="pushNotifications"
+        />
+        <ToggleField
+          defaultChecked={prefs?.dailyDigest === 1}
+          disabled={!isDatabaseConfigured}
+          label="Daily digest"
+          name="dailyDigest"
+        />
+        <ToggleField
+          defaultChecked={prefs?.notifyOnMemorySuggestions === 1}
+          disabled={!isDatabaseConfigured}
+          label="Memory suggestions"
+          name="notifyOnMemorySuggestions"
+        />
+        <ToggleField
+          defaultChecked={prefs?.notifyOnTaskReminders === 1}
+          disabled={!isDatabaseConfigured}
+          label="Task reminders"
+          name="notifyOnTaskReminders"
+        />
+        <ToggleField
+          defaultChecked={prefs?.notifyOnProjectUpdates === 1}
+          disabled={!isDatabaseConfigured}
+          label="Project updates"
+          name="notifyOnProjectUpdates"
+        />
+        <div>
+          <button
+            className="inline-flex h-10 items-center justify-center rounded-md bg-stone-950 px-4 text-sm font-medium text-white transition hover:bg-stone-800 disabled:cursor-not-allowed disabled:bg-stone-300"
+            disabled={!isDatabaseConfigured}
+            type="submit"
+          >
+            Save Preferences
+          </button>
+        </div>
+      </form>
+    </section>
+  );
+}
+
+function ToggleField({
+  defaultChecked,
+  disabled,
+  label,
+  name
+}: {
+  defaultChecked: boolean;
+  disabled: boolean;
+  label: string;
+  name: string;
+}) {
+  return (
+    <label className="flex items-center gap-3">
+      <input
+        className="size-4 rounded border-stone-300 text-stone-950 focus:ring-0"
+        defaultChecked={defaultChecked}
+        disabled={disabled}
+        name={name}
+        type="checkbox"
+      />
+      <span className="text-sm font-medium text-stone-700">{label}</span>
+    </label>
   );
 }
 

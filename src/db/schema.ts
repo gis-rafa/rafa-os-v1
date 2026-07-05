@@ -429,6 +429,41 @@ export const auditLogRelations = relations(auditLog, ({ one }) => ({
   })
 }));
 
+export const notificationPreferences = pgTable(
+  "notification_preferences",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    emailNotifications: integer("email_notifications").notNull().default(1),
+    pushNotifications: integer("push_notifications").notNull().default(0),
+    dailyDigest: integer("daily_digest").notNull().default(1),
+    notifyOnMemorySuggestions: integer("notify_on_memory_suggestions").notNull().default(1),
+    notifyOnTaskReminders: integer("notify_on_task_reminders").notNull().default(1),
+    notifyOnProjectUpdates: integer("notify_on_project_updates").notNull().default(1),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .defaultNow()
+      .notNull(),
+    updatedAt: timestamp("updated_at", { withTimezone: true })
+      .defaultNow()
+      .notNull()
+  },
+  (table) => [
+    uniqueIndex("notification_preferences_user_id_idx").on(table.userId)
+  ]
+);
+
+export const notificationPreferencesRelations = relations(
+  notificationPreferences,
+  ({ one }) => ({
+    user: one(users, {
+      fields: [notificationPreferences.userId],
+      references: [users.id]
+    })
+  })
+);
+
 export const notificationsRelations = relations(notifications, ({ one }) => ({
   user: one(users, {
     fields: [notifications.userId],
@@ -470,3 +505,5 @@ export type JournalEntry = typeof journalEntries.$inferSelect;
 export type NewJournalEntry = typeof journalEntries.$inferInsert;
 export type AuditLog = typeof auditLog.$inferSelect;
 export type NewAuditLog = typeof auditLog.$inferInsert;
+export type NotificationPreference = typeof notificationPreferences.$inferSelect;
+export type NewNotificationPreference = typeof notificationPreferences.$inferInsert;
