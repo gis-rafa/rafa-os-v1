@@ -1,7 +1,8 @@
 import Link from "next/link";
 import { UserButton } from "@clerk/nextjs";
-import { Bell, Menu, Search } from "lucide-react";
+import { Menu, Search } from "lucide-react";
 import { isClerkConfigured } from "@/lib/clerk-config";
+import { NotificationBadge } from "@/components/notification-badge";
 
 export function AppHeader({ onMenuClick }: { onMenuClick: () => void }) {
   const hasClerk = isClerkConfigured();
@@ -32,13 +33,7 @@ export function AppHeader({ onMenuClick }: { onMenuClick: () => void }) {
         >
           <Search size={18} strokeWidth={1.8} />
         </Link>
-        <Link
-          aria-label="Notifications"
-          className="flex size-10 items-center justify-center rounded-md border border-stone-200 text-stone-600 transition hover:bg-stone-50"
-          href="/notifications"
-        >
-          <Bell size={18} strokeWidth={1.8} />
-        </Link>
+        <NotificationBadge />
         {hasClerk ? (
           <UserButton
             appearance={{
