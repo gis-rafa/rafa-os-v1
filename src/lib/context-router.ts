@@ -65,6 +65,8 @@ export async function buildRoutedPrompt(userMessage: string): Promise<RoutedCont
     skipped.join("\n") || "- None"
   ].join("\n");
 
+  const conflictCheck = detectGoalConflicts(userMessage);
+
   const prompt = [
     "# RAFA AI SYSTEM PROMPT",
     "",
@@ -99,10 +101,21 @@ export async function buildRoutedPrompt(userMessage: string): Promise<RoutedCont
     "- Be direct, structured, and honest.",
     "- Reduce cognitive load whenever possible.",
     "",
+
+    ...(conflictCheck
+      ? [
+          "## ⚠️ Goal Conflict Detected",
+          `The user's message may conflict with the following goal: "${conflictCheck.goal}".`,
+          `Reason: ${conflictCheck.reason}.`,
+          "Before responding, explicitly address this conflict. Explain why it conflicts and propose an alternative that aligns better with Rafa's long-term mission.",
+          ""
+        ]
+      : []),
+
     "## Context Router",
     report,
     "",
-    "## Loaded Context",
+    "## Loaded Context (sorted by relevance)",
     contextBlocks.join("\n\n") || "No local context loaded.",
     "",
     "## User Message",
@@ -113,6 +126,31 @@ export async function buildRoutedPrompt(userMessage: string): Promise<RoutedCont
   ].join("\n");
 
   return { prompt, report };
+}
+
+function detectGoalConflicts(
+  message: string
+): { goal: string; reason: string } | null {
+  const msg = message.toLowerCase();
+
+  const avoidancePatterns = [
+    { keywords: ["skip", "not today", "later", "procrastinate", "delay"], goal: "Avoid procrastination" },
+    { keywords: ["too hard", "too difficult", "give up", "quit"], goal: "Persist through challenges" },
+    { keywords: ["unhealthy", "junk food", "skip gym", "skip workout", "skip exercise"], goal: "Maintain physical health" },
+    { keywords: ["skip study", "skip learning", "waste time", "binge"], goal: "Prioritize learning goals" },
+    { keywords: ["oversleep", "wake up late", "skip morning"], goal: "Maintain consistent routine" }
+  ];
+
+  for (const pattern of avoidancePatterns) {
+    if (pattern.keywords.some((kw) => msg.includes(kw))) {
+      return {
+        goal: pattern.goal,
+        reason: `Message contains keywords suggesting avoidance behavior (${pattern.keywords.find((kw) => msg.includes(kw))})`
+      };
+    }
+  }
+
+  return null;
 }
 
 function routeContext(userMessage: string): ContextDecision[] {
