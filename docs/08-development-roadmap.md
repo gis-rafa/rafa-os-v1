@@ -34,7 +34,7 @@ Many foundational services and UI components are present, enabling basic navigat
 *   **Project and Task Details UI:** Detailed views for projects and tasks, including comprehensive CRUD operations and progress visualization, are likely incomplete.
 *   **Notifications System:** Beyond service worker registration, a fully integrated notification system (in-app, push) is missing.
 *   **Reporting & Analytics:** No dedicated reporting or analytics features are currently present for tracking Rafa's progress or system performance.
-*   **User Settings UI:** While a settings page exists, the actual UI for configuring various application and AI-related settings is missing.
+*   **User Settings UI:** Settings page at `/settings` allows profile editing and notification preferences configuration.
 
 ## 4. Placeholder Pages
 
@@ -59,8 +59,8 @@ Many pages currently exist as basic `page.tsx` files and likely utilize `page-pl
 ## 6. Missing Database Functionality
 
 *   **Vector Embeddings for Memories/Knowledge:** While the `memories` and `knowledge` tables can store content, there's no explicit mention or implementation of vector embeddings for advanced semantic search and retrieval.
-*   **Full-Text Search:** Beyond basic keyword searching, a robust full-text search capability across memories, knowledge, and other content is missing.
-*   **Audit Logging:** No explicit audit logging or versioning for critical data changes (e.g., Master Brain, projects) is documented.
+*   **Full-Text Search (DONE):** Global search page at `/search` queries memories, journal entries, and knowledge files with ILIKE.
+*   **Audit Logging (DONE):** Dedicated `audit_log` table tracks user actions across entity types with metadata.
 
 ## 7. Missing AI Capabilities
 
@@ -155,8 +155,8 @@ After achieving the MVP, the roadmap will focus on enhancing the intelligence, u
 
 - [ ] Vector Embeddings Integration (Memories/Knowledge)
 - [ ] Advanced AI Reasoning (multi-step planning, conflict resolution)
-- [ ] Full-Text Search across data
-- [ ] Initial Reporting & Analytics
+- [x] Full-Text Search across data
+- [x] Initial Reporting & Analytics
 - [ ] Personalized AI Adaptation
 
 ### Phase 5
@@ -164,5 +164,5 @@ After achieving the MVP, the roadmap will focus on enhancing the intelligence, u
 - [ ] Multi-modal AI (voice, image input/output)
 - [ ] Performance Optimization
 - [ ] Advanced Notification System (push, customizable alerts)
-- [ ] Robust Audit Logging
+- [x] Robust Audit Logging
 - [ ] Scalability Enhancements
