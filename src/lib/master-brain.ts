@@ -49,7 +49,12 @@ async function upsertMasterBrainContent(userId: string, content: string) {
   const [existing] = await db
     .select()
     .from(documents)
-    .where(eq(documents.key, MASTER_BRAIN_KEY))
+    .where(
+      and(
+        eq(documents.userId, userId),
+        eq(documents.key, MASTER_BRAIN_KEY)
+      )
+    )
     .limit(1);
 
   if (existing) {
