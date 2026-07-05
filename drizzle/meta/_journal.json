@@ -78,6 +78,13 @@
       "when": 1783254994770,
       "tag": "0010_embeddings_unique_constraint",
       "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "7",
+      "when": 1783257669117,
+      "tag": "0011_filesystem_migration",
+      "breakpoints": true
     }
   ]
 }

@@ -331,7 +331,9 @@ export const usersRelations = relations(users, ({ many }) => ({
   journalEntries: many(journalEntries),
   contentEmbeddings: many(contentEmbeddings),
   auditLog: many(auditLog),
-  notificationPreferences: many(notificationPreferences)
+  notificationPreferences: many(notificationPreferences),
+  documents: many(documents),
+  inboxEntries: many(inboxEntries)
 }));
 
 export const conversationsRelations = relations(conversations, ({ many, one }) => ({
@@ -513,6 +515,81 @@ export const notificationPreferencesRelations = relations(
   })
 );
 
+export const documents = pgTable(
+  "documents",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    key: text("key").notNull(),
+    content: text("content").notNull().default(""),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .defaultNow()
+      .notNull(),
+    updatedAt: timestamp("updated_at", { withTimezone: true })
+      .defaultNow()
+      .notNull()
+  },
+  (table) => [
+    uniqueIndex("documents_user_key_idx").on(table.userId, table.key),
+    index("documents_user_id_idx").on(table.userId)
+  ]
+);
+
+export const documentsRelations = relations(documents, ({ one }) => ({
+  user: one(users, {
+    fields: [documents.userId],
+    references: [users.id]
+  })
+}));
+
+export const inboxEntries = pgTable(
+  "inbox_entries",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    content: text("content").notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .defaultNow()
+      .notNull()
+  },
+  (table) => [
+    index("inbox_entries_user_id_idx").on(table.userId),
+    index("inbox_entries_created_at_idx").on(table.createdAt)
+  ]
+);
+
+export const inboxEntriesRelations = relations(inboxEntries, ({ one }) => ({
+  user: one(users, {
+    fields: [inboxEntries.userId],
+    references: [users.id]
+  })
+}));
+
+export const roadmapTasks = pgTable(
+  "roadmap_tasks",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    day: integer("day").notNull(),
+    gisTask: text("gis_task").notNull(),
+    supportTask: text("support_task").notNull(),
+    deliverable: text("deliverable").notNull(),
+    week: integer("week").notNull(),
+    phase: text("phase").notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .defaultNow()
+      .notNull()
+  },
+  (table) => [
+    uniqueIndex("roadmap_tasks_day_idx").on(table.day),
+    index("roadmap_tasks_week_idx").on(table.week),
+    index("roadmap_tasks_phase_idx").on(table.phase)
+  ]
+);
+
 export const notificationsRelations = relations(notifications, ({ one }) => ({
   user: one(users, {
     fields: [notifications.userId],
@@ -558,3 +635,9 @@ export type NotificationPreference = typeof notificationPreferences.$inferSelect
 export type NewNotificationPreference = typeof notificationPreferences.$inferInsert;
 export type ContentEmbedding = typeof contentEmbeddings.$inferSelect;
 export type NewContentEmbedding = typeof contentEmbeddings.$inferInsert;
+export type Document = typeof documents.$inferSelect;
+export type NewDocument = typeof documents.$inferInsert;
+export type InboxEntry = typeof inboxEntries.$inferSelect;
+export type NewInboxEntry = typeof inboxEntries.$inferInsert;
+export type RoadmapTask = typeof roadmapTasks.$inferSelect;
+export type NewRoadmapTask = typeof roadmapTasks.$inferInsert;

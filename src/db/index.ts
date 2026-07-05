@@ -1,2 +1,2 @@
-export { getDb, getDatabaseUrl, getPgPool } from "@/db/client";
+export { getDb, getDatabaseUrl } from "@/db/client";
 export * from "@/db/schema";
