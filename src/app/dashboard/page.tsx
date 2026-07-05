@@ -1,4 +1,5 @@
 import { Dashboard } from "@/components/dashboard";
+import { ErrorBoundaryWrapper } from "@/components/error-boundary-wrapper";
 import {
   getExecutionDashboardData,
   type ExecutionDashboardData
@@ -25,22 +26,24 @@ export default async function DashboardPage() {
     await seedDevelopmentWorkspace(user.id);
     const data = await getExecutionDashboardData(user.id);
 
-    return <Dashboard data={data} isDatabaseConfigured />;
+    return <ErrorBoundaryWrapper><Dashboard data={data} isDatabaseConfigured /></ErrorBoundaryWrapper>;
   }
 
   if (!isClerkConfigured()) {
     return (
-      <Dashboard
-        data={createEmptyExecutionDashboardData()}
-        isDatabaseConfigured={false}
-      />
+      <ErrorBoundaryWrapper>
+        <Dashboard
+          data={createEmptyExecutionDashboardData()}
+          isDatabaseConfigured={false}
+        />
+      </ErrorBoundaryWrapper>
     );
   }
 
   const user = await requireCurrentDbUser();
   const data = await getExecutionDashboardData(user.id);
 
-  return <Dashboard data={data} isDatabaseConfigured />;
+  return <ErrorBoundaryWrapper><Dashboard data={data} isDatabaseConfigured /></ErrorBoundaryWrapper>;
 }
 
 function createEmptyExecutionDashboardData() {
