@@ -180,9 +180,12 @@ function ProjectCard({
               {project.priority} priority
             </span>
           </div>
-          <h3 className="text-xl font-semibold text-stone-950">
+          <Link
+            className="text-xl font-semibold text-stone-950 transition hover:text-stone-700"
+            href={`/projects/${project.id}`}
+          >
             {project.name}
-          </h3>
+          </Link>
           {project.description ? (
             <p className="mt-2 max-w-3xl whitespace-pre-wrap text-sm leading-6 text-stone-600">
               {project.description}

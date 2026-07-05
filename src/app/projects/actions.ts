@@ -13,6 +13,7 @@ import {
   type ProjectPriority,
   type ProjectStatus
 } from "@/lib/projects";
+import { createExecutionTask } from "@/lib/execution-dashboard";
 import { requireCurrentDbUser } from "@/lib/auth-user";
 import { isClerkConfigured } from "@/lib/clerk-config";
 import {
@@ -73,6 +74,30 @@ export async function deleteProjectAction(formData: FormData) {
 
   await deleteProject(id, user.id);
 
+  revalidatePath("/projects");
+  revalidatePath("/dashboard");
+}
+
+export async function createTaskAction(formData: FormData) {
+  const user = await getActionUser();
+  const projectId = String(formData.get("projectId") ?? "");
+  const title = String(formData.get("title") ?? "").trim();
+  const priority = String(formData.get("priority") ?? "Medium");
+  const estimatedMinutes = Number(formData.get("estimatedMinutes") ?? 30);
+
+  if (!projectId || !title) {
+    redirect(`/projects`);
+  }
+
+  await createExecutionTask({
+    userId: user.id,
+    projectId,
+    title,
+    priority,
+    estimatedMinutes: Math.max(5, Math.round(estimatedMinutes))
+  });
+
+  revalidatePath(`/projects/${projectId}`);
   revalidatePath("/projects");
   revalidatePath("/dashboard");
 }

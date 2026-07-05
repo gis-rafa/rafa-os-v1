@@ -257,6 +257,35 @@ export async function updatePriorityCompletion({
     );
 }
 
+export async function createExecutionTask({
+  userId,
+  projectId,
+  title,
+  priority,
+  estimatedMinutes
+}: {
+  userId: string;
+  projectId: string;
+  title: string;
+  priority: string;
+  estimatedMinutes: number;
+}) {
+  const db = getDb();
+  const [task] = await db
+    .insert(executionTasks)
+    .values({
+      userId,
+      projectId,
+      title,
+      priority,
+      estimatedMinutes,
+      taskDate: new Date()
+    })
+    .returning();
+
+  return task;
+}
+
 export async function updateExecutionTaskStatus({
   status,
   taskId,
