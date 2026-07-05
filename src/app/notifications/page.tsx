@@ -1,8 +1,9 @@
-import { getNotifications, markNotificationRead, markAllNotificationsRead, deleteNotification, Notification } from "@/app/notifications/actions";
+import { getNotifications, markNotificationRead, markAllNotificationsRead, deleteNotification } from "@/app/notifications/actions";
 import { Button } from "@/components/ui/button";
 import { Trash, CheckCircle } from "lucide-react";
-// import Link from "next/link"; // Removed as it's not used
-// import type { Notification } from "@/app/notifications/actions"; // Moved to direct import
+import type { Notification } from "@/db/schema";
+
+export const dynamic = "force-dynamic";
 
 export default async function NotificationsPage() {
   const notifications = await getNotifications();
@@ -27,7 +28,7 @@ export default async function NotificationsPage() {
                 </p>
               </div>
               <div className="flex gap-2">
-                {!n.read && (
+                {n.read === 0 && (
                   <form action={markNotificationRead}>
                     <input type="hidden" name="id" value={n.id} />
                     <Button type="submit" variant="ghost" size="icon">

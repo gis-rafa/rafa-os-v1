@@ -249,6 +249,30 @@ export const executionTasks = pgTable(
   ]
 );
 
+export const notifications = pgTable(
+  "notifications",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    type: text("type").notNull().default("info"),
+    title: text("title").notNull(),
+    message: text("message").notNull(),
+    read: integer("read").notNull().default(0),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .defaultNow()
+      .notNull(),
+    updatedAt: timestamp("updated_at", { withTimezone: true })
+      .defaultNow()
+      .notNull()
+  },
+  (table) => [
+    index("notifications_user_id_idx").on(table.userId),
+    index("notifications_read_idx").on(table.read)
+  ]
+);
+
 export const usersRelations = relations(users, ({ many }) => ({
   conversations: many(conversations),
   memories: many(memories),
@@ -256,7 +280,8 @@ export const usersRelations = relations(users, ({ many }) => ({
   executionPriorities: many(executionPriorities),
   executionProjects: many(executionProjects),
   executionTasks: many(executionTasks),
-  projectKnowledgeLinks: many(projectKnowledgeLinks)
+  projectKnowledgeLinks: many(projectKnowledgeLinks),
+  notifications: many(notifications)
 }));
 
 export const conversationsRelations = relations(conversations, ({ many, one }) => ({
@@ -346,6 +371,13 @@ export const projectKnowledgeLinksRelations = relations(
   })
 );
 
+export const notificationsRelations = relations(notifications, ({ one }) => ({
+  user: one(users, {
+    fields: [notifications.userId],
+    references: [users.id]
+  })
+}));
+
 export type User = typeof users.$inferSelect;
 export type NewUser = typeof users.$inferInsert;
 export type Conversation = typeof conversations.$inferSelect;
@@ -364,3 +396,5 @@ export type ExecutionTask = typeof executionTasks.$inferSelect;
 export type NewExecutionTask = typeof executionTasks.$inferInsert;
 export type ProjectKnowledgeLink = typeof projectKnowledgeLinks.$inferSelect;
 export type NewProjectKnowledgeLink = typeof projectKnowledgeLinks.$inferInsert;
+export type Notification = typeof notifications.$inferSelect;
+export type NewNotification = typeof notifications.$inferInsert;
