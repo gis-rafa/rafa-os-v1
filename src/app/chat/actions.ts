@@ -10,7 +10,8 @@ import {
 } from "@/lib/memories";
 
 export async function buildChatPromptAction(userMessage: string) {
-  return buildRoutedPrompt(userMessage);
+  const user = await getActionUser();
+  return buildRoutedPrompt(userMessage, user.id);
 }
 
 export async function saveAssistantMemoryAction(formData: FormData) {

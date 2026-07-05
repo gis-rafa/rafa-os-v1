@@ -1,5 +1,3 @@
-import { readdir, readFile } from "node:fs/promises";
-import path from "node:path";
 import {
   getActiveContextFields,
   getMasterBrainMarkdown
@@ -9,9 +7,9 @@ import {
   selectKnowledgeForMessage
 } from "@/lib/knowledge";
 import { generateMorningBrief } from "@/lib/morning-brief";
-import { dataRoot } from "@/lib/paths";
-import { requireCurrentDbUser } from "@/lib/auth-user";
 import { searchRelevantMemoriesForMessage } from "@/lib/memories";
+import { getDb, inboxEntries, executionProjects } from "@/db";
+import { desc, eq } from "drizzle-orm";
 
 type ContextKey =
   | "MASTER-BRAIN"
@@ -34,7 +32,7 @@ export type RoutedContext = {
   report: string;
 };
 
-export async function buildRoutedPrompt(userMessage: string): Promise<RoutedContext> {
+export async function buildRoutedPrompt(userMessage: string, userId: string): Promise<RoutedContext> {
   const decisions = routeContext(userMessage);
   const loaded: string[] = [];
   const skipped: string[] = [];
@@ -46,7 +44,7 @@ export async function buildRoutedPrompt(userMessage: string): Promise<RoutedCont
       continue;
     }
 
-    const content = await loadContext(decision.key, userMessage);
+    const content = await loadContext(decision.key, userMessage, userId);
 
     loaded.push(`- ${decision.key}: ${decision.reason}`);
     contextBlocks.push([
@@ -272,19 +270,19 @@ function routeContext(userMessage: string): ContextDecision[] {
   ];
 }
 
-async function loadContext(key: ContextKey, userMessage: string) {
+async function loadContext(key: ContextKey, userMessage: string, userId: string) {
   switch (key) {
     case "MASTER-BRAIN":
-      return getMasterBrainMarkdown();
+      return getMasterBrainMarkdown(userId);
     case "Active Context": {
-      const activeContext = await getActiveContextFields();
+      const activeContext = await getActiveContextFields(userId);
       return activeContext
         .map((field) => `- ${field.label}: ${field.value}`)
         .join("\n");
     }
     case "Morning Brief": {
-      const activeContext = await getActiveContextFields();
-      const brief = await generateMorningBrief(activeContext);
+      const activeContext = await getActiveContextFields(userId);
+      const brief = await generateMorningBrief(activeContext, userId);
 
       return [
         `- Date: ${brief.dateLabel}`,
@@ -306,20 +304,19 @@ async function loadContext(key: ContextKey, userMessage: string) {
     case "Knowledge Index":
       return getKnowledgeIndexSummary();
     case "Inbox":
-      return readMarkdownFolder(path.join(dataRoot, "memory", "inbox"));
+      return listInboxEntriesForContext(userId);
     case "Projects":
-      return readMarkdownFolder(path.join(dataRoot, "01-projects"));
+      return listProjectsForContext(userId);
     case "Knowledge":
       return readRelevantKnowledge(userMessage);
     case "Memory":
-      return readRelevantMemories(userMessage);
+      return readRelevantMemories(userId, userMessage);
   }
 }
 
-async function readRelevantMemories(userMessage: string) {
-  const user = await requireCurrentDbUser();
+async function readRelevantMemories(userId: string, userMessage: string) {
   const relevantMemories = await searchRelevantMemoriesForMessage(
-    user.id,
+    userId,
     userMessage
   );
 
@@ -365,42 +362,34 @@ async function readRelevantKnowledge(userMessage: string) {
   ].join("\n\n");
 }
 
-async function readMarkdownFolder(folderPath: string) {
-  try {
-    const files = await readMarkdownFiles(folderPath);
-    const limitedFiles = files.slice(0, 8);
-    const contents = await Promise.all(
-      limitedFiles.map(async (filePath) => {
-        const content = await readFile(filePath, "utf8");
-        const relativePath = path.relative(dataRoot, filePath);
+async function listInboxEntriesForContext(userId: string) {
+  const db = getDb();
+  const entries = await db
+    .select()
+    .from(inboxEntries)
+    .where(eq(inboxEntries.userId, userId))
+    .orderBy(desc(inboxEntries.createdAt))
+    .limit(8);
 
-        return [`### ${relativePath}`, content.trim()].join("\n");
-      })
-    );
+  if (entries.length === 0) return "";
 
-    return contents.join("\n\n");
-  } catch {
-    return "";
-  }
+  return entries.map((entry, i) =>
+    [`### Inbox Entry ${i + 1}`, `Created: ${entry.createdAt.toISOString()}`, "", entry.content.trim()].join("\n")
+  ).join("\n\n");
 }
 
-async function readMarkdownFiles(folderPath: string): Promise<string[]> {
-  const entries = await readdir(folderPath, { withFileTypes: true });
-  const files = await Promise.all(
-    entries.map(async (entry) => {
-      const entryPath = path.join(folderPath, entry.name);
+async function listProjectsForContext(userId: string) {
+  const db = getDb();
+  const projects = await db
+    .select()
+    .from(executionProjects)
+    .where(eq(executionProjects.userId, userId))
+    .orderBy(desc(executionProjects.updatedAt))
+    .limit(5);
 
-      if (entry.isDirectory()) {
-        return readMarkdownFiles(entryPath);
-      }
+  if (projects.length === 0) return "";
 
-      if (entry.isFile() && entry.name.endsWith(".md")) {
-        return [entryPath];
-      }
-
-      return [];
-    })
-  );
-
-  return files.flat().sort();
+  return projects.map((p) =>
+    [`### ${p.name}`, `Status: ${p.status} | Phase: ${p.currentPhase} | Priority: ${p.priority}`, p.description].join("\n")
+  ).join("\n\n");
 }

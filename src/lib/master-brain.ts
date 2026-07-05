@@ -1,12 +1,5 @@
-import { readFile, writeFile } from "node:fs/promises";
-import path from "node:path";
-import { dataRoot } from "@/lib/paths";
-
-const masterBrainPath = path.join(
-  dataRoot,
-  "00-core",
-  "MASTER-BRAIN.md"
-);
+import { eq } from "drizzle-orm";
+import { getDb, documents } from "@/db";
 
 export type MasterBrainSection = {
   title: string;
@@ -33,40 +26,85 @@ const activeContextLabels = [
   "Current Weekly Priority"
 ];
 
+const MASTER_BRAIN_KEY = "master-brain";
+
+async function getMasterBrainContent(userId: string): Promise<string> {
+  const db = getDb();
+  const [row] = await db
+    .select()
+    .from(documents)
+    .where(eq(documents.key, MASTER_BRAIN_KEY))
+    .limit(1);
+
+  return row?.content ?? "";
+}
+
+async function upsertMasterBrainContent(userId: string, content: string) {
+  const db = getDb();
+  const [existing] = await db
+    .select()
+    .from(documents)
+    .where(eq(documents.key, MASTER_BRAIN_KEY))
+    .limit(1);
+
+  if (existing) {
+    await db
+      .update(documents)
+      .set({ content, updatedAt: new Date() })
+      .where(eq(documents.id, existing.id));
+  } else {
+    await db.insert(documents).values({
+      userId,
+      key: MASTER_BRAIN_KEY,
+      content
+    });
+  }
+}
+
 export async function getMasterBrainSections(
+  userId: string,
   requestedSections: string[]
 ): Promise<MasterBrainSection[]> {
-  const file = await readFile(masterBrainPath, "utf8");
-  const sections = parseMarkdownSectionMap(file);
-
+  const content = await getMasterBrainContent(userId);
+  if (!content) {
+    return requestedSections.map((title) => ({ title, content: "TODO" }));
+  }
+  const sections = parseMarkdownSectionMap(content);
   return requestedSections.map((title) => ({
     title,
     content: sections.get(title) ?? "TODO"
   }));
 }
 
-export async function getMasterBrainMarkdown(): Promise<string> {
-  return readFile(masterBrainPath, "utf8");
+export async function getMasterBrainMarkdown(userId: string): Promise<string> {
+  const content = await getMasterBrainContent(userId);
+  return content || "# MASTER BRAIN\n\n## Active Context\n\nTODO\n";
 }
 
-export async function getMasterBrainDocument(): Promise<MasterBrainDocument> {
-  const file = await readFile(masterBrainPath, "utf8");
-
-  return parseMarkdownDocument(file);
+export async function getMasterBrainDocument(userId: string): Promise<MasterBrainDocument> {
+  const content = await getMasterBrainContent(userId);
+  if (!content) {
+    return { title: "MASTER BRAIN", sections: [] };
+  }
+  return parseMarkdownDocument(content);
 }
 
 export async function saveMasterBrainDocument(
+  userId: string,
   document: MasterBrainDocument
 ): Promise<void> {
-  await writeFile(masterBrainPath, serializeMarkdownDocument(document), "utf8");
+  await upsertMasterBrainContent(userId, serializeMarkdownDocument(document));
 }
 
-export async function getActiveContextFields(): Promise<ActiveContextField[]> {
-  const file = await readFile(masterBrainPath, "utf8");
-  const sections = parseMarkdownSectionMap(file);
+export async function getActiveContextFields(userId: string): Promise<ActiveContextField[]> {
+  const content = await getMasterBrainContent(userId);
+  if (!content) {
+    return activeContextLabels.map((label) => ({ label, value: "TODO" }));
+  }
+  const sections = parseMarkdownSectionMap(content);
   const activeContext = sections.get("Active Context") ?? "";
   const activeContextFields = parseLabeledFields(activeContext);
-  const fallbackFields = parseLabeledFields(file);
+  const fallbackFields = parseLabeledFields(content);
 
   return activeContextLabels.map((label) => ({
     label,
@@ -80,11 +118,9 @@ export async function getActiveContextFields(): Promise<ActiveContextField[]> {
 function parseMarkdownSectionMap(markdown: string) {
   const document = parseMarkdownDocument(markdown);
   const sections = new Map<string, string>();
-
   for (const section of document.sections) {
     sections.set(section.title, section.content);
   }
-
   return sections;
 }
 
@@ -96,45 +132,30 @@ function parseMarkdownDocument(markdown: string): MasterBrainDocument {
   let currentContent: string[] = [];
 
   const saveCurrentSection = () => {
-    if (!currentTitle) {
-      return;
-    }
-
-    const content = currentContent.join("\n").trim();
-    orderedSections.push({ title: currentTitle, content });
+    if (!currentTitle) return;
+    orderedSections.push({ title: currentTitle, content: currentContent.join("\n").trim() });
   };
 
   for (const line of lines) {
     const match = line.match(/^##\s+(.+)$/);
-
     if (match) {
       saveCurrentSection();
       currentTitle = match[1].trim();
       currentContent = [];
       continue;
     }
-
-    if (currentTitle) {
-      currentContent.push(line);
-    }
+    if (currentTitle) currentContent.push(line);
   }
-
   saveCurrentSection();
 
-  return {
-    title,
-    sections: orderedSections
-  };
+  return { title, sections: orderedSections };
 }
 
 function serializeMarkdownDocument(document: MasterBrainDocument) {
   const title = document.title.trim() || "MASTER BRAIN";
-  const sections = document.sections.map((section) => {
-    const content = section.content.trim() || "TODO";
-
-    return `## ${section.title.trim()}\n\n${content}`;
-  });
-
+  const sections = document.sections.map((section) =>
+    `## ${section.title.trim()}\n\n${section.content.trim() || "TODO"}`
+  );
   return `# ${title}\n\n${sections.join("\n\n")}\n`;
 }
 
@@ -146,24 +167,18 @@ function parseLabeledFields(markdown: string) {
   let currentContent: string[] = [];
 
   const saveCurrentField = () => {
-    if (!currentLabel) {
-      return;
-    }
-
-    const value = currentContent.join("\n").trim();
-    fields.set(currentLabel, value || "TODO");
+    if (!currentLabel) return;
+    fields.set(currentLabel, currentContent.join("\n").trim() || "TODO");
   };
 
   for (const line of lines) {
     const normalizedLine = line.replace(/^#+\s+/, "").trim();
-
     if (labels.has(normalizedLine)) {
       saveCurrentField();
       currentLabel = normalizedLine;
       currentContent = [];
       continue;
     }
-
     if (currentLabel) {
       if (/^#{1,2}\s+/.test(line)) {
         saveCurrentField();
@@ -171,11 +186,9 @@ function parseLabeledFields(markdown: string) {
         currentContent = [];
         continue;
       }
-
       currentContent.push(line);
     }
   }
-
   saveCurrentField();
 
   return fields;

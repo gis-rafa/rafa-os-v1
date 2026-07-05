@@ -1,7 +1,5 @@
 import type { ActiveContextField } from "@/lib/master-brain";
-import { requireCurrentDbUser } from "@/lib/auth-user";
-import { isClerkConfigured } from "@/lib/clerk-config";
-import { getStudyPlanSummary, readRoadmapTasks } from "@/lib/study-plan";
+import { getStudyPlanSummary } from "@/lib/study-plan";
 
 export type MorningBrief = {
   dateLabel: string;
@@ -17,11 +15,13 @@ export type MorningBrief = {
 };
 
 export async function generateMorningBrief(
-  activeContext: ActiveContextField[]
+  activeContext: ActiveContextField[],
+  userId: string
 ): Promise<MorningBrief> {
   const values = new Map(activeContext.map((field) => [field.label, field.value]));
   const today = new Date();
-  const roadmapTask = await getCurrentRoadmapTask();
+  const studyPlan = await getStudyPlanSummary(userId);
+  const roadmapTask = studyPlan.todayTask;
   const primaryObjective = valueFor(values, "Current Top Goal");
   const weeklyPriority = valueFor(values, "Current Weekly Priority");
   const relationshipStatus = valueFor(values, "Current Relationship Status");
@@ -52,22 +52,8 @@ export async function generateMorningBrief(
   };
 }
 
-async function getCurrentRoadmapTask() {
-  if (isClerkConfigured()) {
-    const user = await requireCurrentDbUser();
-    const studyPlan = await getStudyPlanSummary(user.id);
-
-    return studyPlan.todayTask;
-  }
-
-  const tasks = await readRoadmapTasks();
-
-  return tasks[0] ? { ...tasks[0], status: "Todo" as const } : null;
-}
-
 function valueFor(values: Map<string, string>, label: string) {
   const value = values.get(label)?.trim();
-
   return value && value !== "TODO" ? value : "TODO";
 }
 

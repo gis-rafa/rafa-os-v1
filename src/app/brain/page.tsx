@@ -4,6 +4,7 @@ import {
   getMasterBrainDocument,
   getMasterBrainSections
 } from "@/lib/master-brain";
+import { requireCurrentDbUser } from "@/lib/auth-user";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -27,14 +28,15 @@ export default async function BrainPage({
   searchParams?: Promise<{ mode?: string }>;
 }) {
   const params = await searchParams;
+  const user = await requireCurrentDbUser();
 
   if (params?.mode === "edit") {
-    const document = await getMasterBrainDocument();
+    const document = await getMasterBrainDocument(user.id);
 
     return <BrainEditor document={document} />;
   }
 
-  const sections = await getMasterBrainSections(brainSections);
+  const sections = await getMasterBrainSections(user.id, brainSections);
 
   return <BrainPageView sections={sections} />;
 }

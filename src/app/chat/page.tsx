@@ -1,6 +1,7 @@
 import { ChatInterface } from "@/components/chat-interface";
 import { getActiveContextFields } from "@/lib/master-brain";
 import { generateMorningBrief } from "@/lib/morning-brief";
+import { requireCurrentDbUser } from "@/lib/auth-user";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -11,8 +12,9 @@ export const metadata: Metadata = {
 export const dynamic = "force-dynamic";
 
 export default async function ChatPage() {
-  const activeContext = await getActiveContextFields();
-  const morningBrief = await generateMorningBrief(activeContext);
+  const user = await requireCurrentDbUser();
+  const activeContext = await getActiveContextFields(user.id);
+  const morningBrief = await generateMorningBrief(activeContext, user.id);
 
   return <ChatInterface morningBrief={morningBrief} />;
 }
