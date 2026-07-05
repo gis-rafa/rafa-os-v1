@@ -1,0 +1,1 @@
+ALTER TABLE "memories" ALTER COLUMN "importance" SET DEFAULT 3;

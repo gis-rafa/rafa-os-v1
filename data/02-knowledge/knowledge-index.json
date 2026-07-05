@@ -1,0 +1,1141 @@
+﻿{
+    "version":  1,
+    "canonicalSource":  "V1/import/URUGUAY_AGRICULTURAL_GIS_EXECUTION_PLAN.md",
+    "duplicateSources":  [
+                             "V1/import/COMPLETE_GIS_ROADMAP_EXPORT.md"
+                         ],
+    "duplicateSections":  [
+                              {
+                                  "duplicateSource":  "V1/import/COMPLETE_GIS_ROADMAP_EXPORT.md",
+                                  "canonicalSource":  "V1/import/URUGUAY_AGRICULTURAL_GIS_EXECUTION_PLAN.md",
+                                  "reason":  "Exact duplicate source file; SHA-256 hashes match and no line differences were found.",
+                                  "handling":  "Only the canonical source was split into knowledge files; the duplicate source document was left unchanged and not imported as a second copy."
+                              }
+                          ],
+    "tags":  [
+                 "GIS",
+                 "Portfolio",
+                 "Masters",
+                 "Freelancing",
+                 "Spanish",
+                 "Branding",
+                 "Resources",
+                 "Career"
+             ],
+    "topics":  {
+                   "Branding":  [
+                                    "uruguay-agricultural-gis/01-career-strategy/positioning-ladder.md",
+                                    "uruguay-agricultural-gis/01-career-strategy/expected-income-progression.md",
+                                    "uruguay-agricultural-gis/02-execution-plan/standard-daily-schedule-month-1-gis-sprint.md",
+                                    "uruguay-agricultural-gis/02-execution-plan/90-day-milestones.md",
+                                    "uruguay-agricultural-gis/02-execution-plan/week-1-qgis-foundation-reset.md",
+                                    "uruguay-agricultural-gis/02-execution-plan/week-2-uruguay-data-and-map-discipline.md",
+                                    "uruguay-agricultural-gis/02-execution-plan/week-3-soil-mapping-with-coneat.md",
+                                    "uruguay-agricultural-gis/02-execution-plan/week-4-land-suitability-foundations.md",
+                                    "uruguay-agricultural-gis/02-execution-plan/days-29-30-month-1-sprint-close.md",
+                                    "uruguay-agricultural-gis/02-execution-plan/days-31-35-case-study-1-completion.md",
+                                    "uruguay-agricultural-gis/02-execution-plan/week-6-remote-sensing-basics.md",
+                                    "uruguay-agricultural-gis/02-execution-plan/week-7-google-earth-engine-intro.md",
+                                    "uruguay-agricultural-gis/02-execution-plan/week-8-case-study-2-completion.md",
+                                    "uruguay-agricultural-gis/02-execution-plan/week-9-freelance-service-design.md",
+                                    "uruguay-agricultural-gis/02-execution-plan/week-10-case-study-3-land-due-diligence.md",
+                                    "uruguay-agricultural-gis/02-execution-plan/week-11-master-s-preparation-begins.md",
+                                    "uruguay-agricultural-gis/02-execution-plan/week-12-portfolio-website-and-outreach.md",
+                                    "uruguay-agricultural-gis/02-execution-plan/week-13-90-day-review-and-launch.md",
+                                    "uruguay-agricultural-gis/04-branding-roadmap/part-4-personal-branding-roadmap.md",
+                                    "uruguay-agricultural-gis/04-branding-roadmap/platform-roles.md",
+                                    "uruguay-agricultural-gis/04-branding-roadmap/linkedin-strategy.md",
+                                    "uruguay-agricultural-gis/04-branding-roadmap/linkedin-profile-copy.md",
+                                    "uruguay-agricultural-gis/04-branding-roadmap/github-structure.md",
+                                    "uruguay-agricultural-gis/04-branding-roadmap/portfolio-website-sections.md",
+                                    "uruguay-agricultural-gis/04-branding-roadmap/branding-links.md",
+                                    "uruguay-agricultural-gis/05-gis-portfolio/required-deliverables-for-every-project.md",
+                                    "uruguay-agricultural-gis/06-freelancing/when-to-start-applying.md",
+                                    "uruguay-agricultural-gis/06-freelancing/platforms.md"
+                                ],
+                   "Career":  [
+                                  "uruguay-agricultural-gis/00-overview/claude-artifact-uruguay-agricultural-gis-execution-plan.md",
+                                  "uruguay-agricultural-gis/00-overview/executive-priority-stack.md",
+                                  "uruguay-agricultural-gis/01-career-strategy/part-1-career-strategy.md",
+                                  "uruguay-agricultural-gis/01-career-strategy/best-job-title-ranking.md",
+                                  "uruguay-agricultural-gis/01-career-strategy/recommended-positioning.md",
+                                  "uruguay-agricultural-gis/01-career-strategy/positioning-ladder.md",
+                                  "uruguay-agricultural-gis/01-career-strategy/pros-and-cons.md",
+                                  "uruguay-agricultural-gis/01-career-strategy/expected-income-progression.md",
+                                  "uruguay-agricultural-gis/02-execution-plan/90-day-milestones.md",
+                                  "uruguay-agricultural-gis/02-execution-plan/week-1-qgis-foundation-reset.md",
+                                  "uruguay-agricultural-gis/02-execution-plan/week-6-remote-sensing-basics.md",
+                                  "uruguay-agricultural-gis/04-branding-roadmap/platform-roles.md",
+                                  "uruguay-agricultural-gis/04-branding-roadmap/linkedin-strategy.md",
+                                  "uruguay-agricultural-gis/04-branding-roadmap/linkedin-profile-copy.md",
+                                  "uruguay-agricultural-gis/04-branding-roadmap/portfolio-website-sections.md",
+                                  "uruguay-agricultural-gis/05-gis-portfolio/portfolio-project-sequence.md",
+                                  "uruguay-agricultural-gis/06-freelancing/when-to-start-applying.md",
+                                  "uruguay-agricultural-gis/06-freelancing/platforms.md",
+                                  "uruguay-agricultural-gis/06-freelancing/avoid-initially.md",
+                                  "uruguay-agricultural-gis/07-masters-admission/official-program-facts-to-build-around.md",
+                                  "uruguay-agricultural-gis/07-masters-admission/research-topics-that-strengthen-application.md"
+                              ],
+                   "Freelancing":  [
+                                       "uruguay-agricultural-gis/00-overview/claude-artifact-uruguay-agricultural-gis-execution-plan.md",
+                                       "uruguay-agricultural-gis/00-overview/executive-priority-stack.md",
+                                       "uruguay-agricultural-gis/01-career-strategy/best-job-title-ranking.md",
+                                       "uruguay-agricultural-gis/01-career-strategy/positioning-ladder.md",
+                                       "uruguay-agricultural-gis/01-career-strategy/pros-and-cons.md",
+                                       "uruguay-agricultural-gis/01-career-strategy/expected-income-progression.md",
+                                       "uruguay-agricultural-gis/02-execution-plan/90-day-milestones.md",
+                                       "uruguay-agricultural-gis/02-execution-plan/week-9-freelance-service-design.md",
+                                       "uruguay-agricultural-gis/02-execution-plan/week-10-case-study-3-land-due-diligence.md",
+                                       "uruguay-agricultural-gis/02-execution-plan/week-12-portfolio-website-and-outreach.md",
+                                       "uruguay-agricultural-gis/04-branding-roadmap/platform-roles.md",
+                                       "uruguay-agricultural-gis/04-branding-roadmap/linkedin-strategy.md",
+                                       "uruguay-agricultural-gis/04-branding-roadmap/branding-links.md",
+                                       "uruguay-agricultural-gis/05-gis-portfolio/portfolio-project-sequence.md",
+                                       "uruguay-agricultural-gis/05-gis-portfolio/data-sources.md",
+                                       "uruguay-agricultural-gis/06-freelancing/part-6-freelancing-strategy.md",
+                                       "uruguay-agricultural-gis/06-freelancing/when-to-start-applying.md",
+                                       "uruguay-agricultural-gis/06-freelancing/platforms.md",
+                                       "uruguay-agricultural-gis/06-freelancing/target-first.md",
+                                       "uruguay-agricultural-gis/06-freelancing/avoid-initially.md",
+                                       "uruguay-agricultural-gis/06-freelancing/service-packages.md",
+                                       "uruguay-agricultural-gis/06-freelancing/proposal-formula.md",
+                                       "uruguay-agricultural-gis/07-masters-admission/month-by-month-admission-roadmap.md",
+                                       "uruguay-agricultural-gis/08-operating-rules/final-operating-rules.md"
+                                   ],
+                   "GIS":  [
+                               "uruguay-agricultural-gis/00-overview/claude-artifact-uruguay-agricultural-gis-execution-plan.md",
+                               "uruguay-agricultural-gis/00-overview/executive-priority-stack.md",
+                               "uruguay-agricultural-gis/01-career-strategy/part-1-career-strategy.md",
+                               "uruguay-agricultural-gis/01-career-strategy/best-job-title-ranking.md",
+                               "uruguay-agricultural-gis/01-career-strategy/recommended-positioning.md",
+                               "uruguay-agricultural-gis/01-career-strategy/positioning-ladder.md",
+                               "uruguay-agricultural-gis/01-career-strategy/pros-and-cons.md",
+                               "uruguay-agricultural-gis/01-career-strategy/expected-income-progression.md",
+                               "uruguay-agricultural-gis/02-execution-plan/part-2-90-day-execution-plan.md",
+                               "uruguay-agricultural-gis/02-execution-plan/standard-daily-schedule-month-1-gis-sprint.md",
+                               "uruguay-agricultural-gis/02-execution-plan/90-day-milestones.md",
+                               "uruguay-agricultural-gis/02-execution-plan/daily-execution-table-month-1-gis-sprint.md",
+                               "uruguay-agricultural-gis/02-execution-plan/week-1-qgis-foundation-reset.md",
+                               "uruguay-agricultural-gis/02-execution-plan/week-2-uruguay-data-and-map-discipline.md",
+                               "uruguay-agricultural-gis/02-execution-plan/week-3-soil-mapping-with-coneat.md",
+                               "uruguay-agricultural-gis/02-execution-plan/week-4-land-suitability-foundations.md",
+                               "uruguay-agricultural-gis/02-execution-plan/days-29-30-month-1-sprint-close.md",
+                               "uruguay-agricultural-gis/02-execution-plan/days-31-35-case-study-1-completion.md",
+                               "uruguay-agricultural-gis/02-execution-plan/week-6-remote-sensing-basics.md",
+                               "uruguay-agricultural-gis/02-execution-plan/week-7-google-earth-engine-intro.md",
+                               "uruguay-agricultural-gis/02-execution-plan/week-8-case-study-2-completion.md",
+                               "uruguay-agricultural-gis/02-execution-plan/week-9-freelance-service-design.md",
+                               "uruguay-agricultural-gis/02-execution-plan/week-10-case-study-3-land-due-diligence.md",
+                               "uruguay-agricultural-gis/02-execution-plan/week-11-master-s-preparation-begins.md",
+                               "uruguay-agricultural-gis/02-execution-plan/week-12-portfolio-website-and-outreach.md",
+                               "uruguay-agricultural-gis/02-execution-plan/week-13-90-day-review-and-launch.md",
+                               "uruguay-agricultural-gis/03-spanish-roadmap/part-3-spanish-roadmap.md",
+                               "uruguay-agricultural-gis/03-spanish-roadmap/spanish-target.md",
+                               "uruguay-agricultural-gis/03-spanish-roadmap/daily-spanish-schedule.md",
+                               "uruguay-agricultural-gis/03-spanish-roadmap/progression-order.md",
+                               "uruguay-agricultural-gis/03-spanish-roadmap/recommended-links.md",
+                               "uruguay-agricultural-gis/04-branding-roadmap/part-4-personal-branding-roadmap.md",
+                               "uruguay-agricultural-gis/04-branding-roadmap/platform-roles.md",
+                               "uruguay-agricultural-gis/04-branding-roadmap/linkedin-strategy.md",
+                               "uruguay-agricultural-gis/04-branding-roadmap/linkedin-profile-copy.md",
+                               "uruguay-agricultural-gis/04-branding-roadmap/github-structure.md",
+                               "uruguay-agricultural-gis/04-branding-roadmap/portfolio-website-sections.md",
+                               "uruguay-agricultural-gis/04-branding-roadmap/branding-links.md",
+                               "uruguay-agricultural-gis/05-gis-portfolio/part-5-gis-portfolio-roadmap.md",
+                               "uruguay-agricultural-gis/05-gis-portfolio/portfolio-project-sequence.md",
+                               "uruguay-agricultural-gis/05-gis-portfolio/required-deliverables-for-every-project.md",
+                               "uruguay-agricultural-gis/05-gis-portfolio/data-sources.md",
+                               "uruguay-agricultural-gis/06-freelancing/part-6-freelancing-strategy.md",
+                               "uruguay-agricultural-gis/06-freelancing/when-to-start-applying.md",
+                               "uruguay-agricultural-gis/06-freelancing/platforms.md",
+                               "uruguay-agricultural-gis/06-freelancing/target-first.md",
+                               "uruguay-agricultural-gis/06-freelancing/avoid-initially.md",
+                               "uruguay-agricultural-gis/06-freelancing/service-packages.md",
+                               "uruguay-agricultural-gis/06-freelancing/proposal-formula.md",
+                               "uruguay-agricultural-gis/07-masters-admission/part-7-master-s-admission-preparation.md",
+                               "uruguay-agricultural-gis/07-masters-admission/official-program-facts-to-build-around.md",
+                               "uruguay-agricultural-gis/07-masters-admission/month-by-month-admission-roadmap.md",
+                               "uruguay-agricultural-gis/07-masters-admission/research-topics-that-strengthen-application.md",
+                               "uruguay-agricultural-gis/07-masters-admission/admission-document-checklist.md",
+                               "uruguay-agricultural-gis/08-operating-rules/final-operating-rules.md",
+                               "uruguay-agricultural-gis/08-operating-rules/source-anchors.md"
+                           ],
+                   "Masters":  [
+                                   "uruguay-agricultural-gis/00-overview/claude-artifact-uruguay-agricultural-gis-execution-plan.md",
+                                   "uruguay-agricultural-gis/00-overview/executive-priority-stack.md",
+                                   "uruguay-agricultural-gis/01-career-strategy/best-job-title-ranking.md",
+                                   "uruguay-agricultural-gis/01-career-strategy/recommended-positioning.md",
+                                   "uruguay-agricultural-gis/01-career-strategy/positioning-ladder.md",
+                                   "uruguay-agricultural-gis/02-execution-plan/week-1-qgis-foundation-reset.md",
+                                   "uruguay-agricultural-gis/02-execution-plan/week-2-uruguay-data-and-map-discipline.md",
+                                   "uruguay-agricultural-gis/02-execution-plan/week-3-soil-mapping-with-coneat.md",
+                                   "uruguay-agricultural-gis/02-execution-plan/week-4-land-suitability-foundations.md",
+                                   "uruguay-agricultural-gis/02-execution-plan/days-29-30-month-1-sprint-close.md",
+                                   "uruguay-agricultural-gis/02-execution-plan/days-31-35-case-study-1-completion.md",
+                                   "uruguay-agricultural-gis/02-execution-plan/week-6-remote-sensing-basics.md",
+                                   "uruguay-agricultural-gis/02-execution-plan/week-7-google-earth-engine-intro.md",
+                                   "uruguay-agricultural-gis/02-execution-plan/week-8-case-study-2-completion.md",
+                                   "uruguay-agricultural-gis/02-execution-plan/week-9-freelance-service-design.md",
+                                   "uruguay-agricultural-gis/02-execution-plan/week-10-case-study-3-land-due-diligence.md",
+                                   "uruguay-agricultural-gis/02-execution-plan/week-11-master-s-preparation-begins.md",
+                                   "uruguay-agricultural-gis/02-execution-plan/week-12-portfolio-website-and-outreach.md",
+                                   "uruguay-agricultural-gis/02-execution-plan/week-13-90-day-review-and-launch.md",
+                                   "uruguay-agricultural-gis/03-spanish-roadmap/spanish-target.md",
+                                   "uruguay-agricultural-gis/03-spanish-roadmap/progression-order.md",
+                                   "uruguay-agricultural-gis/04-branding-roadmap/platform-roles.md",
+                                   "uruguay-agricultural-gis/04-branding-roadmap/portfolio-website-sections.md",
+                                   "uruguay-agricultural-gis/05-gis-portfolio/portfolio-project-sequence.md",
+                                   "uruguay-agricultural-gis/06-freelancing/target-first.md",
+                                   "uruguay-agricultural-gis/07-masters-admission/part-7-master-s-admission-preparation.md",
+                                   "uruguay-agricultural-gis/07-masters-admission/official-program-facts-to-build-around.md",
+                                   "uruguay-agricultural-gis/07-masters-admission/month-by-month-admission-roadmap.md",
+                                   "uruguay-agricultural-gis/07-masters-admission/research-topics-that-strengthen-application.md",
+                                   "uruguay-agricultural-gis/07-masters-admission/admission-document-checklist.md",
+                                   "uruguay-agricultural-gis/08-operating-rules/source-anchors.md"
+                               ],
+                   "Portfolio":  [
+                                     "uruguay-agricultural-gis/00-overview/claude-artifact-uruguay-agricultural-gis-execution-plan.md",
+                                     "uruguay-agricultural-gis/00-overview/executive-priority-stack.md",
+                                     "uruguay-agricultural-gis/01-career-strategy/best-job-title-ranking.md",
+                                     "uruguay-agricultural-gis/01-career-strategy/recommended-positioning.md",
+                                     "uruguay-agricultural-gis/01-career-strategy/positioning-ladder.md",
+                                     "uruguay-agricultural-gis/01-career-strategy/pros-and-cons.md",
+                                     "uruguay-agricultural-gis/01-career-strategy/expected-income-progression.md",
+                                     "uruguay-agricultural-gis/02-execution-plan/standard-daily-schedule-month-1-gis-sprint.md",
+                                     "uruguay-agricultural-gis/02-execution-plan/90-day-milestones.md",
+                                     "uruguay-agricultural-gis/02-execution-plan/week-1-qgis-foundation-reset.md",
+                                     "uruguay-agricultural-gis/02-execution-plan/week-2-uruguay-data-and-map-discipline.md",
+                                     "uruguay-agricultural-gis/02-execution-plan/week-3-soil-mapping-with-coneat.md",
+                                     "uruguay-agricultural-gis/02-execution-plan/week-4-land-suitability-foundations.md",
+                                     "uruguay-agricultural-gis/02-execution-plan/days-29-30-month-1-sprint-close.md",
+                                     "uruguay-agricultural-gis/02-execution-plan/days-31-35-case-study-1-completion.md",
+                                     "uruguay-agricultural-gis/02-execution-plan/week-6-remote-sensing-basics.md",
+                                     "uruguay-agricultural-gis/02-execution-plan/week-7-google-earth-engine-intro.md",
+                                     "uruguay-agricultural-gis/02-execution-plan/week-8-case-study-2-completion.md",
+                                     "uruguay-agricultural-gis/02-execution-plan/week-9-freelance-service-design.md",
+                                     "uruguay-agricultural-gis/02-execution-plan/week-10-case-study-3-land-due-diligence.md",
+                                     "uruguay-agricultural-gis/02-execution-plan/week-11-master-s-preparation-begins.md",
+                                     "uruguay-agricultural-gis/02-execution-plan/week-12-portfolio-website-and-outreach.md",
+                                     "uruguay-agricultural-gis/02-execution-plan/week-13-90-day-review-and-launch.md",
+                                     "uruguay-agricultural-gis/04-branding-roadmap/platform-roles.md",
+                                     "uruguay-agricultural-gis/04-branding-roadmap/linkedin-strategy.md",
+                                     "uruguay-agricultural-gis/04-branding-roadmap/linkedin-profile-copy.md",
+                                     "uruguay-agricultural-gis/04-branding-roadmap/github-structure.md",
+                                     "uruguay-agricultural-gis/04-branding-roadmap/portfolio-website-sections.md",
+                                     "uruguay-agricultural-gis/04-branding-roadmap/branding-links.md",
+                                     "uruguay-agricultural-gis/05-gis-portfolio/part-5-gis-portfolio-roadmap.md",
+                                     "uruguay-agricultural-gis/05-gis-portfolio/portfolio-project-sequence.md",
+                                     "uruguay-agricultural-gis/05-gis-portfolio/required-deliverables-for-every-project.md",
+                                     "uruguay-agricultural-gis/05-gis-portfolio/data-sources.md",
+                                     "uruguay-agricultural-gis/06-freelancing/target-first.md",
+                                     "uruguay-agricultural-gis/06-freelancing/service-packages.md",
+                                     "uruguay-agricultural-gis/06-freelancing/proposal-formula.md",
+                                     "uruguay-agricultural-gis/07-masters-admission/month-by-month-admission-roadmap.md",
+                                     "uruguay-agricultural-gis/07-masters-admission/admission-document-checklist.md",
+                                     "uruguay-agricultural-gis/08-operating-rules/final-operating-rules.md"
+                                 ],
+                   "Resources":  [
+                                     "uruguay-agricultural-gis/01-career-strategy/best-job-title-ranking.md",
+                                     "uruguay-agricultural-gis/02-execution-plan/90-day-milestones.md",
+                                     "uruguay-agricultural-gis/02-execution-plan/week-1-qgis-foundation-reset.md",
+                                     "uruguay-agricultural-gis/02-execution-plan/week-2-uruguay-data-and-map-discipline.md",
+                                     "uruguay-agricultural-gis/02-execution-plan/week-4-land-suitability-foundations.md",
+                                     "uruguay-agricultural-gis/02-execution-plan/week-6-remote-sensing-basics.md",
+                                     "uruguay-agricultural-gis/02-execution-plan/week-10-case-study-3-land-due-diligence.md",
+                                     "uruguay-agricultural-gis/02-execution-plan/week-12-portfolio-website-and-outreach.md",
+                                     "uruguay-agricultural-gis/03-spanish-roadmap/spanish-target.md",
+                                     "uruguay-agricultural-gis/03-spanish-roadmap/progression-order.md",
+                                     "uruguay-agricultural-gis/03-spanish-roadmap/recommended-links.md",
+                                     "uruguay-agricultural-gis/04-branding-roadmap/portfolio-website-sections.md",
+                                     "uruguay-agricultural-gis/04-branding-roadmap/branding-links.md",
+                                     "uruguay-agricultural-gis/05-gis-portfolio/portfolio-project-sequence.md",
+                                     "uruguay-agricultural-gis/05-gis-portfolio/required-deliverables-for-every-project.md",
+                                     "uruguay-agricultural-gis/05-gis-portfolio/data-sources.md",
+                                     "uruguay-agricultural-gis/07-masters-admission/official-program-facts-to-build-around.md",
+                                     "uruguay-agricultural-gis/08-operating-rules/source-anchors.md"
+                                 ],
+                   "Spanish":  [
+                                   "uruguay-agricultural-gis/00-overview/claude-artifact-uruguay-agricultural-gis-execution-plan.md",
+                                   "uruguay-agricultural-gis/00-overview/executive-priority-stack.md",
+                                   "uruguay-agricultural-gis/01-career-strategy/pros-and-cons.md",
+                                   "uruguay-agricultural-gis/02-execution-plan/standard-daily-schedule-month-1-gis-sprint.md",
+                                   "uruguay-agricultural-gis/02-execution-plan/90-day-milestones.md",
+                                   "uruguay-agricultural-gis/02-execution-plan/week-6-remote-sensing-basics.md",
+                                   "uruguay-agricultural-gis/02-execution-plan/week-7-google-earth-engine-intro.md",
+                                   "uruguay-agricultural-gis/02-execution-plan/week-8-case-study-2-completion.md",
+                                   "uruguay-agricultural-gis/02-execution-plan/week-9-freelance-service-design.md",
+                                   "uruguay-agricultural-gis/02-execution-plan/week-10-case-study-3-land-due-diligence.md",
+                                   "uruguay-agricultural-gis/02-execution-plan/week-11-master-s-preparation-begins.md",
+                                   "uruguay-agricultural-gis/02-execution-plan/week-12-portfolio-website-and-outreach.md",
+                                   "uruguay-agricultural-gis/02-execution-plan/week-13-90-day-review-and-launch.md",
+                                   "uruguay-agricultural-gis/03-spanish-roadmap/part-3-spanish-roadmap.md",
+                                   "uruguay-agricultural-gis/03-spanish-roadmap/spanish-target.md",
+                                   "uruguay-agricultural-gis/03-spanish-roadmap/daily-spanish-schedule.md",
+                                   "uruguay-agricultural-gis/03-spanish-roadmap/progression-order.md",
+                                   "uruguay-agricultural-gis/03-spanish-roadmap/recommended-links.md",
+                                   "uruguay-agricultural-gis/05-gis-portfolio/required-deliverables-for-every-project.md",
+                                   "uruguay-agricultural-gis/07-masters-admission/month-by-month-admission-roadmap.md",
+                                   "uruguay-agricultural-gis/07-masters-admission/admission-document-checklist.md",
+                                   "uruguay-agricultural-gis/08-operating-rules/final-operating-rules.md",
+                                   "uruguay-agricultural-gis/08-operating-rules/source-anchors.md"
+                               ]
+               },
+    "files":  [
+                  {
+                      "title":  "Claude Artifact: Uruguay Agricultural GIS Execution Plan",
+                      "file":  "uruguay-agricultural-gis/00-overview/claude-artifact-uruguay-agricultural-gis-execution-plan.md",
+                      "source":  "V1/import/URUGUAY_AGRICULTURAL_GIS_EXECUTION_PLAN.md",
+                      "duplicateSources":  [
+                                               "V1/import/COMPLETE_GIS_ROADMAP_EXPORT.md"
+                                           ],
+                      "level":  1,
+                      "tags":  [
+                                   "GIS",
+                                   "Portfolio",
+                                   "Masters",
+                                   "Freelancing",
+                                   "Spanish",
+                                   "Career"
+                               ]
+                  },
+                  {
+                      "title":  "Executive Priority Stack",
+                      "file":  "uruguay-agricultural-gis/00-overview/executive-priority-stack.md",
+                      "source":  "V1/import/URUGUAY_AGRICULTURAL_GIS_EXECUTION_PLAN.md",
+                      "duplicateSources":  [
+                                               "V1/import/COMPLETE_GIS_ROADMAP_EXPORT.md"
+                                           ],
+                      "level":  2,
+                      "tags":  [
+                                   "GIS",
+                                   "Portfolio",
+                                   "Masters",
+                                   "Freelancing",
+                                   "Spanish",
+                                   "Career"
+                               ]
+                  },
+                  {
+                      "title":  "Part 1 - Career Strategy",
+                      "file":  "uruguay-agricultural-gis/01-career-strategy/part-1-career-strategy.md",
+                      "source":  "V1/import/URUGUAY_AGRICULTURAL_GIS_EXECUTION_PLAN.md",
+                      "duplicateSources":  [
+                                               "V1/import/COMPLETE_GIS_ROADMAP_EXPORT.md"
+                                           ],
+                      "level":  1,
+                      "tags":  [
+                                   "GIS",
+                                   "Career"
+                               ]
+                  },
+                  {
+                      "title":  "Best Job Title Ranking",
+                      "file":  "uruguay-agricultural-gis/01-career-strategy/best-job-title-ranking.md",
+                      "source":  "V1/import/URUGUAY_AGRICULTURAL_GIS_EXECUTION_PLAN.md",
+                      "duplicateSources":  [
+                                               "V1/import/COMPLETE_GIS_ROADMAP_EXPORT.md"
+                                           ],
+                      "level":  2,
+                      "tags":  [
+                                   "GIS",
+                                   "Career",
+                                   "Portfolio",
+                                   "Masters",
+                                   "Freelancing",
+                                   "Resources"
+                               ]
+                  },
+                  {
+                      "title":  "Recommended Positioning",
+                      "file":  "uruguay-agricultural-gis/01-career-strategy/recommended-positioning.md",
+                      "source":  "V1/import/URUGUAY_AGRICULTURAL_GIS_EXECUTION_PLAN.md",
+                      "duplicateSources":  [
+                                               "V1/import/COMPLETE_GIS_ROADMAP_EXPORT.md"
+                                           ],
+                      "level":  2,
+                      "tags":  [
+                                   "GIS",
+                                   "Career",
+                                   "Portfolio",
+                                   "Masters"
+                               ]
+                  },
+                  {
+                      "title":  "Positioning Ladder",
+                      "file":  "uruguay-agricultural-gis/01-career-strategy/positioning-ladder.md",
+                      "source":  "V1/import/URUGUAY_AGRICULTURAL_GIS_EXECUTION_PLAN.md",
+                      "duplicateSources":  [
+                                               "V1/import/COMPLETE_GIS_ROADMAP_EXPORT.md"
+                                           ],
+                      "level":  2,
+                      "tags":  [
+                                   "GIS",
+                                   "Career",
+                                   "Portfolio",
+                                   "Masters",
+                                   "Freelancing",
+                                   "Branding"
+                               ]
+                  },
+                  {
+                      "title":  "Pros And Cons",
+                      "file":  "uruguay-agricultural-gis/01-career-strategy/pros-and-cons.md",
+                      "source":  "V1/import/URUGUAY_AGRICULTURAL_GIS_EXECUTION_PLAN.md",
+                      "duplicateSources":  [
+                                               "V1/import/COMPLETE_GIS_ROADMAP_EXPORT.md"
+                                           ],
+                      "level":  2,
+                      "tags":  [
+                                   "GIS",
+                                   "Career",
+                                   "Portfolio",
+                                   "Freelancing",
+                                   "Spanish"
+                               ]
+                  },
+                  {
+                      "title":  "Expected Income Progression",
+                      "file":  "uruguay-agricultural-gis/01-career-strategy/expected-income-progression.md",
+                      "source":  "V1/import/URUGUAY_AGRICULTURAL_GIS_EXECUTION_PLAN.md",
+                      "duplicateSources":  [
+                                               "V1/import/COMPLETE_GIS_ROADMAP_EXPORT.md"
+                                           ],
+                      "level":  2,
+                      "tags":  [
+                                   "GIS",
+                                   "Career",
+                                   "Portfolio",
+                                   "Freelancing",
+                                   "Branding"
+                               ]
+                  },
+                  {
+                      "title":  "Part 2 - 90-Day Execution Plan",
+                      "file":  "uruguay-agricultural-gis/02-execution-plan/part-2-90-day-execution-plan.md",
+                      "source":  "V1/import/URUGUAY_AGRICULTURAL_GIS_EXECUTION_PLAN.md",
+                      "duplicateSources":  [
+                                               "V1/import/COMPLETE_GIS_ROADMAP_EXPORT.md"
+                                           ],
+                      "level":  1,
+                      "tags":  [
+                                   "GIS"
+                               ]
+                  },
+                  {
+                      "title":  "Standard Daily Schedule - Month 1 GIS Sprint",
+                      "file":  "uruguay-agricultural-gis/02-execution-plan/standard-daily-schedule-month-1-gis-sprint.md",
+                      "source":  "V1/import/URUGUAY_AGRICULTURAL_GIS_EXECUTION_PLAN.md",
+                      "duplicateSources":  [
+                                               "V1/import/COMPLETE_GIS_ROADMAP_EXPORT.md"
+                                           ],
+                      "level":  2,
+                      "tags":  [
+                                   "GIS",
+                                   "Portfolio",
+                                   "Spanish",
+                                   "Branding"
+                               ]
+                  },
+                  {
+                      "title":  "90-Day Milestones",
+                      "file":  "uruguay-agricultural-gis/02-execution-plan/90-day-milestones.md",
+                      "source":  "V1/import/URUGUAY_AGRICULTURAL_GIS_EXECUTION_PLAN.md",
+                      "duplicateSources":  [
+                                               "V1/import/COMPLETE_GIS_ROADMAP_EXPORT.md"
+                                           ],
+                      "level":  2,
+                      "tags":  [
+                                   "GIS",
+                                   "Portfolio",
+                                   "Freelancing",
+                                   "Spanish",
+                                   "Branding",
+                                   "Resources",
+                                   "Career"
+                               ]
+                  },
+                  {
+                      "title":  "Daily Execution Table - Month 1 GIS Sprint",
+                      "file":  "uruguay-agricultural-gis/02-execution-plan/daily-execution-table-month-1-gis-sprint.md",
+                      "source":  "V1/import/URUGUAY_AGRICULTURAL_GIS_EXECUTION_PLAN.md",
+                      "duplicateSources":  [
+                                               "V1/import/COMPLETE_GIS_ROADMAP_EXPORT.md"
+                                           ],
+                      "level":  2,
+                      "tags":  [
+                                   "GIS"
+                               ]
+                  },
+                  {
+                      "title":  "Week 1 - QGIS Foundation Reset",
+                      "file":  "uruguay-agricultural-gis/02-execution-plan/week-1-qgis-foundation-reset.md",
+                      "source":  "V1/import/URUGUAY_AGRICULTURAL_GIS_EXECUTION_PLAN.md",
+                      "duplicateSources":  [
+                                               "V1/import/COMPLETE_GIS_ROADMAP_EXPORT.md"
+                                           ],
+                      "level":  3,
+                      "tags":  [
+                                   "GIS",
+                                   "Portfolio",
+                                   "Masters",
+                                   "Branding",
+                                   "Resources",
+                                   "Career"
+                               ]
+                  },
+                  {
+                      "title":  "Week 2 - Uruguay Data And Map Discipline",
+                      "file":  "uruguay-agricultural-gis/02-execution-plan/week-2-uruguay-data-and-map-discipline.md",
+                      "source":  "V1/import/URUGUAY_AGRICULTURAL_GIS_EXECUTION_PLAN.md",
+                      "duplicateSources":  [
+                                               "V1/import/COMPLETE_GIS_ROADMAP_EXPORT.md"
+                                           ],
+                      "level":  3,
+                      "tags":  [
+                                   "GIS",
+                                   "Portfolio",
+                                   "Masters",
+                                   "Branding",
+                                   "Resources"
+                               ]
+                  },
+                  {
+                      "title":  "Week 3 - Soil Mapping With CONEAT",
+                      "file":  "uruguay-agricultural-gis/02-execution-plan/week-3-soil-mapping-with-coneat.md",
+                      "source":  "V1/import/URUGUAY_AGRICULTURAL_GIS_EXECUTION_PLAN.md",
+                      "duplicateSources":  [
+                                               "V1/import/COMPLETE_GIS_ROADMAP_EXPORT.md"
+                                           ],
+                      "level":  3,
+                      "tags":  [
+                                   "GIS",
+                                   "Portfolio",
+                                   "Masters",
+                                   "Branding"
+                               ]
+                  },
+                  {
+                      "title":  "Week 4 - Land Suitability Foundations",
+                      "file":  "uruguay-agricultural-gis/02-execution-plan/week-4-land-suitability-foundations.md",
+                      "source":  "V1/import/URUGUAY_AGRICULTURAL_GIS_EXECUTION_PLAN.md",
+                      "duplicateSources":  [
+                                               "V1/import/COMPLETE_GIS_ROADMAP_EXPORT.md"
+                                           ],
+                      "level":  3,
+                      "tags":  [
+                                   "GIS",
+                                   "Portfolio",
+                                   "Masters",
+                                   "Branding",
+                                   "Resources"
+                               ]
+                  },
+                  {
+                      "title":  "Days 29-30 - Month 1 Sprint Close",
+                      "file":  "uruguay-agricultural-gis/02-execution-plan/days-29-30-month-1-sprint-close.md",
+                      "source":  "V1/import/URUGUAY_AGRICULTURAL_GIS_EXECUTION_PLAN.md",
+                      "duplicateSources":  [
+                                               "V1/import/COMPLETE_GIS_ROADMAP_EXPORT.md"
+                                           ],
+                      "level":  3,
+                      "tags":  [
+                                   "GIS",
+                                   "Portfolio",
+                                   "Masters",
+                                   "Branding"
+                               ]
+                  },
+                  {
+                      "title":  "Days 31-35 - Case Study 1 Completion",
+                      "file":  "uruguay-agricultural-gis/02-execution-plan/days-31-35-case-study-1-completion.md",
+                      "source":  "V1/import/URUGUAY_AGRICULTURAL_GIS_EXECUTION_PLAN.md",
+                      "duplicateSources":  [
+                                               "V1/import/COMPLETE_GIS_ROADMAP_EXPORT.md"
+                                           ],
+                      "level":  3,
+                      "tags":  [
+                                   "GIS",
+                                   "Portfolio",
+                                   "Masters",
+                                   "Branding"
+                               ]
+                  },
+                  {
+                      "title":  "Week 6 - Remote Sensing Basics",
+                      "file":  "uruguay-agricultural-gis/02-execution-plan/week-6-remote-sensing-basics.md",
+                      "source":  "V1/import/URUGUAY_AGRICULTURAL_GIS_EXECUTION_PLAN.md",
+                      "duplicateSources":  [
+                                               "V1/import/COMPLETE_GIS_ROADMAP_EXPORT.md"
+                                           ],
+                      "level":  3,
+                      "tags":  [
+                                   "GIS",
+                                   "Portfolio",
+                                   "Masters",
+                                   "Spanish",
+                                   "Branding",
+                                   "Resources",
+                                   "Career"
+                               ]
+                  },
+                  {
+                      "title":  "Week 7 - Google Earth Engine Intro",
+                      "file":  "uruguay-agricultural-gis/02-execution-plan/week-7-google-earth-engine-intro.md",
+                      "source":  "V1/import/URUGUAY_AGRICULTURAL_GIS_EXECUTION_PLAN.md",
+                      "duplicateSources":  [
+                                               "V1/import/COMPLETE_GIS_ROADMAP_EXPORT.md"
+                                           ],
+                      "level":  3,
+                      "tags":  [
+                                   "GIS",
+                                   "Portfolio",
+                                   "Masters",
+                                   "Spanish",
+                                   "Branding"
+                               ]
+                  },
+                  {
+                      "title":  "Week 8 - Case Study 2 Completion",
+                      "file":  "uruguay-agricultural-gis/02-execution-plan/week-8-case-study-2-completion.md",
+                      "source":  "V1/import/URUGUAY_AGRICULTURAL_GIS_EXECUTION_PLAN.md",
+                      "duplicateSources":  [
+                                               "V1/import/COMPLETE_GIS_ROADMAP_EXPORT.md"
+                                           ],
+                      "level":  3,
+                      "tags":  [
+                                   "GIS",
+                                   "Portfolio",
+                                   "Masters",
+                                   "Spanish",
+                                   "Branding"
+                               ]
+                  },
+                  {
+                      "title":  "Week 9 - Freelance Service Design",
+                      "file":  "uruguay-agricultural-gis/02-execution-plan/week-9-freelance-service-design.md",
+                      "source":  "V1/import/URUGUAY_AGRICULTURAL_GIS_EXECUTION_PLAN.md",
+                      "duplicateSources":  [
+                                               "V1/import/COMPLETE_GIS_ROADMAP_EXPORT.md"
+                                           ],
+                      "level":  3,
+                      "tags":  [
+                                   "GIS",
+                                   "Portfolio",
+                                   "Masters",
+                                   "Freelancing",
+                                   "Spanish",
+                                   "Branding"
+                               ]
+                  },
+                  {
+                      "title":  "Week 10 - Case Study 3: Land Due Diligence",
+                      "file":  "uruguay-agricultural-gis/02-execution-plan/week-10-case-study-3-land-due-diligence.md",
+                      "source":  "V1/import/URUGUAY_AGRICULTURAL_GIS_EXECUTION_PLAN.md",
+                      "duplicateSources":  [
+                                               "V1/import/COMPLETE_GIS_ROADMAP_EXPORT.md"
+                                           ],
+                      "level":  3,
+                      "tags":  [
+                                   "GIS",
+                                   "Portfolio",
+                                   "Masters",
+                                   "Freelancing",
+                                   "Spanish",
+                                   "Branding",
+                                   "Resources"
+                               ]
+                  },
+                  {
+                      "title":  "Week 11 - Master\u0027s Preparation Begins",
+                      "file":  "uruguay-agricultural-gis/02-execution-plan/week-11-master-s-preparation-begins.md",
+                      "source":  "V1/import/URUGUAY_AGRICULTURAL_GIS_EXECUTION_PLAN.md",
+                      "duplicateSources":  [
+                                               "V1/import/COMPLETE_GIS_ROADMAP_EXPORT.md"
+                                           ],
+                      "level":  3,
+                      "tags":  [
+                                   "GIS",
+                                   "Portfolio",
+                                   "Masters",
+                                   "Spanish",
+                                   "Branding"
+                               ]
+                  },
+                  {
+                      "title":  "Week 12 - Portfolio Website And Outreach",
+                      "file":  "uruguay-agricultural-gis/02-execution-plan/week-12-portfolio-website-and-outreach.md",
+                      "source":  "V1/import/URUGUAY_AGRICULTURAL_GIS_EXECUTION_PLAN.md",
+                      "duplicateSources":  [
+                                               "V1/import/COMPLETE_GIS_ROADMAP_EXPORT.md"
+                                           ],
+                      "level":  3,
+                      "tags":  [
+                                   "GIS",
+                                   "Portfolio",
+                                   "Masters",
+                                   "Freelancing",
+                                   "Spanish",
+                                   "Branding",
+                                   "Resources"
+                               ]
+                  },
+                  {
+                      "title":  "Week 13 - 90-Day Review And Launch",
+                      "file":  "uruguay-agricultural-gis/02-execution-plan/week-13-90-day-review-and-launch.md",
+                      "source":  "V1/import/URUGUAY_AGRICULTURAL_GIS_EXECUTION_PLAN.md",
+                      "duplicateSources":  [
+                                               "V1/import/COMPLETE_GIS_ROADMAP_EXPORT.md"
+                                           ],
+                      "level":  3,
+                      "tags":  [
+                                   "GIS",
+                                   "Portfolio",
+                                   "Masters",
+                                   "Spanish",
+                                   "Branding"
+                               ]
+                  },
+                  {
+                      "title":  "Part 3 - Spanish Roadmap",
+                      "file":  "uruguay-agricultural-gis/03-spanish-roadmap/part-3-spanish-roadmap.md",
+                      "source":  "V1/import/URUGUAY_AGRICULTURAL_GIS_EXECUTION_PLAN.md",
+                      "duplicateSources":  [
+                                               "V1/import/COMPLETE_GIS_ROADMAP_EXPORT.md"
+                                           ],
+                      "level":  1,
+                      "tags":  [
+                                   "GIS",
+                                   "Spanish"
+                               ]
+                  },
+                  {
+                      "title":  "Spanish Target",
+                      "file":  "uruguay-agricultural-gis/03-spanish-roadmap/spanish-target.md",
+                      "source":  "V1/import/URUGUAY_AGRICULTURAL_GIS_EXECUTION_PLAN.md",
+                      "duplicateSources":  [
+                                               "V1/import/COMPLETE_GIS_ROADMAP_EXPORT.md"
+                                           ],
+                      "level":  2,
+                      "tags":  [
+                                   "GIS",
+                                   "Spanish",
+                                   "Masters",
+                                   "Resources"
+                               ]
+                  },
+                  {
+                      "title":  "Daily Spanish Schedule",
+                      "file":  "uruguay-agricultural-gis/03-spanish-roadmap/daily-spanish-schedule.md",
+                      "source":  "V1/import/URUGUAY_AGRICULTURAL_GIS_EXECUTION_PLAN.md",
+                      "duplicateSources":  [
+                                               "V1/import/COMPLETE_GIS_ROADMAP_EXPORT.md"
+                                           ],
+                      "level":  2,
+                      "tags":  [
+                                   "GIS",
+                                   "Spanish"
+                               ]
+                  },
+                  {
+                      "title":  "Progression Order",
+                      "file":  "uruguay-agricultural-gis/03-spanish-roadmap/progression-order.md",
+                      "source":  "V1/import/URUGUAY_AGRICULTURAL_GIS_EXECUTION_PLAN.md",
+                      "duplicateSources":  [
+                                               "V1/import/COMPLETE_GIS_ROADMAP_EXPORT.md"
+                                           ],
+                      "level":  2,
+                      "tags":  [
+                                   "GIS",
+                                   "Spanish",
+                                   "Masters",
+                                   "Resources"
+                               ]
+                  },
+                  {
+                      "title":  "Recommended Links",
+                      "file":  "uruguay-agricultural-gis/03-spanish-roadmap/recommended-links.md",
+                      "source":  "V1/import/URUGUAY_AGRICULTURAL_GIS_EXECUTION_PLAN.md",
+                      "duplicateSources":  [
+                                               "V1/import/COMPLETE_GIS_ROADMAP_EXPORT.md"
+                                           ],
+                      "level":  2,
+                      "tags":  [
+                                   "GIS",
+                                   "Spanish",
+                                   "Resources"
+                               ]
+                  },
+                  {
+                      "title":  "Part 4 - Personal Branding Roadmap",
+                      "file":  "uruguay-agricultural-gis/04-branding-roadmap/part-4-personal-branding-roadmap.md",
+                      "source":  "V1/import/URUGUAY_AGRICULTURAL_GIS_EXECUTION_PLAN.md",
+                      "duplicateSources":  [
+                                               "V1/import/COMPLETE_GIS_ROADMAP_EXPORT.md"
+                                           ],
+                      "level":  1,
+                      "tags":  [
+                                   "GIS",
+                                   "Branding"
+                               ]
+                  },
+                  {
+                      "title":  "Platform Roles",
+                      "file":  "uruguay-agricultural-gis/04-branding-roadmap/platform-roles.md",
+                      "source":  "V1/import/URUGUAY_AGRICULTURAL_GIS_EXECUTION_PLAN.md",
+                      "duplicateSources":  [
+                                               "V1/import/COMPLETE_GIS_ROADMAP_EXPORT.md"
+                                           ],
+                      "level":  2,
+                      "tags":  [
+                                   "GIS",
+                                   "Branding",
+                                   "Portfolio",
+                                   "Masters",
+                                   "Freelancing",
+                                   "Career"
+                               ]
+                  },
+                  {
+                      "title":  "LinkedIn Strategy",
+                      "file":  "uruguay-agricultural-gis/04-branding-roadmap/linkedin-strategy.md",
+                      "source":  "V1/import/URUGUAY_AGRICULTURAL_GIS_EXECUTION_PLAN.md",
+                      "duplicateSources":  [
+                                               "V1/import/COMPLETE_GIS_ROADMAP_EXPORT.md"
+                                           ],
+                      "level":  2,
+                      "tags":  [
+                                   "GIS",
+                                   "Branding",
+                                   "Portfolio",
+                                   "Freelancing",
+                                   "Career"
+                               ]
+                  },
+                  {
+                      "title":  "LinkedIn Profile Copy",
+                      "file":  "uruguay-agricultural-gis/04-branding-roadmap/linkedin-profile-copy.md",
+                      "source":  "V1/import/URUGUAY_AGRICULTURAL_GIS_EXECUTION_PLAN.md",
+                      "duplicateSources":  [
+                                               "V1/import/COMPLETE_GIS_ROADMAP_EXPORT.md"
+                                           ],
+                      "level":  2,
+                      "tags":  [
+                                   "GIS",
+                                   "Branding",
+                                   "Portfolio",
+                                   "Career"
+                               ]
+                  },
+                  {
+                      "title":  "GitHub Structure",
+                      "file":  "uruguay-agricultural-gis/04-branding-roadmap/github-structure.md",
+                      "source":  "V1/import/URUGUAY_AGRICULTURAL_GIS_EXECUTION_PLAN.md",
+                      "duplicateSources":  [
+                                               "V1/import/COMPLETE_GIS_ROADMAP_EXPORT.md"
+                                           ],
+                      "level":  2,
+                      "tags":  [
+                                   "GIS",
+                                   "Branding",
+                                   "Portfolio"
+                               ]
+                  },
+                  {
+                      "title":  "Portfolio Website Sections",
+                      "file":  "uruguay-agricultural-gis/04-branding-roadmap/portfolio-website-sections.md",
+                      "source":  "V1/import/URUGUAY_AGRICULTURAL_GIS_EXECUTION_PLAN.md",
+                      "duplicateSources":  [
+                                               "V1/import/COMPLETE_GIS_ROADMAP_EXPORT.md"
+                                           ],
+                      "level":  2,
+                      "tags":  [
+                                   "GIS",
+                                   "Branding",
+                                   "Portfolio",
+                                   "Masters",
+                                   "Resources",
+                                   "Career"
+                               ]
+                  },
+                  {
+                      "title":  "Branding Links",
+                      "file":  "uruguay-agricultural-gis/04-branding-roadmap/branding-links.md",
+                      "source":  "V1/import/URUGUAY_AGRICULTURAL_GIS_EXECUTION_PLAN.md",
+                      "duplicateSources":  [
+                                               "V1/import/COMPLETE_GIS_ROADMAP_EXPORT.md"
+                                           ],
+                      "level":  2,
+                      "tags":  [
+                                   "GIS",
+                                   "Branding",
+                                   "Portfolio",
+                                   "Freelancing",
+                                   "Resources"
+                               ]
+                  },
+                  {
+                      "title":  "Part 5 - GIS Portfolio Roadmap",
+                      "file":  "uruguay-agricultural-gis/05-gis-portfolio/part-5-gis-portfolio-roadmap.md",
+                      "source":  "V1/import/URUGUAY_AGRICULTURAL_GIS_EXECUTION_PLAN.md",
+                      "duplicateSources":  [
+                                               "V1/import/COMPLETE_GIS_ROADMAP_EXPORT.md"
+                                           ],
+                      "level":  1,
+                      "tags":  [
+                                   "GIS",
+                                   "Portfolio"
+                               ]
+                  },
+                  {
+                      "title":  "Portfolio Project Sequence",
+                      "file":  "uruguay-agricultural-gis/05-gis-portfolio/portfolio-project-sequence.md",
+                      "source":  "V1/import/URUGUAY_AGRICULTURAL_GIS_EXECUTION_PLAN.md",
+                      "duplicateSources":  [
+                                               "V1/import/COMPLETE_GIS_ROADMAP_EXPORT.md"
+                                           ],
+                      "level":  2,
+                      "tags":  [
+                                   "GIS",
+                                   "Portfolio",
+                                   "Masters",
+                                   "Freelancing",
+                                   "Resources",
+                                   "Career"
+                               ]
+                  },
+                  {
+                      "title":  "Required Deliverables For Every Project",
+                      "file":  "uruguay-agricultural-gis/05-gis-portfolio/required-deliverables-for-every-project.md",
+                      "source":  "V1/import/URUGUAY_AGRICULTURAL_GIS_EXECUTION_PLAN.md",
+                      "duplicateSources":  [
+                                               "V1/import/COMPLETE_GIS_ROADMAP_EXPORT.md"
+                                           ],
+                      "level":  2,
+                      "tags":  [
+                                   "GIS",
+                                   "Portfolio",
+                                   "Spanish",
+                                   "Branding",
+                                   "Resources"
+                               ]
+                  },
+                  {
+                      "title":  "Data Sources",
+                      "file":  "uruguay-agricultural-gis/05-gis-portfolio/data-sources.md",
+                      "source":  "V1/import/URUGUAY_AGRICULTURAL_GIS_EXECUTION_PLAN.md",
+                      "duplicateSources":  [
+                                               "V1/import/COMPLETE_GIS_ROADMAP_EXPORT.md"
+                                           ],
+                      "level":  2,
+                      "tags":  [
+                                   "GIS",
+                                   "Portfolio",
+                                   "Freelancing",
+                                   "Resources"
+                               ]
+                  },
+                  {
+                      "title":  "Part 6 - Freelancing Strategy",
+                      "file":  "uruguay-agricultural-gis/06-freelancing/part-6-freelancing-strategy.md",
+                      "source":  "V1/import/URUGUAY_AGRICULTURAL_GIS_EXECUTION_PLAN.md",
+                      "duplicateSources":  [
+                                               "V1/import/COMPLETE_GIS_ROADMAP_EXPORT.md"
+                                           ],
+                      "level":  1,
+                      "tags":  [
+                                   "GIS",
+                                   "Freelancing"
+                               ]
+                  },
+                  {
+                      "title":  "When To Start Applying",
+                      "file":  "uruguay-agricultural-gis/06-freelancing/when-to-start-applying.md",
+                      "source":  "V1/import/URUGUAY_AGRICULTURAL_GIS_EXECUTION_PLAN.md",
+                      "duplicateSources":  [
+                                               "V1/import/COMPLETE_GIS_ROADMAP_EXPORT.md"
+                                           ],
+                      "level":  2,
+                      "tags":  [
+                                   "GIS",
+                                   "Freelancing",
+                                   "Branding",
+                                   "Career"
+                               ]
+                  },
+                  {
+                      "title":  "Platforms",
+                      "file":  "uruguay-agricultural-gis/06-freelancing/platforms.md",
+                      "source":  "V1/import/URUGUAY_AGRICULTURAL_GIS_EXECUTION_PLAN.md",
+                      "duplicateSources":  [
+                                               "V1/import/COMPLETE_GIS_ROADMAP_EXPORT.md"
+                                           ],
+                      "level":  2,
+                      "tags":  [
+                                   "GIS",
+                                   "Freelancing",
+                                   "Branding",
+                                   "Career"
+                               ]
+                  },
+                  {
+                      "title":  "Target First",
+                      "file":  "uruguay-agricultural-gis/06-freelancing/target-first.md",
+                      "source":  "V1/import/URUGUAY_AGRICULTURAL_GIS_EXECUTION_PLAN.md",
+                      "duplicateSources":  [
+                                               "V1/import/COMPLETE_GIS_ROADMAP_EXPORT.md"
+                                           ],
+                      "level":  2,
+                      "tags":  [
+                                   "GIS",
+                                   "Freelancing",
+                                   "Portfolio",
+                                   "Masters"
+                               ]
+                  },
+                  {
+                      "title":  "Avoid Initially",
+                      "file":  "uruguay-agricultural-gis/06-freelancing/avoid-initially.md",
+                      "source":  "V1/import/URUGUAY_AGRICULTURAL_GIS_EXECUTION_PLAN.md",
+                      "duplicateSources":  [
+                                               "V1/import/COMPLETE_GIS_ROADMAP_EXPORT.md"
+                                           ],
+                      "level":  2,
+                      "tags":  [
+                                   "GIS",
+                                   "Freelancing",
+                                   "Career"
+                               ]
+                  },
+                  {
+                      "title":  "Service Packages",
+                      "file":  "uruguay-agricultural-gis/06-freelancing/service-packages.md",
+                      "source":  "V1/import/URUGUAY_AGRICULTURAL_GIS_EXECUTION_PLAN.md",
+                      "duplicateSources":  [
+                                               "V1/import/COMPLETE_GIS_ROADMAP_EXPORT.md"
+                                           ],
+                      "level":  2,
+                      "tags":  [
+                                   "GIS",
+                                   "Freelancing",
+                                   "Portfolio"
+                               ]
+                  },
+                  {
+                      "title":  "Proposal Formula",
+                      "file":  "uruguay-agricultural-gis/06-freelancing/proposal-formula.md",
+                      "source":  "V1/import/URUGUAY_AGRICULTURAL_GIS_EXECUTION_PLAN.md",
+                      "duplicateSources":  [
+                                               "V1/import/COMPLETE_GIS_ROADMAP_EXPORT.md"
+                                           ],
+                      "level":  2,
+                      "tags":  [
+                                   "GIS",
+                                   "Freelancing",
+                                   "Portfolio"
+                               ]
+                  },
+                  {
+                      "title":  "Part 7 - Master\u0027s Admission Preparation",
+                      "file":  "uruguay-agricultural-gis/07-masters-admission/part-7-master-s-admission-preparation.md",
+                      "source":  "V1/import/URUGUAY_AGRICULTURAL_GIS_EXECUTION_PLAN.md",
+                      "duplicateSources":  [
+                                               "V1/import/COMPLETE_GIS_ROADMAP_EXPORT.md"
+                                           ],
+                      "level":  1,
+                      "tags":  [
+                                   "GIS",
+                                   "Masters"
+                               ]
+                  },
+                  {
+                      "title":  "Official Program Facts To Build Around",
+                      "file":  "uruguay-agricultural-gis/07-masters-admission/official-program-facts-to-build-around.md",
+                      "source":  "V1/import/URUGUAY_AGRICULTURAL_GIS_EXECUTION_PLAN.md",
+                      "duplicateSources":  [
+                                               "V1/import/COMPLETE_GIS_ROADMAP_EXPORT.md"
+                                           ],
+                      "level":  2,
+                      "tags":  [
+                                   "GIS",
+                                   "Masters",
+                                   "Resources",
+                                   "Career"
+                               ]
+                  },
+                  {
+                      "title":  "Month-By-Month Admission Roadmap",
+                      "file":  "uruguay-agricultural-gis/07-masters-admission/month-by-month-admission-roadmap.md",
+                      "source":  "V1/import/URUGUAY_AGRICULTURAL_GIS_EXECUTION_PLAN.md",
+                      "duplicateSources":  [
+                                               "V1/import/COMPLETE_GIS_ROADMAP_EXPORT.md"
+                                           ],
+                      "level":  2,
+                      "tags":  [
+                                   "GIS",
+                                   "Masters",
+                                   "Portfolio",
+                                   "Freelancing",
+                                   "Spanish"
+                               ]
+                  },
+                  {
+                      "title":  "Research Topics That Strengthen Application",
+                      "file":  "uruguay-agricultural-gis/07-masters-admission/research-topics-that-strengthen-application.md",
+                      "source":  "V1/import/URUGUAY_AGRICULTURAL_GIS_EXECUTION_PLAN.md",
+                      "duplicateSources":  [
+                                               "V1/import/COMPLETE_GIS_ROADMAP_EXPORT.md"
+                                           ],
+                      "level":  2,
+                      "tags":  [
+                                   "GIS",
+                                   "Masters",
+                                   "Career"
+                               ]
+                  },
+                  {
+                      "title":  "Admission Document Checklist",
+                      "file":  "uruguay-agricultural-gis/07-masters-admission/admission-document-checklist.md",
+                      "source":  "V1/import/URUGUAY_AGRICULTURAL_GIS_EXECUTION_PLAN.md",
+                      "duplicateSources":  [
+                                               "V1/import/COMPLETE_GIS_ROADMAP_EXPORT.md"
+                                           ],
+                      "level":  2,
+                      "tags":  [
+                                   "GIS",
+                                   "Masters",
+                                   "Portfolio",
+                                   "Spanish"
+                               ]
+                  },
+                  {
+                      "title":  "Final Operating Rules",
+                      "file":  "uruguay-agricultural-gis/08-operating-rules/final-operating-rules.md",
+                      "source":  "V1/import/URUGUAY_AGRICULTURAL_GIS_EXECUTION_PLAN.md",
+                      "duplicateSources":  [
+                                               "V1/import/COMPLETE_GIS_ROADMAP_EXPORT.md"
+                                           ],
+                      "level":  1,
+                      "tags":  [
+                                   "GIS",
+                                   "Portfolio",
+                                   "Freelancing",
+                                   "Spanish"
+                               ]
+                  },
+                  {
+                      "title":  "Source Anchors",
+                      "file":  "uruguay-agricultural-gis/08-operating-rules/source-anchors.md",
+                      "source":  "V1/import/URUGUAY_AGRICULTURAL_GIS_EXECUTION_PLAN.md",
+                      "duplicateSources":  [
+                                               "V1/import/COMPLETE_GIS_ROADMAP_EXPORT.md"
+                                           ],
+                      "level":  2,
+                      "tags":  [
+                                   "GIS",
+                                   "Masters",
+                                   "Spanish",
+                                   "Resources"
+                               ]
+                  }
+              ]
+}

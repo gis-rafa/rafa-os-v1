@@ -1,0 +1,11 @@
+import { PagePlaceholder } from "@/components/page-placeholder";
+
+export default function SettingsPage() {
+  return (
+    <PagePlaceholder
+      description="A placeholder workspace for account, system, and workspace settings."
+      title="Settings"
+    />
+  );
+}
+
