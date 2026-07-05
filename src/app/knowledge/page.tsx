@@ -1,21 +1,88 @@
 import { getKnowledgeLibraryWithContent } from "@/lib/knowledge";
+import { Plus, X } from "lucide-react";
+import { createKnowledgeFileAction } from "@/app/knowledge/actions";
 
 export default async function KnowledgePage() {
   const knowledge = await getKnowledgeLibraryWithContent();
 
   return (
     <section className="mx-auto max-w-6xl">
-      <div className="mb-6">
-        <p className="text-sm font-medium uppercase tracking-[0.14em] text-stone-500">
-          Knowledge System
-        </p>
-        <h2 className="mt-2 text-3xl font-semibold text-stone-950">
-          Imported Knowledge
-        </h2>
-        <p className="mt-3 max-w-3xl text-base leading-7 text-stone-600">
-          Canonical source: {knowledge.canonicalSource}
-        </p>
+      <div className="mb-6 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
+        <div>
+          <p className="text-sm font-medium uppercase tracking-[0.14em] text-stone-500">
+            Knowledge System
+          </p>
+          <h2 className="mt-2 text-3xl font-semibold text-stone-950">
+            Imported Knowledge
+          </h2>
+          <p className="mt-3 max-w-3xl text-base leading-7 text-stone-600">
+            Canonical source: {knowledge.canonicalSource}
+          </p>
+        </div>
       </div>
+
+      <details className="mb-8 rounded-md border border-stone-200 bg-white shadow-sm">
+        <summary className="flex cursor-pointer items-center gap-2 px-5 py-4 text-sm font-semibold text-stone-950 transition hover:bg-stone-50">
+          <Plus size={16} strokeWidth={1.8} />
+          Add knowledge file
+        </summary>
+        <form action={createKnowledgeFileAction} className="border-t border-stone-200 p-5">
+          <div className="mb-4">
+            <label className="mb-1.5 block text-sm font-medium text-stone-700" htmlFor="title">
+              Title
+            </label>
+            <input
+              className="block w-full rounded-md border border-stone-200 bg-white px-4 py-2.5 text-sm text-stone-950 placeholder-stone-400 outline-none transition focus:border-stone-400"
+              id="title"
+              name="title"
+              placeholder="File title"
+              required
+              type="text"
+            />
+          </div>
+          <div className="mb-4">
+            <label className="mb-1.5 block text-sm font-medium text-stone-700" htmlFor="tags">
+              Tags (comma-separated)
+            </label>
+            <input
+              className="block w-full rounded-md border border-stone-200 bg-white px-4 py-2.5 text-sm text-stone-950 placeholder-stone-400 outline-none transition focus:border-stone-400"
+              id="tags"
+              name="tags"
+              placeholder="e.g. GIS, Portfolio, Career"
+              type="text"
+            />
+          </div>
+          <div className="mb-4">
+            <label className="mb-1.5 block text-sm font-medium text-stone-700" htmlFor="content">
+              Content
+            </label>
+            <textarea
+              className="block w-full rounded-md border border-stone-200 bg-white px-4 py-2.5 text-sm text-stone-950 placeholder-stone-400 outline-none transition focus:border-stone-400"
+              id="content"
+              name="content"
+              placeholder="Markdown content..."
+              required
+              rows={8}
+            />
+          </div>
+          <div className="flex justify-end gap-3">
+            <button
+              className="inline-flex h-10 items-center gap-2 rounded-md border border-stone-200 bg-white px-4 text-sm font-medium text-stone-700 transition hover:bg-stone-50"
+              type="reset"
+            >
+              <X size={16} strokeWidth={1.8} />
+              Clear
+            </button>
+            <button
+              className="inline-flex h-10 items-center gap-2 rounded-md bg-stone-950 px-4 text-sm font-medium text-white transition hover:bg-stone-800"
+              type="submit"
+            >
+              <Plus size={16} strokeWidth={1.8} />
+              Create
+            </button>
+          </div>
+        </form>
+      </details>
 
       <div className="mb-6 flex flex-wrap gap-2">
         {knowledge.tags.map((tag) => (
