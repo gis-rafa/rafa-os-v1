@@ -6,6 +6,7 @@ import {
   markNotificationRead as markNotificationReadAction
 } from "@/app/notifications/actions";
 import type { Metadata } from "next";
+import { PaginationControls } from "@/components/pagination";
 
 export const metadata: Metadata = {
   title: "Notifications | RAFA OS",
@@ -14,8 +15,16 @@ export const metadata: Metadata = {
 
 export const dynamic = "force-dynamic";
 
-export default async function NotificationsPage() {
-  const notifications = await getNotificationsAction();
+type Props = {
+  searchParams: Promise<{ page?: string }>;
+};
+
+export default async function NotificationsPage({ searchParams }: Props) {
+  const params = await searchParams;
+  const page = Math.max(1, Number(params.page ?? 1));
+  const limit = 50;
+  const offset = (page - 1) * limit;
+  const { items: notifications, total } = await getNotificationsAction(limit, offset);
 
   return (
     <section className="mx-auto max-w-4xl">
@@ -115,6 +124,14 @@ export default async function NotificationsPage() {
           ))
         )}
       </div>
+
+      <PaginationControls
+        basePath="/notifications"
+        page={page}
+        searchParams={{}}
+        total={total}
+        limit={50}
+      />
     </section>
   );
 }

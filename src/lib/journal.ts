@@ -1,9 +1,11 @@
-import { and, desc, eq, ilike, or, type SQL } from "drizzle-orm";
+import { and, count, desc, eq, ilike, or, type SQL } from "drizzle-orm";
 import { getDb, journalEntries } from "@/db";
 
 export type JournalFilters = {
   userId: string;
   search?: string;
+  limit?: number;
+  offset?: number;
 };
 
 export type JournalFormValues = {
@@ -15,7 +17,9 @@ export type JournalFormValues = {
 
 export async function listJournalEntries({
   userId,
-  search
+  search,
+  limit = 50,
+  offset = 0
 }: JournalFilters) {
   const db = getDb();
   const conditions: SQL[] = [eq(journalEntries.userId, userId)];
@@ -30,11 +34,22 @@ export async function listJournalEntries({
     );
   }
 
-  return db
-    .select()
-    .from(journalEntries)
-    .where(and(...conditions))
-    .orderBy(desc(journalEntries.createdAt));
+  const where = and(...conditions);
+  const [items, totalResult] = await Promise.all([
+    db
+      .select()
+      .from(journalEntries)
+      .where(where)
+      .orderBy(desc(journalEntries.createdAt))
+      .limit(limit)
+      .offset(offset),
+    db
+      .select({ value: count() })
+      .from(journalEntries)
+      .where(where)
+  ]);
+
+  return { items, total: Number(totalResult[0]?.value ?? 0) };
 }
 
 export async function getJournalEntryForUser(id: string, userId: string) {

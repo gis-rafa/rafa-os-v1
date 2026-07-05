@@ -1,4 +1,4 @@
-import { and, desc, eq, ne } from "drizzle-orm";
+import { and, count, desc, eq, ne } from "drizzle-orm";
 import {
   executionProjects,
   executionTasks,
@@ -40,45 +40,55 @@ export type ProjectWithStats = ExecutionProject & {
   taskCount: number;
 };
 
-export async function listProjectsWithStats(userId: string) {
+export async function listProjectsWithStats(
+  userId: string,
+  limit = 50,
+  offset = 0
+) {
   const db = getDb();
-  const [projects, tasks, memoryRows, knowledgeRows] = await Promise.all([
-    db
-      .select()
-      .from(executionProjects)
-      .where(
-        and(
-          eq(executionProjects.userId, userId),
-          ne(executionProjects.status, "Deleted")
-        )
-      )
-      .orderBy(desc(executionProjects.updatedAt)),
-    db
-      .select({
-        completedAt: executionTasks.completedAt,
-        projectId: executionTasks.projectId,
-        status: executionTasks.status,
-        updatedAt: executionTasks.updatedAt
-      })
-      .from(executionTasks)
-      .where(eq(executionTasks.userId, userId)),
-    db
-      .select({
-        projectId: memories.projectId,
-        updatedAt: memories.updatedAt
-      })
-      .from(memories)
-      .where(eq(memories.userId, userId)),
-    db
-      .select({
-        projectId: projectKnowledgeLinks.projectId,
-        updatedAt: projectKnowledgeLinks.updatedAt
-      })
-      .from(projectKnowledgeLinks)
-      .where(eq(projectKnowledgeLinks.userId, userId))
-  ]);
+  const whereProjects = and(
+    eq(executionProjects.userId, userId),
+    ne(executionProjects.status, "Deleted")
+  );
+  const [projects, tasks, memoryRows, knowledgeRows, totalResult] =
+    await Promise.all([
+      db
+        .select()
+        .from(executionProjects)
+        .where(whereProjects)
+        .orderBy(desc(executionProjects.updatedAt))
+        .limit(limit)
+        .offset(offset),
+      db
+        .select({
+          completedAt: executionTasks.completedAt,
+          projectId: executionTasks.projectId,
+          status: executionTasks.status,
+          updatedAt: executionTasks.updatedAt
+        })
+        .from(executionTasks)
+        .where(eq(executionTasks.userId, userId)),
+      db
+        .select({
+          projectId: memories.projectId,
+          updatedAt: memories.updatedAt
+        })
+        .from(memories)
+        .where(eq(memories.userId, userId)),
+      db
+        .select({
+          projectId: projectKnowledgeLinks.projectId,
+          updatedAt: projectKnowledgeLinks.updatedAt
+        })
+        .from(projectKnowledgeLinks)
+        .where(eq(projectKnowledgeLinks.userId, userId)),
+      db
+        .select({ value: count() })
+        .from(executionProjects)
+        .where(whereProjects)
+    ]);
 
-  return projects.map((project): ProjectWithStats => {
+  const items = projects.map((project): ProjectWithStats => {
     const projectTasks = tasks.filter((task) => task.projectId === project.id);
     const projectMemories = memoryRows.filter(
       (memory) => memory.projectId === project.id
@@ -103,6 +113,8 @@ export async function listProjectsWithStats(userId: string) {
       taskCount: projectTasks.length
     };
   });
+
+  return { items, total: Number(totalResult[0]?.value ?? 0) };
 }
 
 export async function getProjectForUser(id: string, userId: string) {

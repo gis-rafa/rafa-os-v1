@@ -17,6 +17,7 @@ import {
   listJournalEntries
 } from "@/lib/journal";
 import type { Metadata } from "next";
+import { PaginationControls } from "@/components/pagination";
 
 export const metadata: Metadata = {
   title: "Journal | RAFA OS",
@@ -29,6 +30,7 @@ type JournalPageProps = {
   searchParams: Promise<{
     q?: string;
     edit?: string;
+    page?: string;
   }>;
 };
 
@@ -49,23 +51,32 @@ export default async function JournalPage({ searchParams }: JournalPageProps) {
         editingEntry={null}
         isDatabaseConfigured={false}
         journalList={[]}
+        page={1}
         searchParams={{ search: "" }}
+        total={0}
       />
     );
   }
 
   const search = params.q?.trim() ?? "";
-  const [journalList, editingEntry] = await Promise.all([
-    listJournalEntries({ userId: user.id, search }),
+  const page = Math.max(1, Number(params.page ?? 1));
+  const limit = 50;
+  const offset = (page - 1) * limit;
+  const [journalResult, editingEntry] = await Promise.all([
+    listJournalEntries({ userId: user.id, search, limit, offset }),
     params.edit ? getJournalEntryForUser(params.edit, user.id) : null
   ]);
+
+  const { items: journalList, total } = journalResult;
 
   return (
     <JournalShell
       editingEntry={editingEntry}
       isDatabaseConfigured
       journalList={journalList}
+      page={page}
       searchParams={{ search }}
+      total={total}
     />
   );
 }
@@ -74,12 +85,18 @@ function JournalShell({
   editingEntry,
   isDatabaseConfigured,
   journalList,
-  searchParams
+  page,
+  searchParams,
+  total
 }: {
   editingEntry: JournalEntry | null;
   isDatabaseConfigured: boolean;
   journalList: JournalEntry[];
-  searchParams: { search: string };
+  page: number;
+  searchParams: {
+    search: string;
+  };
+  total: number;
 }) {
   return (
     <section className="mx-auto grid max-w-7xl gap-6 xl:grid-cols-[minmax(0,1fr)_420px]">
@@ -200,6 +217,14 @@ function JournalShell({
             ))
           )}
         </div>
+
+        <PaginationControls
+          basePath="/journal"
+          page={page}
+          searchParams={searchParams}
+          total={total}
+          limit={50}
+        />
       </div>
 
       <JournalForm

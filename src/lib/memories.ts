@@ -1,10 +1,12 @@
-import { and, desc, eq, ilike, or, sql, type SQL } from "drizzle-orm";
+import { and, count, desc, eq, ilike, or, sql, type SQL } from "drizzle-orm";
 import { getDb, memories } from "@/db";
 
 export type MemoryFilters = {
   userId: string;
   search?: string;
   category?: string;
+  limit?: number;
+  offset?: number;
 };
 
 export type MemorySuggestionInput = {
@@ -23,7 +25,9 @@ export type MemorySuggestion = MemorySuggestionInput & {
 export async function listMemories({
   userId,
   search,
-  category
+  category,
+  limit = 50,
+  offset = 0
 }: MemoryFilters) {
   const db = getDb();
   const conditions: SQL[] = [eq(memories.userId, userId)];
@@ -43,11 +47,22 @@ export async function listMemories({
     conditions.push(eq(memories.category, normalizedCategory));
   }
 
-  return db
-    .select()
-    .from(memories)
-    .where(and(...conditions))
-    .orderBy(desc(memories.updatedAt));
+  const where = and(...conditions);
+  const [items, totalResult] = await Promise.all([
+    db
+      .select()
+      .from(memories)
+      .where(where)
+      .orderBy(desc(memories.updatedAt))
+      .limit(limit)
+      .offset(offset),
+    db
+      .select({ value: count() })
+      .from(memories)
+      .where(where)
+  ]);
+
+  return { items, total: Number(totalResult[0]?.value ?? 0) };
 }
 
 export async function listMemoryCategories(userId: string) {

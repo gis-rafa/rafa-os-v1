@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { and, desc, eq } from "drizzle-orm";
+import { and, count, desc, eq } from "drizzle-orm";
 import { getDb, inboxEntries } from "@/db";
 import { getActionUser } from "@/lib/auth-user";
 import { createNotification } from "@/app/notifications/actions";
@@ -56,13 +56,22 @@ export type InboxEntry = {
   createdAt: Date;
 };
 
-export async function getInboxEntriesAction() {
+export async function getInboxEntriesAction(limit = 50, offset = 0) {
   const user = await getActionUser();
-  const entries = await getDb()
-    .select()
-    .from(inboxEntries)
-    .where(eq(inboxEntries.userId, user.id))
-    .orderBy(desc(inboxEntries.createdAt));
+  const where = eq(inboxEntries.userId, user.id);
+  const [items, totalResult] = await Promise.all([
+    getDb()
+      .select()
+      .from(inboxEntries)
+      .where(where)
+      .orderBy(desc(inboxEntries.createdAt))
+      .limit(limit)
+      .offset(offset),
+    getDb()
+      .select({ value: count() })
+      .from(inboxEntries)
+      .where(where)
+  ]);
 
-  return entries;
+  return { items, total: Number(totalResult[0]?.value ?? 0) };
 }

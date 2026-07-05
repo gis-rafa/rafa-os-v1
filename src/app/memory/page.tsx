@@ -19,6 +19,7 @@ import {
 import { seedDevelopmentWorkspace } from "@/lib/seed-data";
 import type { Memory } from "@/db";
 import type { Metadata } from "next";
+import { PaginationControls } from "@/components/pagination";
 
 export const metadata: Metadata = {
   title: "Memory | RAFA OS",
@@ -32,6 +33,7 @@ type MemoryPageProps = {
     q?: string;
     category?: string;
     edit?: string;
+    page?: string;
   }>;
 };
 
@@ -57,18 +59,25 @@ export default async function MemoryPage({ searchParams }: MemoryPageProps) {
         editingMemory={null}
         isDatabaseConfigured={false}
         memoryList={[]}
+        page={1}
         searchParams={{ category: "", search: "" }}
+        total={0}
       />
     );
   }
 
   const search = params.q?.trim() ?? "";
   const category = params.category?.trim() ?? "";
-  const [memoryList, categories, editingMemory] = await Promise.all([
-    listMemories({ userId: user.id, search, category }),
+  const page = Math.max(1, Number(params.page ?? 1));
+  const limit = 50;
+  const offset = (page - 1) * limit;
+  const [memoryResult, categories, editingMemory] = await Promise.all([
+    listMemories({ userId: user.id, search, category, limit, offset }),
     listMemoryCategories(user.id),
     params.edit ? getMemoryForUser(params.edit, user.id) : null
   ]);
+
+  const { items: memoryList, total } = memoryResult;
 
   return (
     <MemoryShell
@@ -76,7 +85,9 @@ export default async function MemoryPage({ searchParams }: MemoryPageProps) {
       editingMemory={editingMemory}
       isDatabaseConfigured
       memoryList={memoryList}
+      page={page}
       searchParams={{ category, search }}
+      total={total}
     />
   );
 }
@@ -86,16 +97,20 @@ function MemoryShell({
   editingMemory,
   isDatabaseConfigured,
   memoryList,
-  searchParams
+  page,
+  searchParams,
+  total
 }: {
   categories: string[];
   editingMemory: Memory | null;
   isDatabaseConfigured: boolean;
   memoryList: Memory[];
+  page: number;
   searchParams: {
     category: string;
     search: string;
   };
+  total: number;
 }) {
   return (
     <section className="mx-auto grid max-w-7xl gap-6 xl:grid-cols-[minmax(0,1fr)_420px]">
@@ -234,6 +249,14 @@ function MemoryShell({
             ))
           )}
         </div>
+
+        <PaginationControls
+          basePath="/memory"
+          page={page}
+          searchParams={searchParams}
+          total={total}
+          limit={50}
+        />
       </div>
 
       <MemoryForm

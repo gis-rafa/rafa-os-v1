@@ -25,9 +25,10 @@ import {
   canUseLocalDatabaseFallback,
   getLocalDevelopmentUser
 } from "@/lib/local-dev-user";
-import { getProjectForUser, listProjectsWithStats } from "@/lib/projects";
+import { getProjectForUser, listProjectsWithStats, type ProjectWithStats } from "@/lib/projects";
 import { seedDevelopmentWorkspace } from "@/lib/seed-data";
 import type { Metadata } from "next";
+import { PaginationControls } from "@/components/pagination";
 
 export const metadata: Metadata = {
   title: "Projects | RAFA OS",
@@ -39,6 +40,7 @@ export const dynamic = "force-dynamic";
 type ProjectsPageProps = {
   searchParams: Promise<{
     edit?: string;
+    page?: string;
   }>;
 };
 
@@ -47,20 +49,27 @@ const iconOptions = ["folder", "map", "target", "book", "briefcase", "heart"];
 
 export default async function ProjectsPage({ searchParams }: ProjectsPageProps) {
   const params = await searchParams;
+  const page = Math.max(1, Number(params.page ?? 1));
+  const limit = 50;
+  const offset = (page - 1) * limit;
 
   if (!isClerkConfigured() && canUseLocalDatabaseFallback()) {
     const user = await getLocalDevelopmentUser();
     await seedDevelopmentWorkspace(user.id);
-    const [projects, editingProject] = await Promise.all([
-      listProjectsWithStats(user.id),
+    const [projectResult, editingProject] = await Promise.all([
+      listProjectsWithStats(user.id, limit, offset),
       params.edit ? getProjectForUser(params.edit, user.id) : null
     ]);
+
+    const { items: projects, total } = projectResult;
 
     return (
       <ProjectsShell
         editingProject={editingProject}
         isDatabaseConfigured
+        page={page}
         projects={projects}
+        total={total}
       />
     );
   }
@@ -70,22 +79,28 @@ export default async function ProjectsPage({ searchParams }: ProjectsPageProps) 
       <ProjectsShell
         editingProject={null}
         isDatabaseConfigured={false}
+        page={1}
         projects={[]}
+        total={0}
       />
     );
   }
 
   const user = await requireCurrentDbUser();
-  const [projects, editingProject] = await Promise.all([
-    listProjectsWithStats(user.id),
+  const [projectResult, editingProject] = await Promise.all([
+    listProjectsWithStats(user.id, limit, offset),
     params.edit ? getProjectForUser(params.edit, user.id) : null
   ]);
+
+  const { items: projects, total } = projectResult;
 
   return (
     <ProjectsShell
       editingProject={editingProject}
       isDatabaseConfigured
+      page={page}
       projects={projects}
+      total={total}
     />
   );
 }
@@ -93,11 +108,15 @@ export default async function ProjectsPage({ searchParams }: ProjectsPageProps) 
 function ProjectsShell({
   editingProject,
   isDatabaseConfigured,
-  projects
+  page,
+  projects,
+  total
 }: {
   editingProject: ExecutionProject | null;
   isDatabaseConfigured: boolean;
-  projects: Awaited<ReturnType<typeof listProjectsWithStats>>;
+  page: number;
+  projects: Awaited<ReturnType<typeof listProjectsWithStats>>["items"];
+  total: number;
 }) {
   const activeProjects = projects.filter((project) => project.status === "Active");
   const archivedProjects = projects.filter(
@@ -162,6 +181,14 @@ function ProjectsShell({
         </div>
       </div>
 
+      <PaginationControls
+        basePath="/projects"
+        page={page}
+        searchParams={{}}
+        total={total}
+        limit={50}
+      />
+
       <ProjectForm
         editingProject={editingProject}
         isDatabaseConfigured={isDatabaseConfigured}
@@ -173,7 +200,7 @@ function ProjectsShell({
 function ProjectCard({
   project
 }: {
-  project: Awaited<ReturnType<typeof listProjectsWithStats>>[number];
+  project: ProjectWithStats;
 }) {
   return (
     <article className="rounded-md border border-stone-200 bg-white p-5 shadow-sm">

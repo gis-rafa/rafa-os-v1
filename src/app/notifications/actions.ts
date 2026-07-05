@@ -2,7 +2,7 @@
 
 import { getDb, notifications } from "@/db";
 import { getActionUser } from "@/lib/auth-user";
-import { and, desc, eq } from "drizzle-orm";
+import { and, count, desc, eq } from "drizzle-orm";
 
 export type NotificationType = "info" | "success" | "warning" | "error";
 
@@ -36,15 +36,24 @@ export async function createNotification(
   return notification;
 }
 
-export async function getNotifications() {
+export async function getNotifications(limit = 50, offset = 0) {
   const user = await getActionUser();
-  const notificationList = await getDb()
-    .select()
-    .from(notifications)
-    .where(eq(notifications.userId, user.id))
-    .orderBy(desc(notifications.createdAt));
+  const where = eq(notifications.userId, user.id);
+  const [items, totalResult] = await Promise.all([
+    getDb()
+      .select()
+      .from(notifications)
+      .where(where)
+      .orderBy(desc(notifications.createdAt))
+      .limit(limit)
+      .offset(offset),
+    getDb()
+      .select({ value: count() })
+      .from(notifications)
+      .where(where)
+  ]);
 
-  return notificationList;
+  return { items, total: Number(totalResult[0]?.value ?? 0) };
 }
 
 export async function markNotificationRead(formData: FormData) {
