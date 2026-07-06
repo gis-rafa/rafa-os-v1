@@ -1,4 +1,4 @@
-import { and, eq, gte, lt, sql } from "drizzle-orm";
+import { and, eq, gte, lt } from "drizzle-orm";
 import {
   executionPriorities,
   executionProjects,
@@ -26,26 +26,17 @@ type ProjectSeed = {
 export async function seedDevelopmentWorkspace(userId: string) {
   if (!isDatabaseConfigured()) return;
 
-  const db = getDb();
-  const [existingProjects] = await db
-    .select({ count: sql<number>`count(*)` })
-    .from(executionProjects)
-    .where(eq(executionProjects.userId, userId));
-
-  if (Number(existingProjects?.count ?? 0) > 0) {
-    return;
-  }
-
   const today = startOfDay(new Date());
   const tomorrow = addDays(today, 1);
+
   const gisStudyProject = await ensureProject(userId, {
     name: "GIS Study",
     description:
-      "Daily GIS roadmap execution. This is the highest-priority work because it directly builds Rafa's remote GIS career.",
+      "Daily GIS roadmap execution. This is the highest-priority work because it directly builds Rafa's remote GIS career. Currently in Month 1 GIS Sprint (Weeks 1-4).",
     status: "Active",
     priority: "High",
-    currentPhase: "Roadmap Execution",
-    progress: 28,
+    currentPhase: "Week 3 Soil Mapping Completion",
+    progress: 42,
     targetDate: addDays(today, 30),
     color: "green",
     icon: "map"
@@ -53,11 +44,11 @@ export async function seedDevelopmentWorkspace(userId: string) {
   const portfolioProject = await ensureProject(userId, {
     name: "GIS Portfolio Launch",
     description:
-      "Build and publish GIS portfolio case studies that prove Rafa can deliver remote GIS work.",
+      "Build and publish GIS portfolio case studies. P01 (Uruguay Base Map) complete. P02 (CONEAT Soil Map) at 90%. Remaining: final cartographic layout, report, screenshots, LinkedIn post.",
     status: "Active",
     priority: "High",
-    currentPhase: "Case Study Foundation",
-    progress: 34,
+    currentPhase: "Final Cartographic Layout",
+    progress: 90,
     targetDate: addDays(today, 45),
     color: "green",
     icon: "map"
@@ -74,7 +65,7 @@ export async function seedDevelopmentWorkspace(userId: string) {
     color: "purple",
     icon: "briefcase"
   });
-  const englishProject = await ensureProject(userId, {
+  await ensureProject(userId, {
     name: "English",
     description:
       "Improve professional communication for remote GIS work, interviews, proposals, and public writing.",
@@ -99,41 +90,57 @@ export async function seedDevelopmentWorkspace(userId: string) {
     icon: "heart"
   });
 
-  await removeLegacySeedPriority(userId, today);
+  await getDb()
+    .delete(executionPriorities)
+    .where(
+      and(
+        eq(executionPriorities.userId, userId),
+        gte(executionPriorities.priorityDate, today),
+        lt(executionPriorities.priorityDate, tomorrow)
+      )
+    );
+
   await Promise.all([
     ensurePriority(
       userId,
-      "GIS Study: complete today's roadmap task at 13:00.",
+      "GIS Portfolio: complete Project 02 (CONEAT Soil Map) cartographic layout",
       today
     ),
     ensurePriority(
       userId,
-      "GIS Portfolio: move one case-study deliverable forward at 16:00.",
+      "Final Portfolio Map: polish QGIS export for publication",
       today
     ),
     ensurePriority(
       userId,
-      "Personal Branding: publish or draft one LinkedIn/portfolio action at 20:00.",
+      "GIS Study: continue Week 4 Land Suitability Foundations",
+      today
+    ),
+    ensurePriority(
+      userId,
+      "Personal Branding: draft LinkedIn post announcing P02 completion",
       today
     )
   ]);
+
+  await getDb()
+    .delete(executionTasks)
+    .where(
+      and(
+        eq(executionTasks.userId, userId),
+        gte(executionTasks.taskDate, today),
+        lt(executionTasks.taskDate, tomorrow)
+      )
+    );
 
   await Promise.all([
     ensureTask({
       estimatedMinutes: 60,
       priority: "High",
-      projectId: gisStudyProject.id,
+      projectId: portfolioProject.id,
       status: "In Progress",
       taskDate: today,
-      title: "11:00 GIS Deep Work: build core remote GIS skill"
-    }, userId),
-    ensureTask({
-      estimatedMinutes: 60,
-      priority: "High",
-      projectId: gisStudyProject.id,
-      status: "Todo",
-      taskDate: today,
-      title: "13:00 GIS Study: complete today's roadmap task"
+      title: "16:00 P02 Cartographic Layout: polish QGIS export for portfolio"
     }, userId),
     ensureTask({
       estimatedMinutes: 60,
@@ -141,15 +148,23 @@ export async function seedDevelopmentWorkspace(userId: string) {
       projectId: portfolioProject.id,
       status: "Todo",
       taskDate: today,
-      title: "16:00 GIS Portfolio: improve one portfolio deliverable"
+      title: "17:00 P02 Final Report: write README with full documentation"
+    }, userId),
+    ensureTask({
+      estimatedMinutes: 45,
+      priority: "High",
+      projectId: portfolioProject.id,
+      status: "Todo",
+      taskDate: today,
+      title: "18:00 P02 Portfolio Screenshots: capture map outputs"
     }, userId),
     ensureTask({
       estimatedMinutes: 30,
       priority: "Medium",
-      projectId: englishProject.id,
+      projectId: gisStudyProject.id,
       status: "Todo",
       taskDate: today,
-      title: "18:00 English: practice remote-work communication"
+      title: "13:00 GIS Study: Week 4 Land Suitability Foundations"
     }, userId),
     ensureTask({
       estimatedMinutes: 30,
@@ -157,7 +172,7 @@ export async function seedDevelopmentWorkspace(userId: string) {
       projectId: brandProject.id,
       status: "Todo",
       taskDate: today,
-      title: "20:00 Personal Branding: LinkedIn or portfolio content"
+      title: "20:00 Personal Branding: draft LinkedIn P02 launch post"
     }, userId),
     ensureTask({
       estimatedMinutes: 60,
@@ -179,24 +194,34 @@ export async function seedDevelopmentWorkspace(userId: string) {
 
   await seedDailyHealthTasks(userId);
 
+  await getDb()
+    .delete(memories)
+    .where(
+      and(
+        eq(memories.userId, userId),
+        eq(memories.category, "GIS"),
+        eq(memories.title, "Primary mission")
+      )
+    );
+
   await Promise.all([
     ensureMemory({
       category: "GIS",
       content:
-        "Primary mission: become a Remote GIS Professional. GIS Study is the highest priority, followed by GIS Portfolio, Personal Branding, English, and Physical Training.",
+        "Primary mission: become a Remote GIS Professional. P01 (Uruguay Base Map) complete. P02 (CONEAT Soil Map) at 90%. Remaining deliverables for P02: final cartographic layout, final report, portfolio screenshots, LinkedIn post. Next project: P03 Land Suitability Analysis.",
       importance: 5,
       projectId: gisStudyProject.id,
-      tags: ["gis", "career", "remote-work", "mission"],
+      tags: ["gis", "career", "remote-work", "mission", "portfolio"],
       title: "Primary mission"
     }, userId),
     ensureMemory({
       category: "Execution",
       content:
-        "Daily schedule: 08:00 wake up, 08:30 morning brief, 09:00 gym, 11:00 GIS deep work, 13:00 GIS study, 16:00 GIS portfolio, 18:00 English, 20:00 personal branding, 22:30 sleep.",
+        "Current GIS progress: Week 3 Soil Mapping with CONEAT wrapping up. Project 02 at 90%. Current focus is final cartographic layout and portfolio deliverables for P02. Next up: Week 4 Land Suitability Foundations for P03.",
       importance: 5,
-      projectId: gisStudyProject.id,
-      tags: ["schedule", "gis", "execution"],
-      title: "Daily mission schedule"
+      projectId: portfolioProject.id,
+      tags: ["gis", "progress", "portfolio", "coneat"],
+      title: "Current GIS progress"
     }, userId),
     ensureMemory({
       category: "Career",
@@ -209,13 +234,17 @@ export async function seedDevelopmentWorkspace(userId: string) {
     }, userId)
   ]);
 
+  await getDb()
+    .delete(projectKnowledgeLinks)
+    .where(eq(projectKnowledgeLinks.userId, userId));
+
   await Promise.all([
     ensureKnowledgeLink({
       filePath:
-        "uruguay-agricultural-gis/02-execution-plan/week-1-qgis-foundation-reset.md",
-      projectId: gisStudyProject.id,
+        "uruguay-agricultural-gis/05-gis-portfolio/portfolio-project-sequence.md",
+      projectId: portfolioProject.id,
       tags: ["GIS", "Portfolio"],
-      title: "Week 1 QGIS Foundation Reset"
+      title: "Portfolio Project Sequence"
     }, userId),
     ensureKnowledgeLink({
       filePath:
@@ -226,28 +255,26 @@ export async function seedDevelopmentWorkspace(userId: string) {
     }, userId),
     ensureKnowledgeLink({
       filePath:
-        "uruguay-agricultural-gis/02-execution-plan/week-12-portfolio-website-and-outreach.md",
+        "uruguay-agricultural-gis/04-branding-roadmap/linkedin-strategy.md",
       projectId: brandProject.id,
       tags: ["Branding", "Career"],
-      title: "Week 12 Portfolio Website and Outreach"
+      title: "LinkedIn Strategy"
     }, userId)
   ]);
 
   await getDb()
+    .delete(studyTaskProgress)
+    .where(eq(studyTaskProgress.userId, userId));
+
+  const dayValues: { userId: string; roadmapDay: number; status: string }[] = [];
+  for (let i = 1; i <= 20; i++) {
+    dayValues.push({ userId, roadmapDay: i, status: "Done" });
+  }
+  dayValues.push({ userId, roadmapDay: 21, status: "In Progress" });
+
+  await getDb()
     .insert(studyTaskProgress)
-    .values([
-      {
-        userId,
-        roadmapDay: 1,
-        status: "Done"
-      },
-      {
-        userId,
-        roadmapDay: 2,
-        status: "In Progress"
-      }
-    ])
-    .onConflictDoNothing();
+    .values(dayValues);
 }
 
 async function ensureProject(
@@ -321,22 +348,6 @@ async function ensurePriority(userId: string, title: string, priorityDate: Date)
     .returning();
 
   return createdPriority;
-}
-
-async function removeLegacySeedPriority(userId: string, date: Date) {
-  const dayStart = startOfDay(date);
-  const dayEnd = addDays(dayStart, 1);
-
-  await getDb()
-    .delete(executionPriorities)
-    .where(
-      and(
-        eq(executionPriorities.userId, userId),
-        eq(executionPriorities.title, "Protect health basics before deep work."),
-        gte(executionPriorities.priorityDate, dayStart),
-        lt(executionPriorities.priorityDate, dayEnd)
-      )
-    );
 }
 
 async function ensureTask(
