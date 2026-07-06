@@ -1,8 +1,8 @@
 import { and, asc, eq, gte, lt } from "drizzle-orm";
-import { getDb, isDatabaseConfigured, workoutExerciseLog, executionTasks, executionProjects } from "@/db";
+import { getDb, isDatabaseConfigured, workoutExerciseLog, executionTasks, executionProjects, memories } from "@/db";
 
 export type DailyMedication = {
-  time: "morning" | "lunch" | "dinner" | "sleep";
+  time: "morning" | "lunch" | "evening" | "workout" | "sleep";
   supplements: { name: string; dose?: string }[];
 };
 
@@ -10,17 +10,6 @@ export type WorkoutDay = {
   dayName: string;
   dayOfWeek: number;
   exercises: { name: string; sets: number; reps?: string; notes?: string }[];
-};
-
-export type DailyHealthData = {
-  medications: DailyMedication[];
-  todayWorkout: WorkoutDay | null;
-  exerciseLogs: { exerciseName: string; setsCompleted: number; totalSets: number; done: boolean }[];
-  hydrationTarget: number;
-  hydrationLogged: boolean;
-  allMedsDone: boolean;
-  workoutDone: boolean;
-  dailyProgress: number;
 };
 
 const WORKOUT_SCHEDULE: WorkoutDay[] = [
@@ -106,41 +95,28 @@ const WORKOUT_SCHEDULE: WorkoutDay[] = [
   },
 ];
 
-const MEDICATIONS: DailyMedication[] = [
-  {
-    time: "morning",
-    supplements: [
-      { name: "Centrum", dose: "1 tablet" },
-      { name: "Volenta", dose: "as prescribed" },
-    ],
-  },
-  {
-    time: "lunch",
-    supplements: [
-      { name: "Limitless Milga Max", dose: "1 serving" },
-      { name: "Omega 3", dose: "1 capsule" },
-    ],
-  },
-  {
-    time: "dinner",
-    supplements: [
-      { name: "Newnutrition", dose: "1 serving" },
-    ],
-  },
-  {
-    time: "sleep",
-    supplements: [
-      { name: "Magnesium Glycinate", dose: "1 capsule" },
-    ],
-  },
-];
-
 export function getWorkoutForDay(dayOfWeek: number): WorkoutDay | null {
   return WORKOUT_SCHEDULE.find((d) => d.dayOfWeek === dayOfWeek) ?? null;
 }
 
-export function getMedicationSchedule(): DailyMedication[] {
-  return MEDICATIONS;
+function getDailySupplements(dayOfWeek: number): { title: string; category: string; priority: string }[] {
+  const tasks: { title: string; category: string; priority: string }[] = [
+    { title: "Centrum (morning)", category: "medication", priority: "High" },
+    { title: "Volenta (morning)", category: "medication", priority: "High" },
+    { title: "Limitless Milga Max (lunch)", category: "medication", priority: "High" },
+    { title: "Omega 3 (lunch)", category: "medication", priority: "High" },
+    { title: "Newnutrition (evening)", category: "medication", priority: "High" },
+    { title: "Magnesium Glycinate (before sleep)", category: "medication", priority: "High" },
+    { title: "Water 4-5L", category: "hydration", priority: "Medium" },
+  ];
+
+  const hasWorkout = dayOfWeek !== 0;
+  if (hasWorkout) {
+    tasks.push({ title: "Creatine (pre-workout)", category: "medication", priority: "High" });
+    tasks.push({ title: "Electrolytes (workout day)", category: "supplement", priority: "Medium" });
+  }
+
+  return tasks;
 }
 
 export async function seedDailyHealthTasks(userId: string) {
@@ -150,7 +126,7 @@ export async function seedDailyHealthTasks(userId: string) {
   const today = startOfDay(new Date());
   const tomorrow = addDays(today, 1);
 
-  let healthProject = await db
+  const [existingProject] = await db
     .select()
     .from(executionProjects)
     .where(
@@ -159,16 +135,16 @@ export async function seedDailyHealthTasks(userId: string) {
         eq(executionProjects.name, "Health & Daily")
       )
     )
-    .limit(1)
-    .then((rows) => rows[0] ?? null);
+    .limit(1);
 
+  let healthProject = existingProject ?? null;
   if (!healthProject) {
     [healthProject] = await db
       .insert(executionProjects)
       .values({
         userId,
         name: "Health & Daily",
-        description: "Daily medication, hydration, and workout tracking",
+        description: "Daily medication, hydration, and workout tracking with individual checklist items",
         status: "Active",
         priority: "High",
         currentPhase: "Daily",
@@ -180,62 +156,51 @@ export async function seedDailyHealthTasks(userId: string) {
       .returning();
   }
 
-  const existingTodayTasks = await db
-    .select({ title: executionTasks.title })
-    .from(executionTasks)
+  await db
+    .delete(executionTasks)
     .where(
       and(
         eq(executionTasks.userId, userId),
+        eq(executionTasks.projectId, healthProject.id),
         gte(executionTasks.taskDate, today),
-        lt(executionTasks.taskDate, tomorrow),
-        eq(executionTasks.projectId, healthProject.id)
+        lt(executionTasks.taskDate, tomorrow)
       )
     );
 
-  const existingTitles = new Set(existingTodayTasks.map((t) => t.title));
-
-  const healthTasks = [
-    { title: "☀️ Morning Medication: Centrum + Volenta", estimatedMinutes: 5, priority: "High" },
-    { title: "🌞 Lunch Medication: Limitless Milga Max + Omega 3", estimatedMinutes: 5, priority: "High" },
-    { title: "🌙 Dinner Medication: Newnutrition", estimatedMinutes: 5, priority: "High" },
-    { title: "💤 Sleep Supplement: Magnesium Glycinate", estimatedMinutes: 5, priority: "High" },
-    { title: "💧 Drink 4-5L Water Today", estimatedMinutes: 0, priority: "Medium" },
-  ];
-
   const dayOfWeek = today.getDay();
-  const workout = getWorkoutForDay(dayOfWeek);
-  if (workout && workout.exercises.some((e) => !e.name.toLowerCase().includes("recovery") && !e.name.toLowerCase().includes("stretching"))) {
-    healthTasks.push({
-      title: `💪 Workout: ${workout.dayName} (${workout.exercises.length} exercises)`,
-      estimatedMinutes: 60,
-      priority: "High",
-    });
-    healthTasks.push({
-      title: "🧪 Pre-Workout: Creatine",
-      estimatedMinutes: 5,
-      priority: "High",
-    });
-    if (dayOfWeek !== 0) {
-      healthTasks.push({
-        title: "⚡ Electrolytes (workout day)",
-        estimatedMinutes: 5,
-        priority: "Medium",
-      });
-    }
-  }
+  const supplements = getDailySupplements(dayOfWeek);
 
-  for (const task of healthTasks) {
-    if (existingTitles.has(task.title)) continue;
+  for (const sup of supplements) {
     await db.insert(executionTasks).values({
       userId,
       projectId: healthProject.id,
-      title: task.title,
-      estimatedMinutes: task.estimatedMinutes,
-      priority: task.priority,
+      title: sup.title,
+      estimatedMinutes: 2,
+      priority: sup.priority,
       taskDate: today,
       status: "Todo",
     });
   }
+
+  await db
+    .delete(memories)
+    .where(
+      and(
+        eq(memories.userId, userId),
+        eq(memories.title, "Today's Health Status")
+      )
+    );
+
+  const supplementCount = supplements.length;
+  await db.insert(memories).values({
+    userId,
+    projectId: healthProject.id,
+    category: "Health",
+    title: "Today's Health Status",
+    content: `Daily health plan: ${supplementCount} items including medication, hydration, and workout supplements. Tracked as individual checkboxes in the execution system. Water goal: 4-5L daily.`,
+    importance: 3,
+    tags: ["health", "medication", "hydration", "daily"],
+  });
 }
 
 export async function getTodayExerciseLogs(userId: string) {

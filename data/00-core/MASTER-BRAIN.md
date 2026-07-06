@@ -62,7 +62,7 @@ RAFA OS preserves context, reduces cognitive load, reveals patterns, supports ju
 ### RAFA OS Development
 - Dashboard, Brain, Chat, Study Plan, Inbox, Memory, Projects, Knowledge, Journal, Search, Notifications, Reports, Settings — built and operational
 - Daily Execution system with priority scoring, streak tracking, mission dashboard — functional
-- Health/Daily integration — being implemented
+- Daily Health integration (medication, workout, hydration) — operational with PostgreSQL persistence
 
 ## Personal Profile
 
@@ -83,9 +83,14 @@ Brazilian, transitioning to Agricultural GIS. Background includes agronomy/soil 
 
 ## ADHD
 
-- Medication: Centrum (morning), Volenta (morning), Limitless Milga Max (lunch), Omega 3 (lunch), Newnutrition (dinner), Magnesium Glycinate (before sleep)
-- Strategies: structured daily schedule, focus mode, priority scoring, streak tracking, recovery plan
+- Medication tracked as individual daily checkboxes in PostgreSQL
+  - Morning: Centrum, Volenta
+  - Lunch: Limitless Milga Max, Omega 3
+  - Evening: Newnutrition
+  - Workout: Creatine, Electrolytes (when training)
+  - Before sleep: Magnesium Glycinate
 - Daily hydration target: 4-5L water
+- Strategies: structured daily schedule, focus mode, priority scoring, streak tracking, recovery plan
 - Consistent training routine to manage energy and focus
 
 ## Attachment
@@ -124,10 +129,16 @@ Back together after a breakup. Building a healthy, secure relationship without s
 
 ## Health
 
-- **Medication schedule**: morning (Centrum, Volenta), lunch (Limitless Milga Max, Omega 3), dinner (Newnutrition), before sleep (Magnesium Glycinate)
-- **Workout**: daily scheduled exercises from weekly rotation
+- **Medication** (individual daily checkboxes, stored in PostgreSQL):
+  - Morning: Centrum (1 tablet), Volenta (as prescribed)
+  - Lunch: Limitless Milga Max (1 serving), Omega 3 (1 capsule)
+  - Evening: Newnutrition (1 serving)
+  - Pre-workout: Creatine (workout days)
+  - Electrolytes (workout / swimming / long walk days)
+  - Before sleep: Magnesium Glycinate (1 capsule)
+- **Workout**: daily scheduled from weekly rotation (PPL split), exercise-level set tracking with +/− counters
 - **Hydration**: 4-5L water daily
-- **Supplements**: Creatine (workout days), Electrolytes (workout/swimming/long walk)
+- **Daily health progress**: tracked in PostgreSQL, contributes to dashboard, auto-resets each day
 
 ## Career
 
@@ -144,10 +155,13 @@ Key memories stored: primary mission (Remote GIS Professional), daily schedule, 
 ## Active Context
 
 - **Month**: Month 1 GIS Sprint (Weeks 1-4)
-- **Current Week**: Week 3 (Soil Mapping with CONEAT)
-- **Project 02**: 90% complete — final cartographic touches remaining
-- **Next Up**: Project 03 (Canelones Land Suitability Analysis)
-- **Health integration**: Being wired into daily execution system
+- **Current Week**: Week 3 (Soil Mapping with CONEAT) — wrapping up
+- **GIS Portfolio**: Project 01 complete. Project 02 at 90%
+- **Current Focus**: Final Cartographic Layout for P02
+- **P02 Remaining**: final portfolio-quality map, final report, portfolio screenshots, LinkedIn portfolio post
+- **Next Project**: Project 03 (Canelones Land Suitability Analysis) — Week 4
+- **Study Progress**: Days 1-20 complete, Day 21 in progress
+- **Health**: Daily medication, workout, hydration integrated into execution system with PostgreSQL persistence and individual checkbox tracking
 
 ## AI Rules
 

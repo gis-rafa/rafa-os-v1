@@ -2,9 +2,30 @@
 
 import { useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { Pill, Dumbbell, Droplets } from "lucide-react";
+import { Pill, Dumbbell, Droplets, Sun, Moon, Sunrise, Sunset } from "lucide-react";
 import { updateExecutionTaskStatusAction } from "@/app/dashboard/actions";
 import type { ExecutionDashboardData } from "@/lib/execution-dashboard";
+
+function categorizeTasks(tasks: ExecutionDashboardData["todaysTasks"]) {
+  const morning: typeof tasks = [];
+  const lunch: typeof tasks = [];
+  const evening: typeof tasks = [];
+  const sleep: typeof tasks = [];
+  const workout: typeof tasks = [];
+  const hydration: typeof tasks = [];
+
+  for (const task of tasks) {
+    const t = task.title.toLowerCase();
+    if (t.includes("centrum") || t.includes("volenta")) { morning.push(task); }
+    else if (t.includes("limitless") || t.includes("omega 3")) { lunch.push(task); }
+    else if (t.includes("newnutrition")) { evening.push(task); }
+    else if (t.includes("magnesium")) { sleep.push(task); }
+    else if (t.includes("creatine") || t.includes("electrolytes")) { workout.push(task); }
+    else if (t.includes("water")) { hydration.push(task); }
+  }
+
+  return { morning, lunch, evening, sleep, workout, hydration };
+}
 
 export function DailyHealth({
   tasks,
@@ -13,36 +34,10 @@ export function DailyHealth({
 }) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
-
-  const healthTasks = tasks.filter((t) => {
-    const title = t.title.toLowerCase();
-    return (
-      title.includes("medication") ||
-      title.includes("water") ||
-      title.includes("creatine") ||
-      title.includes("electrolytes") ||
-      title.includes("workout")
-    );
-  });
-
-  const medTasks = healthTasks.filter(
-    (t) =>
-      t.title.toLowerCase().includes("medication") ||
-      t.title.toLowerCase().includes("creatine") ||
-      t.title.toLowerCase().includes("electrolytes") ||
-      t.title.toLowerCase().includes("magnesium") ||
-      t.title.toLowerCase().includes("supplement")
-  );
-  const waterTask = healthTasks.find((t) => t.title.toLowerCase().includes("water"));
-  const workoutTask = healthTasks.find((t) => t.title.toLowerCase().includes("workout"));
-
-  const waterDone = waterTask?.status === "Done";
-  const workoutDone = workoutTask?.status === "Done";
-  const totalHealth = medTasks.length + (waterTask ? 1 : 0) + (workoutTask ? 1 : 0);
-  const doneHealth = medTasks.filter((t) => t.status === "Done").length
-    + (waterDone ? 1 : 0)
-    + (workoutDone ? 1 : 0);
-  const progressPct = totalHealth > 0 ? Math.round((doneHealth / totalHealth) * 100) : 0;
+  const cats = categorizeTasks(tasks);
+  const allHealthTasks = [...cats.morning, ...cats.lunch, ...cats.evening, ...cats.sleep, ...cats.workout, ...cats.hydration];
+  const doneCount = allHealthTasks.filter((t) => t.status === "Done").length;
+  const progressPct = allHealthTasks.length > 0 ? Math.round((doneCount / allHealthTasks.length) * 100) : 0;
 
   function toggleTask(taskId: string, status: string) {
     startTransition(async () => {
@@ -62,113 +57,80 @@ export function DailyHealth({
         </div>
         <div>
           <h3 className="text-base font-semibold text-stone-950 dark:text-stone-50">
-            Today&apos;s Health
+            Daily Health
           </h3>
           <p className="mt-1 text-xs text-stone-500">
-            {doneHealth}/{totalHealth} done &middot; {progressPct}%
+            {doneCount}/{allHealthTasks.length} done &middot; {progressPct}%
           </p>
         </div>
       </div>
 
-      <div className="mb-2 flex h-2 overflow-hidden rounded-full bg-stone-200 dark:bg-stone-700">
+      <div className="mb-3 flex h-2 overflow-hidden rounded-full bg-stone-200 dark:bg-stone-700">
         <div
           className="h-full rounded-full bg-emerald-500 transition-all duration-500"
           style={{ width: `${progressPct}%` }}
         />
       </div>
 
-      {medTasks.length > 0 && (
-        <div className="mb-3">
-          <p className="mb-1.5 flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-stone-500">
-            <Pill size={12} /> Medication
-          </p>
-          <div className="grid gap-1.5">
-            {medTasks.map((task) => (
-              <label
-                key={task.id}
-                className="flex cursor-pointer items-center gap-2 rounded-md border border-stone-100 bg-stone-50 px-3 py-2 text-sm hover:bg-stone-100 dark:border-stone-800 dark:bg-stone-900 dark:hover:bg-stone-800"
-              >
-                <input
-                  type="checkbox"
-                  className="size-4 accent-emerald-600"
-                  checked={task.status === "Done"}
-                  onChange={() => toggleTask(task.id, task.status)}
-                  disabled={isPending}
-                />
-                <span
-                  className={
-                    task.status === "Done"
-                      ? "text-stone-500 line-through"
-                      : "text-stone-800 dark:text-stone-200"
-                  }
-                >
-                  {task.title.replace(/^[^\s]+\s/, "")}
-                </span>
-              </label>
-            ))}
-          </div>
-        </div>
-      )}
+      <HealthGroup icon={Sunrise} label="Morning" tasks={cats.morning} isPending={isPending} onToggle={toggleTask} />
+      <HealthGroup icon={Sun} label="Lunch" tasks={cats.lunch} isPending={isPending} onToggle={toggleTask} />
+      <HealthGroup icon={Sunset} label="Evening" tasks={cats.evening} isPending={isPending} onToggle={toggleTask} />
+      <HealthGroup icon={Moon} label="Before Sleep" tasks={cats.sleep} isPending={isPending} onToggle={toggleTask} />
+      <HealthGroup icon={Dumbbell} label="Workout" tasks={cats.workout} isPending={isPending} onToggle={toggleTask} />
+      <HealthGroup icon={Droplets} label="Hydration" tasks={cats.hydration} isPending={isPending} onToggle={toggleTask} />
 
-      {workoutTask && (
-        <div className="mb-3">
-          <p className="mb-1.5 flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-stone-500">
-            <Dumbbell size={12} /> Workout
-          </p>
+      {allHealthTasks.length === 0 && (
+        <p className="text-sm text-stone-500">No health tasks for today.</p>
+      )}
+    </section>
+  );
+}
+
+function HealthGroup({
+  icon: Icon,
+  label,
+  tasks,
+  isPending,
+  onToggle,
+}: {
+  icon: React.ComponentType<{ size?: number; strokeWidth?: number }>;
+  label: string;
+  tasks: ExecutionDashboardData["todaysTasks"];
+  isPending: boolean;
+  onToggle: (taskId: string, status: string) => void;
+}) {
+  if (tasks.length === 0) return null;
+
+  return (
+    <div className="mb-3">
+      <p className="mb-1.5 flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-stone-500">
+        <Icon size={12} /> {label}
+      </p>
+      <div className="grid gap-1.5">
+        {tasks.map((task) => (
           <label
+            key={task.id}
             className="flex cursor-pointer items-center gap-2 rounded-md border border-stone-100 bg-stone-50 px-3 py-2 text-sm hover:bg-stone-100 dark:border-stone-800 dark:bg-stone-900 dark:hover:bg-stone-800"
           >
             <input
               type="checkbox"
               className="size-4 accent-emerald-600"
-              checked={workoutDone}
-              onChange={() => toggleTask(workoutTask.id, workoutTask.status)}
+              checked={task.status === "Done"}
+              onChange={() => onToggle(task.id, task.status)}
               disabled={isPending}
             />
             <span
               className={
-                workoutDone
+                task.status === "Done"
                   ? "text-stone-500 line-through"
                   : "text-stone-800 dark:text-stone-200"
               }
             >
-              {workoutTask.title.replace(/^[^\s]+\s/, "")}
+              {task.title}
             </span>
           </label>
-        </div>
-      )}
-
-      {waterTask && (
-        <div>
-          <p className="mb-1.5 flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-stone-500">
-            <Droplets size={12} /> Hydration
-          </p>
-          <label
-            className="flex cursor-pointer items-center gap-2 rounded-md border border-stone-100 bg-stone-50 px-3 py-2 text-sm hover:bg-stone-100 dark:border-stone-800 dark:bg-stone-900 dark:hover:bg-stone-800"
-          >
-            <input
-              type="checkbox"
-              className="size-4 accent-blue-600"
-              checked={waterDone}
-              onChange={() => toggleTask(waterTask.id, waterTask.status)}
-              disabled={isPending}
-            />
-            <span
-              className={
-                waterDone
-                  ? "text-stone-500 line-through"
-                  : "text-stone-800 dark:text-stone-200"
-              }
-            >
-              {waterTask.title.replace(/^[^\s]+\s/, "")}
-            </span>
-          </label>
-        </div>
-      )}
-
-      {healthTasks.length === 0 && (
-        <p className="text-sm text-stone-500">No health tasks for today.</p>
-      )}
-    </section>
+        ))}
+      </div>
+    </div>
   );
 }

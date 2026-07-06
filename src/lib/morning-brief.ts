@@ -1,5 +1,7 @@
 import type { ActiveContextField } from "@/lib/master-brain";
 import { getStudyPlanSummary } from "@/lib/study-plan";
+import { getDb, isDatabaseConfigured, executionTasks, executionProjects } from "@/db";
+import { and, eq, gte, lt } from "drizzle-orm";
 
 export type MorningBrief = {
   dateLabel: string;
@@ -26,6 +28,7 @@ export async function generateMorningBrief(
   const weeklyPriority = valueFor(values, "Current Weekly Priority");
   const relationshipStatus = valueFor(values, "Current Relationship Status");
   const healthFocus = valueFor(values, "Current Health Focus");
+  const healthStatus = await getTodayHealthSummary(userId);
 
   return {
     dateLabel: new Intl.DateTimeFormat("en", {
@@ -41,7 +44,7 @@ export async function generateMorningBrief(
         ].join("\n")
       : "TODO",
     activeProject: valueFor(values, "Current Career Focus"),
-    healthReminder: healthFocus,
+    healthReminder: healthStatus ? `${healthFocus} | ${healthStatus}` : healthFocus,
     relationshipReminder: isRelevantRelationshipStatus(relationshipStatus)
       ? relationshipStatus
       : null,
@@ -59,4 +62,53 @@ function valueFor(values: Map<string, string>, label: string) {
 
 function isRelevantRelationshipStatus(value: string) {
   return value !== "TODO" && value.length > 0;
+}
+
+async function getTodayHealthSummary(userId: string): Promise<string | null> {
+  if (!isDatabaseConfigured()) return null;
+
+  const db = getDb();
+  const today = startOfDay(new Date());
+  const tomorrow = addDays(today, 1);
+
+  const [healthProject] = await db
+    .select({ id: executionProjects.id })
+    .from(executionProjects)
+    .where(
+      and(
+        eq(executionProjects.userId, userId),
+        eq(executionProjects.name, "Health & Daily")
+      )
+    )
+    .limit(1);
+
+  if (!healthProject) return null;
+
+  const todayHealthTasks = await db
+    .select({ title: executionTasks.title, status: executionTasks.status })
+    .from(executionTasks)
+    .where(
+      and(
+        eq(executionTasks.userId, userId),
+        eq(executionTasks.projectId, healthProject.id),
+        gte(executionTasks.taskDate, today),
+        lt(executionTasks.taskDate, tomorrow)
+      )
+    )
+    .orderBy(executionTasks.title);
+
+  if (todayHealthTasks.length === 0) return null;
+
+  const done = todayHealthTasks.filter((t) => t.status === "Done").length;
+  return `${done}/${todayHealthTasks.length} health items completed today.`;
+}
+
+function startOfDay(date: Date) {
+  return new Date(date.getFullYear(), date.getMonth(), date.getDate());
+}
+
+function addDays(date: Date, days: number) {
+  const nextDate = new Date(date);
+  nextDate.setDate(nextDate.getDate() + days);
+  return nextDate;
 }

@@ -136,8 +136,62 @@ async function seedWorkspace(db, userId) {
     ]
   );
 
+  const [healthProject] = await db.query(
+    `insert into execution_projects
+      (user_id, name, description, status, priority, current_phase, progress, target_date, color, icon)
+     values
+      ($1, 'Health & Daily', 'Daily medication, hydration, and workout tracking with individual checklist items.', 'Active', 'High', 'Daily', 0, $2, 'emerald', 'heart')
+     on conflict (user_id, name) do update set
+       description = excluded.description,
+       status = excluded.status,
+       priority = excluded.priority,
+       current_phase = excluded.current_phase,
+       progress = excluded.progress,
+       target_date = excluded.target_date,
+       color = excluded.color,
+       icon = excluded.icon
+     returning id`,
+    [userId, addDays(today, 365)]
+  );
+  const healthProjectId = healthProject.rows[0].id;
+
+  const supplements = [
+    "Centrum (morning)",
+    "Volenta (morning)",
+    "Limitless Milga Max (lunch)",
+    "Omega 3 (lunch)",
+    "Newnutrition (evening)",
+    "Magnesium Glycinate (before sleep)",
+    "Water 4-5L",
+  ];
+  if (today.getDay() !== 0) {
+    supplements.push("Creatine (pre-workout)");
+    supplements.push("Electrolytes (workout day)");
+  }
+
+  for (const sup of supplements) {
+    await db.query(
+      `insert into execution_tasks (user_id, project_id, title, task_date, status, priority, estimated_minutes)
+       values ($1, $2, $3, $4, 'Todo', 'High', 2)
+       on conflict do nothing`,
+      [userId, healthProjectId, sup, today]
+    );
+  }
+
   await db.query(
-    `delete from memories where user_id = $1 and title in ('Primary mission', 'Daily mission schedule', 'Personal branding role')`,
+    `insert into memories (user_id, project_id, category, title, content, tags, importance)
+     values ($1, $2, 'Health', 'Today''s Health Status', $3, $4, 3)
+     on conflict (user_id, title) do update set content = $3, tags = $4, updated_at = now()`,
+    [
+      userId,
+      healthProjectId,
+      `Daily health plan: ${supplements.length} tracking items including medication, hydration, and workout supplements. Water goal: 4-5L daily.`,
+      ["health", "medication", "hydration", "daily"],
+    ]
+  );
+
+  await db.query(
+    `delete from memories where user_id = $1 and title in ('Primary mission', 'Daily mission schedule', 'Personal branding role', 'Current GIS progress')`,
     [userId]
   );
 
