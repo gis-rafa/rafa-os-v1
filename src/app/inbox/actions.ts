@@ -3,12 +3,14 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { and, count, desc, eq } from "drizzle-orm";
-import { getDb, inboxEntries } from "@/db";
+import { getDb, isDatabaseConfigured, inboxEntries } from "@/db";
 import { getActionUser } from "@/lib/auth-user";
 import { truncateInput } from "@/lib/dashboard-utils";
 import { createNotification } from "@/app/notifications/actions";
 
 export async function saveInboxEntryAction(formData: FormData) {
+  if (!isDatabaseConfigured()) return;
+
   const user = await getActionUser();
   const entry = truncateInput(String(formData.get("entry") ?? "").trim(), 10000);
 
@@ -32,6 +34,8 @@ export async function saveInboxEntryAction(formData: FormData) {
 }
 
 export async function deleteInboxEntryAction(formData: FormData) {
+  if (!isDatabaseConfigured()) return;
+
   const user = await getActionUser();
   const entryId = String(formData.get("entryId") ?? "").trim();
 
@@ -58,6 +62,8 @@ export type InboxEntry = {
 };
 
 export async function getInboxEntriesAction(limit = 50, offset = 0) {
+  if (!isDatabaseConfigured()) return { items: [], total: 0 };
+
   const user = await getActionUser();
   const where = eq(inboxEntries.userId, user.id);
   const [items, totalResult] = await Promise.all([

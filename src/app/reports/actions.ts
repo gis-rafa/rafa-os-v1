@@ -1,6 +1,6 @@
 "use server";
 
-import { getDb, journalEntries, memories, executionTasks, executionProjects, executionPriorities } from "@/db";
+import { getDb, isDatabaseConfigured, journalEntries, memories, executionTasks, executionProjects, executionPriorities } from "@/db";
 import { getActionUser } from "@/lib/auth-user";
 import { eq, sql, desc } from "drizzle-orm";
 
@@ -13,6 +13,16 @@ export type ReportData = {
 };
 
 export async function getReportDataAction(): Promise<ReportData> {
+  if (!isDatabaseConfigured()) {
+    return {
+      memoryStats: { total: 0, byCategory: [] },
+      journalStats: { total: 0, byMonth: [] },
+      taskStats: { total: 0, completed: 0, rate: 0 },
+      projectStats: { total: 0, byStatus: [] },
+      priorityStats: { total: 0, completed: 0, rate: 0 }
+    };
+  }
+
   const user = await getActionUser();
   const db = getDb();
 

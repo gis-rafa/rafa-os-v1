@@ -1,5 +1,5 @@
 import { and, count, desc, eq, ilike, or, type SQL } from "drizzle-orm";
-import { getDb, journalEntries } from "@/db";
+import { getDb, isDatabaseConfigured, journalEntries } from "@/db";
 
 export type JournalFilters = {
   userId: string;
@@ -21,6 +21,8 @@ export async function listJournalEntries({
   limit = 50,
   offset = 0
 }: JournalFilters) {
+  if (!isDatabaseConfigured()) return { items: [], total: 0 };
+
   const db = getDb();
   const conditions: SQL[] = [eq(journalEntries.userId, userId)];
   const normalizedSearch = search?.trim();
@@ -53,6 +55,8 @@ export async function listJournalEntries({
 }
 
 export async function getJournalEntryForUser(id: string, userId: string) {
+  if (!isDatabaseConfigured()) return null;
+
   const db = getDb();
   const [entry] = await db
     .select()
@@ -67,6 +71,8 @@ export async function createJournalEntry(
   userId: string,
   values: JournalFormValues
 ) {
+  if (!isDatabaseConfigured()) return null;
+
   const db = getDb();
   const [entry] = await db
     .insert(journalEntries)
@@ -88,6 +94,8 @@ export async function updateJournalEntry({
   userId: string;
   values: JournalFormValues;
 }) {
+  if (!isDatabaseConfigured()) return null;
+
   const db = getDb();
   const [entry] = await db
     .update(journalEntries)
@@ -102,6 +110,8 @@ export async function updateJournalEntry({
 }
 
 export async function deleteJournalEntry(id: string, userId: string) {
+  if (!isDatabaseConfigured()) return;
+
   const db = getDb();
   await db
     .delete(journalEntries)

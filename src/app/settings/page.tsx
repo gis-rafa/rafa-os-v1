@@ -1,3 +1,4 @@
+import { isDatabaseConfigured } from "@/db";
 import { requireCurrentDbUser } from "@/lib/auth-user";
 import { getNotificationPreferences } from "@/lib/notification-preferences";
 import {
@@ -17,6 +18,8 @@ export default async function SettingsPage() {
   const user = await requireCurrentDbUser();
   const prefs = await getNotificationPreferences(user.id);
 
+  const hasDb = isDatabaseConfigured();
+
   return (
     <section className="mx-auto max-w-4xl">
       <div className="mb-6">
@@ -31,17 +34,17 @@ export default async function SettingsPage() {
 
       <div className="grid gap-6">
         <ProfileSection
-          isDatabaseConfigured={Boolean(user)}
+          isDatabaseConfigured={hasDb}
           user={user}
         />
 
         <NotificationPreferencesSection
-          isDatabaseConfigured={Boolean(user)}
+          isDatabaseConfigured={hasDb}
           prefs={prefs}
         />
 
         <DatabaseSection
-          isDatabaseConfigured={Boolean(user)}
+          isDatabaseConfigured={hasDb}
         />
       </div>
     </section>
@@ -227,7 +230,7 @@ function DatabaseSection({
           <p className="mt-1 text-sm text-stone-600">
             {isDatabaseConfigured
               ? "PostgreSQL is configured and connected."
-              : "Set DATABASE_URL and authentication to enable the database."}
+              : "Set DATABASE_URL to enable database. Running in V1 local workspace mode."}
           </p>
         </div>
       </div>

@@ -1,5 +1,5 @@
 import { and, eq } from "drizzle-orm";
-import { getDb, documents } from "@/db";
+import { getDb, isDatabaseConfigured, documents } from "@/db";
 
 export type MasterBrainSection = {
   title: string;
@@ -29,6 +29,8 @@ const activeContextLabels = [
 const MASTER_BRAIN_KEY = "master-brain";
 
 async function getMasterBrainContent(userId: string): Promise<string> {
+  if (!isDatabaseConfigured()) return "";
+
   const db = getDb();
   const [row] = await db
     .select()
@@ -45,6 +47,8 @@ async function getMasterBrainContent(userId: string): Promise<string> {
 }
 
 async function upsertMasterBrainContent(userId: string, content: string) {
+  if (!isDatabaseConfigured()) return;
+
   const db = getDb();
   const [existing] = await db
     .select()

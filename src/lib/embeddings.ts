@@ -1,5 +1,5 @@
 import OpenAI from "openai";
-import { getDb } from "@/db";
+import { getDb, isDatabaseConfigured } from "@/db";
 import { sql } from "drizzle-orm";
 
 type ContentType = "memory" | "journal" | "knowledge";
@@ -34,6 +34,8 @@ export async function storeEmbedding(
   contentId: string,
   embedding: number[]
 ) {
+  if (!isDatabaseConfigured()) return;
+
   const db = getDb();
   const embeddingStr = `[${embedding.join(",")}]`;
 
@@ -50,6 +52,8 @@ export async function searchSimilar(
   queryEmbedding: number[],
   options?: { limit?: number; contentType?: ContentType }
 ): Promise<{ contentId: string; contentType: string; score: number }[]> {
+  if (!isDatabaseConfigured()) return [];
+
   const db = getDb();
   const limit = options?.limit ?? 10;
   const embeddingStr = `[${queryEmbedding.join(",")}]`;

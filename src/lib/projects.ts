@@ -3,6 +3,7 @@ import {
   executionProjects,
   executionTasks,
   getDb,
+  isDatabaseConfigured,
   memories,
   projectKnowledgeLinks,
   type ExecutionProject
@@ -45,6 +46,8 @@ export async function listProjectsWithStats(
   limit = 50,
   offset = 0
 ) {
+  if (!isDatabaseConfigured()) return { items: [], total: 0 };
+
   const db = getDb();
   const whereProjects = and(
     eq(executionProjects.userId, userId),
@@ -118,6 +121,8 @@ export async function listProjectsWithStats(
 }
 
 export async function getProjectForUser(id: string, userId: string) {
+  if (!isDatabaseConfigured()) return null;
+
   const [project] = await getDb()
     .select()
     .from(executionProjects)
@@ -128,6 +133,8 @@ export async function getProjectForUser(id: string, userId: string) {
 }
 
 export async function createProject(userId: string, values: ProjectFormValues) {
+  if (!isDatabaseConfigured()) return null;
+
   const [project] = await getDb()
     .insert(executionProjects)
     .values({
@@ -148,6 +155,8 @@ export async function updateProject({
   userId: string;
   values: ProjectFormValues;
 }) {
+  if (!isDatabaseConfigured()) return null;
+
   const [project] = await getDb()
     .update(executionProjects)
     .set({
@@ -161,6 +170,8 @@ export async function updateProject({
 }
 
 export async function archiveProject(id: string, userId: string) {
+  if (!isDatabaseConfigured()) return;
+
   await getDb()
     .update(executionProjects)
     .set({
@@ -171,6 +182,8 @@ export async function archiveProject(id: string, userId: string) {
 }
 
 export async function deleteProject(id: string, userId: string) {
+  if (!isDatabaseConfigured()) return;
+
   const db = getDb();
 
   await db.transaction(async (tx) => {

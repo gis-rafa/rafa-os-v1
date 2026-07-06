@@ -3,11 +3,13 @@
 import { eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { getDb, users } from "@/db";
+import { getDb, isDatabaseConfigured, users } from "@/db";
 import { getActionUser } from "@/lib/auth-user";
 import { updateNotificationPreferences } from "@/lib/notification-preferences";
 
 export async function updateProfileAction(formData: FormData) {
+  if (!isDatabaseConfigured()) return;
+
   const user = await getActionUser();
   const name = String(formData.get("name") ?? "").trim();
   const email = String(formData.get("email") ?? "").trim();

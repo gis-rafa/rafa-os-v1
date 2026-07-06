@@ -3,12 +3,14 @@
 import { and, eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { getDb, memories } from "@/db";
+import { getDb, isDatabaseConfigured, memories } from "@/db";
 import { getActionUser } from "@/lib/auth-user";
 import { clampImportance, truncateInput } from "@/lib/dashboard-utils";
 import { createNotification } from "@/app/notifications/actions";
 
 export async function createMemoryAction(formData: FormData) {
+  if (!isDatabaseConfigured()) return;
+
   const user = await getActionUser();
   const values = parseMemoryForm(formData);
 
@@ -32,6 +34,8 @@ export async function createMemoryAction(formData: FormData) {
 }
 
 export async function updateMemoryAction(formData: FormData) {
+  if (!isDatabaseConfigured()) return;
+
   const user = await getActionUser();
   const id = String(formData.get("id") ?? "");
   const values = parseMemoryForm(formData);
@@ -53,6 +57,8 @@ export async function updateMemoryAction(formData: FormData) {
 }
 
 export async function deleteMemoryAction(formData: FormData) {
+  if (!isDatabaseConfigured()) return;
+
   const user = await getActionUser();
   const id = String(formData.get("id") ?? "");
 

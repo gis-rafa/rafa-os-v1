@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { getActionUser } from "@/lib/auth-user";
+import { isDatabaseConfigured } from "@/db";
 import { truncateInput } from "@/lib/dashboard-utils";
 import {
   createJournalEntry,
@@ -12,6 +13,8 @@ import {
 } from "@/lib/journal";
 
 export async function createJournalEntryAction(formData: FormData) {
+  if (!isDatabaseConfigured()) return;
+
   const user = await getActionUser();
   const values = parseJournalForm(formData);
 
@@ -20,6 +23,8 @@ export async function createJournalEntryAction(formData: FormData) {
   }
 
   const entry = await createJournalEntry(user.id, values);
+
+  if (!entry) return;
 
   revalidatePath("/journal");
   redirect(`/journal?edit=${entry.id}`);

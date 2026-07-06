@@ -8,7 +8,7 @@ import {
 } from "@/lib/knowledge";
 import { generateMorningBrief } from "@/lib/morning-brief";
 import { searchRelevantMemoriesForMessage } from "@/lib/memories";
-import { getDb, inboxEntries, executionProjects } from "@/db";
+import { getDb, isDatabaseConfigured, inboxEntries, executionProjects } from "@/db";
 import { desc, eq } from "drizzle-orm";
 
 type ContextKey =
@@ -363,6 +363,8 @@ async function readRelevantKnowledge(userId: string, userMessage: string) {
 }
 
 async function listInboxEntriesForContext(userId: string) {
+  if (!isDatabaseConfigured()) return "";
+
   const db = getDb();
   const entries = await db
     .select()
@@ -379,6 +381,8 @@ async function listInboxEntriesForContext(userId: string) {
 }
 
 async function listProjectsForContext(userId: string) {
+  if (!isDatabaseConfigured()) return "";
+
   const db = getDb();
   const projects = await db
     .select()

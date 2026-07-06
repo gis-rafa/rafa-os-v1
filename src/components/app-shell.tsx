@@ -9,10 +9,7 @@ import { AppSidebar } from "@/components/app-sidebar";
 export function AppShell({ children }: { children: ReactNode }) {
   const pathname = usePathname();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const isPublicRoute =
-    pathname === "/" ||
-    pathname.startsWith("/sign-in") ||
-    pathname.startsWith("/sign-up");
+  const isPublicRoute = pathname === "/";
 
   if (isPublicRoute) {
     return children;

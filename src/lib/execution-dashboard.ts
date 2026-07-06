@@ -4,6 +4,7 @@ import {
   executionProjects,
   executionTasks,
   getDb,
+  isDatabaseConfigured,
   memories
 } from "@/db";
 import { getStudyPlanSummary } from "@/lib/study-plan";
@@ -16,11 +17,97 @@ export const executionTaskStatuses = [
   "Done"
 ] as const;
 
-export type ExecutionDashboardData = Awaited<
-  ReturnType<typeof getExecutionDashboardData>
->;
+export type DashboardTask = {
+  id: string;
+  title: string;
+  status: string;
+  priority: string;
+  estimatedMinutes: number;
+  projectName: string | null;
+  updatedAt: Date;
+};
+
+export type ExecutionDashboardData = {
+  activeFocus: string;
+  activeProject: string;
+  activeProjects: typeof executionProjects.$inferSelect[];
+  activeStreak: number;
+  completionPercentageThisWeek: number;
+  currentDate: Date;
+  currentPhase: string;
+  currentWeek: number;
+  executionPace: string;
+  daysRemainingToSixMonthTarget: number;
+  englishCompletion: number;
+  latestImportantMemory: object | null;
+  latestMemories: object[];
+  missionCompletion: number;
+  missionMilestones: Record<string, string>;
+  overdueTasks: object[];
+  portfolioCompletion: number;
+  priorities: object[];
+  remoteJobReadiness: number;
+  recentCompletedTasks: object[];
+  recoveryPlan: { daysBehind: number; message: string; projectedCompletionDate: Date; steps: string[] };
+  personalBrandingGrowth: number;
+  primaryObjective: string;
+  roadmapCompletion: number;
+  secondaryObjective: string;
+  tasksCompletedToday: number;
+  tasksRemainingToday: number;
+  thirdObjective: string;
+  todaysTasks: DashboardTask[];
+  weeklyCompletionPercentage: number;
+};
 
 export async function getExecutionDashboardData(userId: string) {
+  if (!isDatabaseConfigured()) {
+    const now = new Date();
+    return {
+      activeFocus: "No active study task",
+      activeProject: "GIS Study",
+      activeProjects: [],
+      activeStreak: 0,
+      completionPercentageThisWeek: 0,
+      currentDate: now,
+      currentPhase: "GIS Foundation",
+      currentWeek: 1,
+      executionPace: "Maintain",
+      daysRemainingToSixMonthTarget: 180,
+      englishCompletion: 0,
+      latestImportantMemory: null,
+      latestMemories: [],
+      missionCompletion: 0,
+      missionMilestones: {
+        english: "English communication 25% milestone",
+        personalBranding: "Personal branding 25% milestone",
+        portfolio: "Portfolio 25% milestone",
+        remoteJobReadiness: "Remote job readiness 25% milestone",
+        roadmap: "GIS roadmap 25% milestone"
+      },
+      overdueTasks: [],
+      portfolioCompletion: 0,
+      priorities: [],
+      remoteJobReadiness: 0,
+      recentCompletedTasks: [],
+      recoveryPlan: {
+        daysBehind: 0,
+        message: "Execution is on track. Protect the GIS deep work block.",
+        projectedCompletionDate: now,
+        steps: ["Complete the primary GIS task before lower-priority work."]
+      },
+      personalBrandingGrowth: 0,
+      primaryObjective: "Complete today's GIS roadmap work before starting lower-priority work.",
+      roadmapCompletion: 0,
+      secondaryObjective: "Move the GIS portfolio one step forward.",
+      tasksCompletedToday: 0,
+      tasksRemainingToday: 0,
+      thirdObjective: "Publish or draft one Personal Branding proof-of-work action.",
+      todaysTasks: [] as DashboardTask[],
+      weeklyCompletionPercentage: 0
+    };
+  }
+
   await adaptExecutionPlan(userId);
 
   const db = getDb();
@@ -243,6 +330,8 @@ export async function updatePriorityCompletion({
   priorityId: string;
   userId: string;
 }) {
+  if (!isDatabaseConfigured()) return;
+
   await getDb()
     .update(executionPriorities)
     .set({
@@ -270,6 +359,8 @@ export async function createExecutionTask({
   priority: string;
   estimatedMinutes: number;
 }) {
+  if (!isDatabaseConfigured()) return null;
+
   const db = getDb();
   const [task] = await db
     .insert(executionTasks)
@@ -295,6 +386,8 @@ export async function updateExecutionTaskStatus({
   taskId: string;
   userId: string;
 }) {
+  if (!isDatabaseConfigured()) return;
+
   await getDb()
     .update(executionTasks)
     .set({
@@ -308,6 +401,8 @@ export async function updateExecutionTaskStatus({
 }
 
 async function adaptExecutionPlan(userId: string) {
+  if (!isDatabaseConfigured()) return;
+
   const db = getDb();
   const today = startOfDay(new Date());
   const staleTasks = await db
@@ -401,6 +496,8 @@ function findNextAvailableMissionDay({
 }
 
 async function updateProjectProgressFromTask(taskId: string, userId: string) {
+  if (!isDatabaseConfigured()) return;
+
   const db = getDb();
   const [task] = await db
     .select({

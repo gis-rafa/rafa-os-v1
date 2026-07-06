@@ -1,6 +1,6 @@
 "use server";
 
-import { getDb, journalEntries, memories } from "@/db";
+import { getDb, isDatabaseConfigured, journalEntries, memories } from "@/db";
 import { getActionUser } from "@/lib/auth-user";
 import { and, ilike, or, eq, desc, inArray } from "drizzle-orm";
 import { loadKnowledgeIndex } from "@/lib/knowledge";
@@ -23,6 +23,8 @@ export type SearchResult = {
 };
 
 export async function globalSearchAction(searchTerm: string): Promise<SearchResult[]> {
+  if (!isDatabaseConfigured()) return [];
+
   const user = await getActionUser();
   const term = truncateInput(searchTerm.trim(), 500);
 
@@ -124,6 +126,8 @@ export async function globalSearchAction(searchTerm: string): Promise<SearchResu
 export async function semanticSearchAction(
   searchTerm: string
 ): Promise<SearchResult[]> {
+  if (!isDatabaseConfigured()) return [];
+
   const user = await getActionUser();
   const term = truncateInput(searchTerm.trim(), 500);
 
@@ -196,6 +200,8 @@ export async function semanticSearchAction(
 }
 
 export async function reindexEmbeddingsAction(): Promise<{ indexed: number }> {
+  if (!isDatabaseConfigured()) return { indexed: 0 };
+
   const user = await getActionUser();
   let indexed = 0;
 

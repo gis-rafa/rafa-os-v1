@@ -1,5 +1,5 @@
 import { and, count, desc, eq, ilike, or, sql, type SQL } from "drizzle-orm";
-import { getDb, memories } from "@/db";
+import { getDb, isDatabaseConfigured, memories } from "@/db";
 
 export type MemoryFilters = {
   userId: string;
@@ -29,6 +29,8 @@ export async function listMemories({
   limit = 50,
   offset = 0
 }: MemoryFilters) {
+  if (!isDatabaseConfigured()) return { items: [], total: 0 };
+
   const db = getDb();
   const conditions: SQL[] = [eq(memories.userId, userId)];
   const normalizedSearch = search?.trim();
@@ -66,6 +68,8 @@ export async function listMemories({
 }
 
 export async function listMemoryCategories(userId: string) {
+  if (!isDatabaseConfigured()) return [];
+
   const db = getDb();
   const rows = await db
     .selectDistinct({ category: memories.category })
@@ -77,6 +81,8 @@ export async function listMemoryCategories(userId: string) {
 }
 
 export async function getMemoryForUser(id: string, userId: string) {
+  if (!isDatabaseConfigured()) return null;
+
   const db = getDb();
   const [memory] = await db
     .select()
@@ -92,6 +98,8 @@ export async function searchRelevantMemoriesForMessage(
   userMessage: string,
   limit = 8
 ) {
+  if (!isDatabaseConfigured()) return [];
+
   const db = getDb();
   const terms = extractSearchTerms(userMessage);
 
@@ -187,6 +195,8 @@ export async function saveMemorySuggestion(
   userId: string,
   suggestion: MemorySuggestion
 ) {
+  if (!isDatabaseConfigured()) return null;
+
   const db = getDb();
   const normalizedContent = normalizeMemoryText(suggestion.content);
   const similarMemories = await searchRelevantMemoriesForMessage(

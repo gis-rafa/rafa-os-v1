@@ -18,7 +18,7 @@ export function DashboardHeader({
       <p className="rounded-md border border-stone-200 bg-white px-3 py-2 text-sm text-stone-600 shadow-sm dark:border-stone-800 dark:bg-stone-950 dark:text-stone-300">
         {isDatabaseConfigured
           ? "PostgreSQL live data"
-          : "Authentication and database are not configured locally"}
+          : "Local workspace (V1 mode)"}
       </p>
     </div>
   );
