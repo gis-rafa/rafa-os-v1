@@ -1,24 +1,15 @@
 import { cache } from "react";
 import { eq } from "drizzle-orm";
 import { getDb, users } from "@/db";
-import { isClerkConfigured } from "@/lib/clerk-config";
 
-const localDevClerkUserId = "local-development-rafa";
-
-export function canUseLocalDatabaseFallback() {
-  return (
-    process.env.NODE_ENV !== "production" &&
-    !isClerkConfigured() &&
-    Boolean(process.env.DATABASE_URL)
-  );
-}
+const workspaceUserId = "local-development-rafa";
 
 export const getLocalDevelopmentUser = cache(async function getLocalDevelopmentUser() {
   const db = getDb();
   const [existingUser] = await db
     .select()
     .from(users)
-    .where(eq(users.clerkUserId, localDevClerkUserId))
+    .where(eq(users.clerkUserId, workspaceUserId))
     .limit(1);
 
   if (existingUser) {
@@ -28,7 +19,7 @@ export const getLocalDevelopmentUser = cache(async function getLocalDevelopmentU
   const [createdUser] = await db
     .insert(users)
     .values({
-      clerkUserId: localDevClerkUserId,
+      clerkUserId: workspaceUserId,
       email: "rafa.local@rafa-os.dev",
       name: "Abdallah Rafa"
     })

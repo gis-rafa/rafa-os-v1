@@ -1,8 +1,6 @@
 import type { Metadata, Viewport } from "next";
-import { ClerkProvider } from "@clerk/nextjs";
 import { AppShell } from "@/components/app-shell";
 import { ServiceWorkerRegister } from "@/components/service-worker-register";
-import { isClerkConfigured } from "@/lib/clerk-config";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -29,22 +27,12 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const content = (
+  return (
     <html lang="en">
       <body>
         <ServiceWorkerRegister />
         <AppShell>{children}</AppShell>
       </body>
     </html>
-  );
-
-  if (!isClerkConfigured()) {
-    return content;
-  }
-
-  return (
-    <ClerkProvider>
-      {content}
-    </ClerkProvider>
   );
 }

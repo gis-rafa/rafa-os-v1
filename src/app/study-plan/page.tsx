@@ -1,11 +1,6 @@
 import { BarChart3, CalendarDays, CheckCircle2, Clock, Flag } from "lucide-react";
 import { updateStudyTaskStatusAction } from "@/app/study-plan/actions";
 import { requireCurrentDbUser } from "@/lib/auth-user";
-import { isClerkConfigured } from "@/lib/clerk-config";
-import {
-  canUseLocalDatabaseFallback,
-  getLocalDevelopmentUser
-} from "@/lib/local-dev-user";
 import { seedDevelopmentWorkspace } from "@/lib/seed-data";
 import {
   getStudyPlanSummary,
@@ -29,20 +24,10 @@ const statusStyles: Record<StudyTaskStatus, string> = {
 };
 
 export default async function StudyPlanPage() {
-  const isAuthenticatedMode = isClerkConfigured();
-  const isLocalDatabaseMode =
-    !isAuthenticatedMode && canUseLocalDatabaseFallback();
-  const user = isAuthenticatedMode
-    ? await requireCurrentDbUser()
-    : isLocalDatabaseMode
-      ? await getLocalDevelopmentUser()
-      : null;
+  const user = await requireCurrentDbUser();
+  await seedDevelopmentWorkspace(user.id);
 
-  if (isLocalDatabaseMode && user) {
-    await seedDevelopmentWorkspace(user.id);
-  }
-
-  const summary = await getStudyPlanSummary(user?.id);
+  const summary = await getStudyPlanSummary(user.id);
 
   return (
     <section className="mx-auto max-w-7xl">
@@ -93,17 +78,13 @@ export default async function StudyPlanPage() {
             Roadmap Tasks
           </h3>
           <p className="mt-1 text-sm text-stone-600">
-            {isAuthenticatedMode
-              ? "Progress is stored in PostgreSQL per authenticated user."
-              : isLocalDatabaseMode
-                ? "Local development data is stored in PostgreSQL under the seeded workspace."
-              : "Local fallback mode reads the imported roadmap without saved progress."}
+            Progress is stored in PostgreSQL for the local workspace.
           </p>
         </div>
         <div className="divide-y divide-stone-200">
           {summary.tasks.map((task) => (
             <RoadmapTaskRow
-              canUpdateProgress={isAuthenticatedMode || isLocalDatabaseMode}
+              canUpdateProgress
               key={task.day}
               task={task}
             />

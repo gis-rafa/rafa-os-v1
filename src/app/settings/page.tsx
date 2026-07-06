@@ -1,9 +1,4 @@
 import { requireCurrentDbUser } from "@/lib/auth-user";
-import { isClerkConfigured } from "@/lib/clerk-config";
-import {
-  canUseLocalDatabaseFallback,
-  getLocalDevelopmentUser
-} from "@/lib/local-dev-user";
 import { getNotificationPreferences } from "@/lib/notification-preferences";
 import {
   updateProfileAction,
@@ -19,16 +14,8 @@ export const metadata: Metadata = {
 export const dynamic = "force-dynamic";
 
 export default async function SettingsPage() {
-  const isAuthenticatedMode = isClerkConfigured();
-  const isLocalDatabaseMode =
-    !isAuthenticatedMode && canUseLocalDatabaseFallback();
-  const user = isAuthenticatedMode
-    ? await requireCurrentDbUser()
-    : isLocalDatabaseMode
-      ? await getLocalDevelopmentUser()
-      : null;
-
-  const prefs = user ? await getNotificationPreferences(user.id) : null;
+  const user = await requireCurrentDbUser();
+  const prefs = await getNotificationPreferences(user.id);
 
   return (
     <section className="mx-auto max-w-4xl">

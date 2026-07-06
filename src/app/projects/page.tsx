@@ -20,12 +20,7 @@ import {
 } from "@/app/projects/actions";
 import type { ExecutionProject } from "@/db";
 import { requireCurrentDbUser } from "@/lib/auth-user";
-import { isClerkConfigured } from "@/lib/clerk-config";
 import { formatDate } from "@/lib/dashboard-utils";
-import {
-  canUseLocalDatabaseFallback,
-  getLocalDevelopmentUser
-} from "@/lib/local-dev-user";
 import { getProjectForUser, listProjectsWithStats, type ProjectWithStats } from "@/lib/projects";
 import { seedDevelopmentWorkspace } from "@/lib/seed-data";
 import type { Metadata } from "next";
@@ -54,40 +49,8 @@ export default async function ProjectsPage({ searchParams }: ProjectsPageProps) 
   const limit = 50;
   const offset = (page - 1) * limit;
 
-  if (!isClerkConfigured() && canUseLocalDatabaseFallback()) {
-    const user = await getLocalDevelopmentUser();
-    await seedDevelopmentWorkspace(user.id);
-    const [projectResult, editingProject] = await Promise.all([
-      listProjectsWithStats(user.id, limit, offset),
-      params.edit ? getProjectForUser(params.edit, user.id) : null
-    ]);
-
-    const { items: projects, total } = projectResult;
-
-    return (
-      <ProjectsShell
-        editingProject={editingProject}
-        isDatabaseConfigured
-        page={page}
-        projects={projects}
-        total={total}
-      />
-    );
-  }
-
-  if (!isClerkConfigured()) {
-    return (
-      <ProjectsShell
-        editingProject={null}
-        isDatabaseConfigured={false}
-        page={1}
-        projects={[]}
-        total={0}
-      />
-    );
-  }
-
   const user = await requireCurrentDbUser();
+  await seedDevelopmentWorkspace(user.id);
   const [projectResult, editingProject] = await Promise.all([
     listProjectsWithStats(user.id, limit, offset),
     params.edit ? getProjectForUser(params.edit, user.id) : null
@@ -98,7 +61,6 @@ export default async function ProjectsPage({ searchParams }: ProjectsPageProps) 
   return (
     <ProjectsShell
       editingProject={editingProject}
-      isDatabaseConfigured
       page={page}
       projects={projects}
       total={total}
@@ -108,13 +70,11 @@ export default async function ProjectsPage({ searchParams }: ProjectsPageProps) 
 
 function ProjectsShell({
   editingProject,
-  isDatabaseConfigured,
   page,
   projects,
   total
 }: {
   editingProject: ExecutionProject | null;
-  isDatabaseConfigured: boolean;
   page: number;
   projects: Awaited<ReturnType<typeof listProjectsWithStats>>["items"];
   total: number;
@@ -144,12 +104,6 @@ function ProjectsShell({
             <FolderKanban size={22} strokeWidth={1.8} />
           </div>
         </div>
-
-        {!isDatabaseConfigured ? (
-          <div className="mb-5 rounded-md border border-amber-200 bg-amber-50 p-4 text-sm leading-6 text-amber-900">
-            Configure authentication and PostgreSQL to manage projects.
-          </div>
-        ) : null}
 
         <div className="mb-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
           <SummaryCard label="Total projects" value={projects.length} />
@@ -190,10 +144,7 @@ function ProjectsShell({
         limit={50}
       />
 
-      <ProjectForm
-        editingProject={editingProject}
-        isDatabaseConfigured={isDatabaseConfigured}
-      />
+      <ProjectForm editingProject={editingProject} />
     </section>
   );
 }
@@ -316,13 +267,7 @@ function ProjectCard({
   );
 }
 
-function ProjectForm({
-  editingProject,
-  isDatabaseConfigured
-}: {
-  editingProject: ExecutionProject | null;
-  isDatabaseConfigured: boolean;
-}) {
+function ProjectForm({ editingProject }: { editingProject: ExecutionProject | null }) {
   const action = editingProject ? updateProjectAction : createProjectAction;
 
   return (
@@ -336,7 +281,7 @@ function ProjectForm({
             {editingProject ? "Edit Project" : "Create Project"}
           </h3>
           <p className="mt-1 text-sm text-stone-600">
-            Saved to PostgreSQL for this account.
+            Saved to local workspace database.
           </p>
         </div>
       </div>
@@ -349,7 +294,6 @@ function ProjectForm({
           <input
             className={inputClassName}
             defaultValue={editingProject?.name ?? ""}
-            disabled={!isDatabaseConfigured}
             name="name"
             placeholder="GIS Portfolio"
             required
@@ -359,7 +303,6 @@ function ProjectForm({
           <textarea
             className={`${inputClassName} min-h-24 resize-y py-2 leading-6`}
             defaultValue={editingProject?.description ?? ""}
-            disabled={!isDatabaseConfigured}
             name="description"
             placeholder="What this project is responsible for"
           />
@@ -369,7 +312,7 @@ function ProjectForm({
             <select
               className={inputClassName}
               defaultValue={editingProject?.status ?? "Active"}
-              disabled={!isDatabaseConfigured}
+              
               name="status"
             >
               <option>Active</option>
@@ -382,7 +325,7 @@ function ProjectForm({
             <select
               className={inputClassName}
               defaultValue={editingProject?.priority ?? "Medium"}
-              disabled={!isDatabaseConfigured}
+              
               name="priority"
             >
               <option>High</option>
@@ -395,7 +338,7 @@ function ProjectForm({
           <input
             className={inputClassName}
             defaultValue={editingProject?.currentPhase ?? "Planning"}
-            disabled={!isDatabaseConfigured}
+            
             name="currentPhase"
             placeholder="Planning"
           />
@@ -405,7 +348,7 @@ function ProjectForm({
             <input
               className={inputClassName}
               defaultValue={editingProject?.progress ?? 0}
-              disabled={!isDatabaseConfigured}
+              
               max={100}
               min={0}
               name="progress"
@@ -416,7 +359,7 @@ function ProjectForm({
             <input
               className={inputClassName}
               defaultValue={formatDateInput(editingProject?.targetDate ?? null)}
-              disabled={!isDatabaseConfigured}
+              
               name="targetDate"
               type="date"
             />
@@ -427,7 +370,7 @@ function ProjectForm({
             <select
               className={inputClassName}
               defaultValue={editingProject?.color ?? "stone"}
-              disabled={!isDatabaseConfigured}
+              
               name="color"
             >
               {colorOptions.map((color) => (
@@ -441,7 +384,7 @@ function ProjectForm({
             <select
               className={inputClassName}
               defaultValue={editingProject?.icon ?? "folder"}
-              disabled={!isDatabaseConfigured}
+              
               name="icon"
             >
               {iconOptions.map((icon) => (
@@ -465,7 +408,7 @@ function ProjectForm({
           )}
           <button
             className="inline-flex h-10 items-center justify-center rounded-md bg-stone-950 px-4 text-sm font-medium text-white transition hover:bg-stone-800 disabled:cursor-not-allowed disabled:bg-stone-300"
-            disabled={!isDatabaseConfigured}
+            
             type="submit"
           >
             {editingProject ? "Save Changes" : "Create Project"}

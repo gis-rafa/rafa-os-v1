@@ -6,17 +6,11 @@ import {
   updateMemoryAction
 } from "@/app/memory/actions";
 import { requireCurrentDbUser } from "@/lib/auth-user";
-import { isClerkConfigured } from "@/lib/clerk-config";
-import {
-  canUseLocalDatabaseFallback,
-  getLocalDevelopmentUser
-} from "@/lib/local-dev-user";
 import {
   getMemoryForUser,
   listMemories,
   listMemoryCategories
 } from "@/lib/memories";
-import { seedDevelopmentWorkspace } from "@/lib/seed-data";
 import type { Memory } from "@/db";
 import type { Metadata } from "next";
 import { PaginationControls } from "@/components/pagination";
@@ -39,32 +33,7 @@ type MemoryPageProps = {
 
 export default async function MemoryPage({ searchParams }: MemoryPageProps) {
   const params = await searchParams;
-  const isAuthenticatedMode = isClerkConfigured();
-  const isLocalDatabaseMode =
-    !isAuthenticatedMode && canUseLocalDatabaseFallback();
-  const user = isAuthenticatedMode
-    ? await requireCurrentDbUser()
-    : isLocalDatabaseMode
-      ? await getLocalDevelopmentUser()
-      : null;
-
-  if (isLocalDatabaseMode && user) {
-    await seedDevelopmentWorkspace(user.id);
-  }
-
-  if (!user) {
-    return (
-      <MemoryShell
-        categories={[]}
-        editingMemory={null}
-        isDatabaseConfigured={false}
-        memoryList={[]}
-        page={1}
-        searchParams={{ category: "", search: "" }}
-        total={0}
-      />
-    );
-  }
+  const user = await requireCurrentDbUser();
 
   const search = params.q?.trim() ?? "";
   const category = params.category?.trim() ?? "";
@@ -83,7 +52,6 @@ export default async function MemoryPage({ searchParams }: MemoryPageProps) {
     <MemoryShell
       categories={categories}
       editingMemory={editingMemory}
-      isDatabaseConfigured
       memoryList={memoryList}
       page={page}
       searchParams={{ category, search }}
@@ -95,7 +63,6 @@ export default async function MemoryPage({ searchParams }: MemoryPageProps) {
 function MemoryShell({
   categories,
   editingMemory,
-  isDatabaseConfigured,
   memoryList,
   page,
   searchParams,
@@ -103,7 +70,6 @@ function MemoryShell({
 }: {
   categories: string[];
   editingMemory: Memory | null;
-  isDatabaseConfigured: boolean;
   memoryList: Memory[];
   page: number;
   searchParams: {
@@ -123,11 +89,9 @@ function MemoryShell({
             <h2 className="mt-2 text-3xl font-semibold text-stone-950">
               Memories
             </h2>
-          <p className="mt-3 max-w-2xl text-base leading-7 text-stone-600">
-              {isDatabaseConfigured
-                ? "Store durable context as private PostgreSQL records tied to your workspace."
-                : "Configure local PostgreSQL to load the seeded memory workspace."}
-          </p>
+            <p className="mt-3 max-w-2xl text-base leading-7 text-stone-600">
+                Store durable context as private PostgreSQL records tied to your workspace.
+            </p>
           </div>
           <div className="flex size-12 shrink-0 items-center justify-center rounded-md bg-stone-950 text-white">
             <Database size={22} strokeWidth={1.8} />
@@ -259,21 +223,12 @@ function MemoryShell({
         />
       </div>
 
-      <MemoryForm
-        editingMemory={editingMemory}
-        isDatabaseConfigured={isDatabaseConfigured}
-      />
+      <MemoryForm editingMemory={editingMemory} />
     </section>
   );
 }
 
-function MemoryForm({
-  editingMemory,
-  isDatabaseConfigured
-}: {
-  editingMemory: Memory | null;
-  isDatabaseConfigured: boolean;
-}) {
+function MemoryForm({ editingMemory }: { editingMemory: Memory | null }) {
   const action = editingMemory ? updateMemoryAction : createMemoryAction;
 
   return (
@@ -287,7 +242,7 @@ function MemoryForm({
             {editingMemory ? "Edit Memory" : "Create Memory"}
           </h3>
           <p className="mt-1 text-sm text-stone-600">
-            Saved to PostgreSQL for this account.
+            Saved to local workspace database.
           </p>
         </div>
       </div>
@@ -301,7 +256,6 @@ function MemoryForm({
           <input
             className="h-10 rounded-md border border-stone-200 bg-stone-50 px-3 text-sm text-stone-800 outline-none transition focus:border-stone-400 focus:bg-white"
             defaultValue={editingMemory?.category ?? ""}
-            disabled={!isDatabaseConfigured}
             name="category"
             placeholder="Health, Career, Relationship..."
             required
@@ -312,7 +266,6 @@ function MemoryForm({
           <input
             className="h-10 rounded-md border border-stone-200 bg-stone-50 px-3 text-sm text-stone-800 outline-none transition focus:border-stone-400 focus:bg-white"
             defaultValue={editingMemory?.title ?? ""}
-            disabled={!isDatabaseConfigured}
             name="title"
             placeholder="Short memory title"
             required
@@ -323,7 +276,6 @@ function MemoryForm({
           <textarea
             className="min-h-40 resize-y rounded-md border border-stone-200 bg-stone-50 p-3 text-sm leading-6 text-stone-800 outline-none transition focus:border-stone-400 focus:bg-white"
             defaultValue={editingMemory?.content ?? ""}
-            disabled={!isDatabaseConfigured}
             name="content"
             placeholder="What should RAFA OS remember?"
             required
@@ -334,7 +286,6 @@ function MemoryForm({
           <input
             className="h-10 rounded-md border border-stone-200 bg-stone-50 px-3 text-sm text-stone-800 outline-none transition focus:border-stone-400 focus:bg-white"
             defaultValue={editingMemory?.tags.join(", ") ?? ""}
-            disabled={!isDatabaseConfigured}
             name="tags"
             placeholder="comma, separated, tags"
           />
@@ -346,7 +297,6 @@ function MemoryForm({
           <input
             className="h-10 rounded-md border border-stone-200 bg-stone-50 px-3 text-sm text-stone-800 outline-none transition focus:border-stone-400 focus:bg-white"
             defaultValue={editingMemory?.importance ?? 3}
-            disabled={!isDatabaseConfigured}
             max={5}
             min={1}
             name="importance"
@@ -366,7 +316,6 @@ function MemoryForm({
           )}
           <button
             className="inline-flex h-10 items-center justify-center rounded-md bg-stone-950 px-4 text-sm font-medium text-white transition hover:bg-stone-800"
-            disabled={!isDatabaseConfigured}
             type="submit"
           >
             {editingMemory ? "Save Changes" : "Create Memory"}

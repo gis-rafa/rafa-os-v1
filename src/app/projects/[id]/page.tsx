@@ -4,11 +4,6 @@ import { ArrowLeft, Plus } from "lucide-react";
 import { and, asc, desc, eq } from "drizzle-orm";
 import { getDb, executionTasks, memories, projectKnowledgeLinks } from "@/db";
 import { requireCurrentDbUser } from "@/lib/auth-user";
-import { isClerkConfigured } from "@/lib/clerk-config";
-import {
-  canUseLocalDatabaseFallback,
-  getLocalDevelopmentUser
-} from "@/lib/local-dev-user";
 import { getProjectForUser } from "@/lib/projects";
 import { createTaskAction } from "@/app/projects/actions";
 import type { Metadata } from "next";
@@ -26,19 +21,7 @@ type ProjectDetailProps = {
 
 export default async function ProjectDetailPage({ params }: ProjectDetailProps) {
   const { id } = await params;
-  const isAuthenticatedMode = isClerkConfigured();
-  const isLocalDatabaseMode =
-    !isAuthenticatedMode && canUseLocalDatabaseFallback();
-  const user = isAuthenticatedMode
-    ? await requireCurrentDbUser()
-    : isLocalDatabaseMode
-      ? await getLocalDevelopmentUser()
-      : null;
-
-  if (!user) {
-    notFound();
-  }
-
+  const user = await requireCurrentDbUser();
   const project = await getProjectForUser(id, user.id);
 
   if (!project) {

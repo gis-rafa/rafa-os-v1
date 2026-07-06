@@ -7,11 +7,6 @@ import {
 } from "@/app/journal/actions";
 import type { JournalEntry } from "@/db";
 import { requireCurrentDbUser } from "@/lib/auth-user";
-import { isClerkConfigured } from "@/lib/clerk-config";
-import {
-  canUseLocalDatabaseFallback,
-  getLocalDevelopmentUser
-} from "@/lib/local-dev-user";
 import {
   getJournalEntryForUser,
   listJournalEntries
@@ -36,27 +31,7 @@ type JournalPageProps = {
 
 export default async function JournalPage({ searchParams }: JournalPageProps) {
   const params = await searchParams;
-  const isAuthenticatedMode = isClerkConfigured();
-  const isLocalDatabaseMode =
-    !isAuthenticatedMode && canUseLocalDatabaseFallback();
-  const user = isAuthenticatedMode
-    ? await requireCurrentDbUser()
-    : isLocalDatabaseMode
-      ? await getLocalDevelopmentUser()
-      : null;
-
-  if (!user) {
-    return (
-      <JournalShell
-        editingEntry={null}
-        isDatabaseConfigured={false}
-        journalList={[]}
-        page={1}
-        searchParams={{ search: "" }}
-        total={0}
-      />
-    );
-  }
+  const user = await requireCurrentDbUser();
 
   const search = params.q?.trim() ?? "";
   const page = Math.max(1, Number(params.page ?? 1));

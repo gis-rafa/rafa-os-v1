@@ -1,12 +1,8 @@
 import Link from "next/link";
-import { UserButton } from "@clerk/nextjs";
 import { Menu, Search } from "lucide-react";
-import { isClerkConfigured } from "@/lib/clerk-config";
 import { NotificationBadge } from "@/components/notification-badge";
 
 export function AppHeader({ onMenuClick }: { onMenuClick: () => void }) {
-  const hasClerk = isClerkConfigured();
-
   return (
     <header className="flex h-16 shrink-0 items-center justify-between border-b border-stone-200 bg-white px-3 sm:px-5">
       <div className="flex min-w-0 items-center gap-3">
@@ -31,19 +27,9 @@ export function AppHeader({ onMenuClick }: { onMenuClick: () => void }) {
           <Search size={18} strokeWidth={1.8} />
         </Link>
         <NotificationBadge />
-        {hasClerk ? (
-          <UserButton
-            appearance={{
-              elements: {
-                avatarBox: "size-10 rounded-md"
-              }
-            }}
-          />
-        ) : (
-          <div className="flex size-10 items-center justify-center rounded-md bg-stone-950 text-sm font-semibold text-white">
-            R
-          </div>
-        )}
+        <div className="flex size-10 items-center justify-center rounded-md bg-stone-950 text-sm font-semibold text-white">
+          R
+        </div>
       </div>
     </header>
   );
