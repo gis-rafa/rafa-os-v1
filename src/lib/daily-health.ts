@@ -156,8 +156,9 @@ export async function seedDailyHealthTasks(userId: string) {
       .returning();
   }
 
-  await db
-    .delete(executionTasks)
+  const existingHealthTasks = await db
+    .select({ title: executionTasks.title })
+    .from(executionTasks)
     .where(
       and(
         eq(executionTasks.userId, userId),
@@ -167,10 +168,12 @@ export async function seedDailyHealthTasks(userId: string) {
       )
     );
 
+  const existingTitles = new Set(existingHealthTasks.map((t) => t.title));
   const dayOfWeek = today.getDay();
   const supplements = getDailySupplements(dayOfWeek);
 
   for (const sup of supplements) {
+    if (existingTitles.has(sup.title)) continue;
     await db.insert(executionTasks).values({
       userId,
       projectId: healthProject.id,

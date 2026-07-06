@@ -26,3 +26,6 @@ Thumbs.db
 tsconfig.tsbuildinfo
 c
 
+
+.vercel
+.env*

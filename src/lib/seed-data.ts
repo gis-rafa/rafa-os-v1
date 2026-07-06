@@ -90,16 +90,6 @@ export async function seedDevelopmentWorkspace(userId: string) {
     icon: "heart"
   });
 
-  await getDb()
-    .delete(executionPriorities)
-    .where(
-      and(
-        eq(executionPriorities.userId, userId),
-        gte(executionPriorities.priorityDate, today),
-        lt(executionPriorities.priorityDate, tomorrow)
-      )
-    );
-
   await Promise.all([
     ensurePriority(
       userId,
@@ -123,74 +113,62 @@ export async function seedDevelopmentWorkspace(userId: string) {
     )
   ]);
 
-  await getDb()
-    .delete(executionTasks)
-    .where(
-      and(
-        eq(executionTasks.userId, userId),
-        gte(executionTasks.taskDate, today),
-        lt(executionTasks.taskDate, tomorrow)
-      )
-    );
-
-  await Promise.all([
-    ensureTask({
-      estimatedMinutes: 60,
-      priority: "High",
-      projectId: portfolioProject.id,
-      status: "In Progress",
-      taskDate: today,
-      title: "16:00 P02 Cartographic Layout: polish QGIS export for portfolio"
-    }, userId),
-    ensureTask({
-      estimatedMinutes: 60,
-      priority: "High",
-      projectId: portfolioProject.id,
-      status: "Todo",
-      taskDate: today,
-      title: "17:00 P02 Final Report: write README with full documentation"
-    }, userId),
-    ensureTask({
-      estimatedMinutes: 45,
-      priority: "High",
-      projectId: portfolioProject.id,
-      status: "Todo",
-      taskDate: today,
-      title: "18:00 P02 Portfolio Screenshots: capture map outputs"
-    }, userId),
-    ensureTask({
-      estimatedMinutes: 30,
-      priority: "Medium",
-      projectId: gisStudyProject.id,
-      status: "Todo",
-      taskDate: today,
-      title: "13:00 GIS Study: Week 4 Land Suitability Foundations"
-    }, userId),
-    ensureTask({
-      estimatedMinutes: 30,
-      priority: "High",
-      projectId: brandProject.id,
-      status: "Todo",
-      taskDate: today,
-      title: "20:00 Personal Branding: draft LinkedIn P02 launch post"
-    }, userId),
-    ensureTask({
-      estimatedMinutes: 60,
-      priority: "Medium",
-      projectId: trainingProject.id,
-      status: "Todo",
-      taskDate: today,
-      title: "09:00 Gym: follow the workout schedule"
-    }, userId),
-    ensureTask({
-      estimatedMinutes: 20,
-      priority: "Medium",
-      projectId: brandProject.id,
-      status: "Todo",
-      taskDate: tomorrow,
-      title: "Prepare tomorrow's Personal Branding proof-of-work update"
-    }, userId)
-  ]);
+  await ensureTask({
+    estimatedMinutes: 60,
+    priority: "High",
+    projectId: portfolioProject.id,
+    status: "In Progress",
+    taskDate: today,
+    title: "16:00 P02 Cartographic Layout: polish QGIS export for portfolio"
+  }, userId);
+  await ensureTask({
+    estimatedMinutes: 60,
+    priority: "High",
+    projectId: portfolioProject.id,
+    status: "Todo",
+    taskDate: today,
+    title: "17:00 P02 Final Report: write README with full documentation"
+  }, userId);
+  await ensureTask({
+    estimatedMinutes: 45,
+    priority: "High",
+    projectId: portfolioProject.id,
+    status: "Todo",
+    taskDate: today,
+    title: "18:00 P02 Portfolio Screenshots: capture map outputs"
+  }, userId);
+  await ensureTask({
+    estimatedMinutes: 30,
+    priority: "Medium",
+    projectId: gisStudyProject.id,
+    status: "Todo",
+    taskDate: today,
+    title: "13:00 GIS Study: Week 4 Land Suitability Foundations"
+  }, userId);
+  await ensureTask({
+    estimatedMinutes: 30,
+    priority: "High",
+    projectId: brandProject.id,
+    status: "Todo",
+    taskDate: today,
+    title: "20:00 Personal Branding: draft LinkedIn P02 launch post"
+  }, userId);
+  await ensureTask({
+    estimatedMinutes: 60,
+    priority: "Medium",
+    projectId: trainingProject.id,
+    status: "Todo",
+    taskDate: today,
+    title: "09:00 Gym: follow the workout schedule"
+  }, userId);
+  await ensureTask({
+    estimatedMinutes: 20,
+    priority: "Medium",
+    projectId: brandProject.id,
+    status: "Todo",
+    taskDate: tomorrow,
+    title: "Prepare tomorrow's Personal Branding proof-of-work update"
+  }, userId);
 
   await seedDailyHealthTasks(userId);
 
@@ -262,19 +240,25 @@ export async function seedDevelopmentWorkspace(userId: string) {
     }, userId)
   ]);
 
-  await getDb()
-    .delete(studyTaskProgress)
+  const existingProgress = await getDb()
+    .select()
+    .from(studyTaskProgress)
     .where(eq(studyTaskProgress.userId, userId));
 
-  const dayValues: { userId: string; roadmapDay: number; status: string }[] = [];
-  for (let i = 1; i <= 20; i++) {
-    dayValues.push({ userId, roadmapDay: i, status: "Done" });
-  }
-  dayValues.push({ userId, roadmapDay: 21, status: "In Progress" });
+  const existingDays = new Set(existingProgress.map((r) => r.roadmapDay));
 
-  await getDb()
-    .insert(studyTaskProgress)
-    .values(dayValues);
+  const dayValues: { userId: string; roadmapDay: number; status: string }[] = [];
+  for (let i = 1; i <= 21; i++) {
+    if (!existingDays.has(i)) {
+      dayValues.push({ userId, roadmapDay: i, status: i <= 20 ? "Done" : "In Progress" });
+    }
+  }
+
+  if (dayValues.length > 0) {
+    await getDb()
+      .insert(studyTaskProgress)
+      .values(dayValues);
+  }
 }
 
 async function ensureProject(
@@ -374,13 +358,7 @@ async function ensureTask(
     .limit(1);
 
   if (existingTask) {
-    return db
-      .update(executionTasks)
-      .set({
-        ...values,
-        updatedAt: new Date()
-      })
-      .where(eq(executionTasks.id, existingTask.id));
+    return;
   }
 
   return db.insert(executionTasks).values({

@@ -1,4 +1,3 @@
-import { cache } from "react";
 import { eq } from "drizzle-orm";
 import { getDb, isDatabaseConfigured, users } from "@/db";
 import type { User } from "@/db";
@@ -15,30 +14,50 @@ const staticFallbackUser: User = {
   updatedAt: new Date()
 };
 
-export const getLocalDevelopmentUser = cache(async function getLocalDevelopmentUser(): Promise<User> {
-  if (!isDatabaseConfigured()) {
-    return staticFallbackUser;
-  }
+export const getLocalDevelopmentUser = (() => {
+  let cachedUser: User | null = null;
 
-  const db = getDb();
-  const [existingUser] = await db
-    .select()
-    .from(users)
-    .where(eq(users.clerkUserId, workspaceUserId))
-    .limit(1);
+  return async function getLocalDevelopmentUser(): Promise<User> {
+    if (cachedUser) return cachedUser;
 
-  if (existingUser) {
-    return existingUser;
-  }
+    if (!isDatabaseConfigured()) {
+      return staticFallbackUser;
+    }
 
-  const [createdUser] = await db
-    .insert(users)
-    .values({
-      clerkUserId: workspaceUserId,
-      email: "rafa.local@rafa-os.dev",
-      name: "Abdallah Rafa"
-    })
-    .returning();
+    const db = getDb();
+    const [existingUser] = await db
+      .select()
+      .from(users)
+      .where(eq(users.clerkUserId, workspaceUserId))
+      .limit(1);
 
-  return createdUser;
-});
+    if (existingUser) {
+      cachedUser = existingUser;
+      return existingUser;
+    }
+
+    const [createdUser] = await db
+      .insert(users)
+      .values({
+        clerkUserId: workspaceUserId,
+        email: "rafa.local@rafa-os.dev",
+        name: "Abdallah Rafa"
+      })
+      .onConflictDoNothing()
+      .returning();
+
+    if (createdUser) {
+      cachedUser = createdUser;
+      return createdUser;
+    }
+
+    const [fallbackUser] = await db
+      .select()
+      .from(users)
+      .where(eq(users.clerkUserId, workspaceUserId))
+      .limit(1);
+
+    cachedUser = fallbackUser!;
+    return fallbackUser!;
+  };
+})();
