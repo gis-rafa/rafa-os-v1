@@ -1,4 +1,4 @@
-import { getDb, notificationPreferences } from "@/db";
+import { getDb, isDatabaseConfigured, notificationPreferences } from "@/db";
 import { eq } from "drizzle-orm";
 
 export type NotificationPreferenceDefaults = {
@@ -11,6 +11,21 @@ export type NotificationPreferenceDefaults = {
 };
 
 export async function getNotificationPreferences(userId: string) {
+  if (!isDatabaseConfigured()) {
+    return {
+      id: "",
+      userId,
+      emailNotifications: 1,
+      pushNotifications: 0,
+      dailyDigest: 1,
+      notifyOnMemorySuggestions: 1,
+      notifyOnTaskReminders: 1,
+      notifyOnProjectUpdates: 1,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    };
+  }
+
   const existing = await getDb()
     .select()
     .from(notificationPreferences)
@@ -41,6 +56,8 @@ export async function updateNotificationPreferences(
   userId: string,
   prefs: Partial<NotificationPreferenceDefaults>
 ) {
+  if (!isDatabaseConfigured()) return null;
+
   const updates: Record<string, number> = {};
   for (const [key, value] of Object.entries(prefs)) {
     updates[key] = value ? 1 : 0;

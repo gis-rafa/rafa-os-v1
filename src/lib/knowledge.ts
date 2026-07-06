@@ -1,6 +1,8 @@
 import { cache } from "react";
 import { eq } from "drizzle-orm";
-import { getDb, documents } from "@/db";
+import fs from "node:fs";
+import path from "node:path";
+import { getDb, isDatabaseConfigured, documents } from "@/db";
 
 export type KnowledgeFile = {
   title: string;
@@ -75,7 +77,124 @@ const tagKeywords: Record<string, string[]> = {
 const KNOWLEDGE_INDEX_KEY = "knowledge-index";
 const KNOWLEDGE_FILE_PREFIX = "knowledge-file:";
 
-async function getDocumentContent(userId: string, key: string): Promise<string | null> {
+// ── Filesystem fallback ─────────────────────────────────────────────
+
+const DATA_DIR = path.resolve(process.cwd(), "data");
+
+function scanLocalMarkdownFiles(
+  dir: string,
+  basePath: string = ""
+): { filePath: string; relativePath: string }[] {
+  const entries: { filePath: string; relativePath: string }[] = [];
+  let names: string[];
+  try {
+    names = fs.readdirSync(dir);
+  } catch {
+    return entries;
+  }
+
+  for (const name of names) {
+    if (name.startsWith(".")) continue;
+    const fullPath = path.join(dir, name);
+    const stat = fs.statSync(fullPath);
+    if (stat.isDirectory()) {
+      entries.push(
+        ...scanLocalMarkdownFiles(fullPath, path.join(basePath, name))
+      );
+    } else if (name.endsWith(".md")) {
+      entries.push({
+        filePath: fullPath,
+        relativePath: path.join(basePath, name)
+      });
+    }
+  }
+
+  return entries;
+}
+
+function inferTags(
+  relativePath: string,
+  content: string,
+  title: string
+): string[] {
+  const lowerContent = content.toLowerCase() + " " + title.toLowerCase();
+  const pathLower = relativePath.toLowerCase();
+  return Object.entries(tagKeywords)
+    .filter(([, keywords]) =>
+      keywords.some(
+        (kw) => lowerContent.includes(kw) || pathLower.includes(kw)
+      )
+    )
+    .map(([tag]) => tag);
+}
+
+function titleFromPath(
+  relativePath: string,
+  content: string
+): string {
+  const firstLine = content.split("\n")[0]?.trim();
+  if (firstLine?.startsWith("# ")) {
+    return firstLine.slice(2).trim();
+  }
+  return path
+    .basename(relativePath, ".md")
+    .replace(/[-_]/g, " ")
+    .replace(/\b\w/g, (c) => c.toUpperCase());
+}
+
+function buildLocalKnowledgeIndex(): KnowledgeIndex {
+  const mdFiles = scanLocalMarkdownFiles(DATA_DIR);
+  const files: KnowledgeFile[] = mdFiles.map(({ filePath, relativePath }) => {
+    const content = fs.readFileSync(filePath, "utf-8");
+    const title = titleFromPath(relativePath, content);
+    const tags = inferTags(relativePath, content, title);
+    const segments = relativePath.replace(/\\/g, "/").split("/");
+    return {
+      title,
+      file: relativePath.replace(/\\/g, "/"),
+      source: "local",
+      duplicateSources: [],
+      level: segments.length,
+      tags
+    };
+  });
+
+  const allTags = [...new Set(files.flatMap((f) => f.tags))].sort();
+
+  const topics: Record<string, string[]> = {};
+  for (const tag of allTags) {
+    topics[tag] = files
+      .filter((f) => f.tags.includes(tag))
+      .map((f) => f.file);
+  }
+
+  return {
+    version: 1,
+    canonicalSource: "data/",
+    duplicateSources: [],
+    duplicateSections: [],
+    tags: allTags,
+    topics,
+    files
+  };
+}
+
+function getLocalFileContent(relativePath: string): string {
+  const fullPath = path.resolve(DATA_DIR, relativePath);
+  try {
+    return fs.readFileSync(fullPath, "utf-8");
+  } catch {
+    return "";
+  }
+}
+
+// ── Database-backed lookup ──────────────────────────────────────────
+
+async function getDocumentContent(
+  userId: string,
+  key: string
+): Promise<string | null> {
+  if (!isDatabaseConfigured()) return null;
   const db = getDb();
   const [row] = await db
     .select()
@@ -85,26 +204,34 @@ async function getDocumentContent(userId: string, key: string): Promise<string |
   return row?.content ?? null;
 }
 
-export const loadKnowledgeIndex = cache(async function loadKnowledgeIndex(
-  _userId?: string
-): Promise<KnowledgeIndex> {
-  const userId = _userId ?? "seed";
-  const content = await getDocumentContent(userId, KNOWLEDGE_INDEX_KEY);
-  if (!content) {
-    return {
-      version: 1,
-      canonicalSource: "",
-      duplicateSources: [],
-      duplicateSections: [],
-      tags: [],
-      topics: {},
-      files: []
-    };
-  }
-  return JSON.parse(content) as KnowledgeIndex;
-});
+export const loadKnowledgeIndex = cache(
+  async function loadKnowledgeIndex(
+    _userId?: string
+  ): Promise<KnowledgeIndex> {
+    if (!isDatabaseConfigured()) {
+      return buildLocalKnowledgeIndex();
+    }
 
-async function getKnowledgeLibrary(userId: string): Promise<KnowledgeLibrary> {
+    const userId = _userId ?? "seed";
+    const content = await getDocumentContent(userId, KNOWLEDGE_INDEX_KEY);
+    if (!content) {
+      return {
+        version: 1,
+        canonicalSource: "",
+        duplicateSources: [],
+        duplicateSections: [],
+        tags: [],
+        topics: {},
+        files: []
+      };
+    }
+    return JSON.parse(content) as KnowledgeIndex;
+  }
+);
+
+async function getKnowledgeLibrary(
+  userId: string
+): Promise<KnowledgeLibrary> {
   const index = await loadKnowledgeIndex(userId);
   const filesByTag = Object.fromEntries(
     index.tags.map((tag) => [
@@ -115,12 +242,23 @@ async function getKnowledgeLibrary(userId: string): Promise<KnowledgeLibrary> {
   return { ...index, filesByTag };
 }
 
-async function getKnowledgeFileContent(userId: string, fileKey: string): Promise<string> {
-  const content = await getDocumentContent(userId, `${KNOWLEDGE_FILE_PREFIX}${fileKey}`);
+async function getKnowledgeFileContent(
+  userId: string,
+  fileKey: string
+): Promise<string> {
+  if (!isDatabaseConfigured()) {
+    return getLocalFileContent(fileKey);
+  }
+  const content = await getDocumentContent(
+    userId,
+    `${KNOWLEDGE_FILE_PREFIX}${fileKey}`
+  );
   return content ?? "";
 }
 
-export async function getKnowledgeLibraryWithContent(userId: string): Promise<KnowledgeLibraryWithContent> {
+export async function getKnowledgeLibraryWithContent(
+  userId: string
+): Promise<KnowledgeLibraryWithContent> {
   const library = await getKnowledgeLibrary(userId);
   const files = await Promise.all(
     library.files.map(async (file) => ({
@@ -131,7 +269,9 @@ export async function getKnowledgeLibraryWithContent(userId: string): Promise<Kn
   return { ...library, files };
 }
 
-export async function getKnowledgeIndexSummary(userId: string): Promise<string> {
+export async function getKnowledgeIndexSummary(
+  userId: string
+): Promise<string> {
   const index = await loadKnowledgeIndex(userId);
   const topicLines = index.tags.map((tag) => {
     const files = index.topics[tag] ?? [];
@@ -168,7 +308,9 @@ export async function selectKnowledgeForMessage(
       score: scoreKnowledgeFile(file, selectedTags, normalizedMessage)
     }))
     .filter((candidate) => candidate.score > 0)
-    .sort((a, b) => b.score - a.score || a.file.file.localeCompare(b.file.file))
+    .sort(
+      (a, b) => b.score - a.score || a.file.file.localeCompare(b.file.file)
+    )
     .slice(0, limit)
     .map((candidate) => candidate.file);
 
@@ -182,7 +324,10 @@ export async function selectKnowledgeForMessage(
   return { tags: selectedTags, files };
 }
 
-function selectTags(userMessage: string, availableTags: string[]) {
+function selectTags(
+  userMessage: string,
+  availableTags: string[]
+) {
   const message = userMessage.toLowerCase();
   const selected = availableTags.filter((tag) =>
     tagKeywords[tag]?.some((keyword) => message.includes(keyword))

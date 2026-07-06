@@ -1,5 +1,5 @@
 import { asc, eq } from "drizzle-orm";
-import { getDb, studyTaskProgress, roadmapTasks } from "@/db";
+import { getDb, isDatabaseConfigured, studyTaskProgress, roadmapTasks } from "@/db";
 
 export const studyTaskStatuses = ["Todo", "In Progress", "Done"] as const;
 
@@ -32,6 +32,19 @@ export type StudyPlanSummary = {
 export async function getStudyPlanSummary(
   userId?: string
 ): Promise<StudyPlanSummary> {
+  if (!isDatabaseConfigured()) {
+    return {
+      tasks: [],
+      todayTask: null,
+      tomorrowTask: null,
+      completionPercentage: 0,
+      currentWeek: 1,
+      currentPhase: "GIS Foundation",
+      doneCount: 0,
+      totalCount: 0
+    };
+  }
+
   const db = getDb();
   const [allTasks, progressRows] = await Promise.all([
     db
@@ -92,6 +105,8 @@ export async function updateStudyTaskStatus({
   status: StudyTaskStatus;
   userId: string;
 }) {
+  if (!isDatabaseConfigured()) return;
+
   const db = getDb();
 
   await db

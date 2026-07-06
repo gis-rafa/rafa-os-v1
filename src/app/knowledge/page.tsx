@@ -9,6 +9,8 @@ export const metadata: Metadata = {
   description: "Imported knowledge library with tags and content."
 };
 
+export const dynamic = "force-dynamic";
+
 export default async function KnowledgePage() {
   const user = await requireCurrentDbUser();
   const knowledge = await getKnowledgeLibraryWithContent(user.id);

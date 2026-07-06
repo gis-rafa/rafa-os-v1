@@ -4,6 +4,7 @@ import {
   executionProjects,
   executionTasks,
   getDb,
+  isDatabaseConfigured,
   memories,
   projectKnowledgeLinks,
   studyTaskProgress,
@@ -22,6 +23,8 @@ type ProjectSeed = {
 };
 
 export async function seedDevelopmentWorkspace(userId: string) {
+  if (!isDatabaseConfigured()) return;
+
   const db = getDb();
   const [existingProjects] = await db
     .select({ count: sql<number>`count(*)` })

@@ -1,10 +1,12 @@
 "use server";
 
 import { sql, and, eq } from "drizzle-orm";
-import { getDb, notifications } from "@/db";
+import { getDb, isDatabaseConfigured, notifications } from "@/db";
 import { requireCurrentDbUser } from "@/lib/auth-user";
 
 export async function getUnreadNotificationCount(): Promise<number> {
+  if (!isDatabaseConfigured()) return 0;
+
   const user = await requireCurrentDbUser();
 
   const [result] = await getDb()

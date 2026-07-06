@@ -1,6 +1,6 @@
 "use server";
 
-import { getDb, notifications } from "@/db";
+import { getDb, isDatabaseConfigured, notifications } from "@/db";
 import { getActionUser } from "@/lib/auth-user";
 import { and, count, desc, eq } from "drizzle-orm";
 
@@ -24,6 +24,8 @@ export async function createNotification(
     message: string;
   }
 ) {
+  if (!isDatabaseConfigured()) return null;
+
   const [notification] = await getDb()
     .insert(notifications)
     .values({
@@ -37,6 +39,8 @@ export async function createNotification(
 }
 
 export async function getNotifications(limit = 50, offset = 0) {
+  if (!isDatabaseConfigured()) return { items: [], total: 0 };
+
   const user = await getActionUser();
   const where = eq(notifications.userId, user.id);
   const [items, totalResult] = await Promise.all([
@@ -57,6 +61,8 @@ export async function getNotifications(limit = 50, offset = 0) {
 }
 
 export async function markNotificationRead(formData: FormData) {
+  if (!isDatabaseConfigured()) return;
+
   const user = await getActionUser();
   const id = String(formData.get("id") ?? "");
 
@@ -71,6 +77,8 @@ export async function markNotificationRead(formData: FormData) {
 }
 
 export async function markAllNotificationsRead() {
+  if (!isDatabaseConfigured()) return;
+
   const user = await getActionUser();
 
   await getDb()
@@ -80,6 +88,8 @@ export async function markAllNotificationsRead() {
 }
 
 export async function deleteNotification(formData: FormData) {
+  if (!isDatabaseConfigured()) return;
+
   const user = await getActionUser();
   const id = String(formData.get("id") ?? "");
 
