@@ -331,6 +331,7 @@ export const usersRelations = relations(users, ({ many }) => ({
   journalEntries: many(journalEntries),
   contentEmbeddings: many(contentEmbeddings),
   auditLog: many(auditLog),
+  workoutExerciseLog: many(workoutExerciseLog),
   notificationPreferences: many(notificationPreferences),
   documents: many(documents),
   inboxEntries: many(inboxEntries)
@@ -639,5 +640,47 @@ export type Document = typeof documents.$inferSelect;
 export type NewDocument = typeof documents.$inferInsert;
 export type InboxEntry = typeof inboxEntries.$inferSelect;
 export type NewInboxEntry = typeof inboxEntries.$inferInsert;
+export const workoutExerciseLog = pgTable(
+  "workout_exercise_log",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    logDate: timestamp("log_date", { withTimezone: true }).notNull(),
+    exerciseName: text("exercise_name").notNull(),
+    setsCompleted: integer("sets_completed").notNull().default(0),
+    totalSets: integer("total_sets").notNull().default(3),
+    completedAt: timestamp("completed_at", { withTimezone: true }),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .defaultNow()
+      .notNull(),
+    updatedAt: timestamp("updated_at", { withTimezone: true })
+      .defaultNow()
+      .notNull()
+  },
+  (table) => [
+    uniqueIndex("workout_exercise_log_user_date_exercise_idx").on(
+      table.userId,
+      table.logDate,
+      table.exerciseName
+    ),
+    index("workout_exercise_log_user_id_idx").on(table.userId),
+    index("workout_exercise_log_date_idx").on(table.logDate)
+  ]
+);
+
+export const workoutExerciseLogRelations = relations(
+  workoutExerciseLog,
+  ({ one }) => ({
+    user: one(users, {
+      fields: [workoutExerciseLog.userId],
+      references: [users.id]
+    })
+  })
+);
+
 export type RoadmapTask = typeof roadmapTasks.$inferSelect;
 export type NewRoadmapTask = typeof roadmapTasks.$inferInsert;
+export type WorkoutExerciseLog = typeof workoutExerciseLog.$inferSelect;
+export type NewWorkoutExerciseLog = typeof workoutExerciseLog.$inferInsert;

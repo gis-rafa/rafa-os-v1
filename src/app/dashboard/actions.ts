@@ -8,6 +8,7 @@ import {
   updatePriorityCompletion,
   type ExecutionTaskStatus
 } from "@/lib/execution-dashboard";
+import { logExerciseSet } from "@/lib/daily-health";
 
 export async function updatePriorityCompletionAction(formData: FormData) {
   const user = await getActionUser();
@@ -40,6 +41,24 @@ export async function updateExecutionTaskStatusAction(formData: FormData) {
     status,
     taskId,
     userId: user.id
+  });
+
+  revalidatePath("/dashboard");
+}
+
+export async function logExerciseSetAction(formData: FormData) {
+  const user = await getActionUser();
+  const exerciseName = String(formData.get("exerciseName") ?? "");
+  const setsCompleted = Number(formData.get("setsCompleted") ?? 0);
+  const totalSets = Number(formData.get("totalSets") ?? 0);
+
+  if (!exerciseName) return;
+
+  await logExerciseSet({
+    userId: user.id,
+    exerciseName,
+    setsCompleted,
+    totalSets,
   });
 
   revalidatePath("/dashboard");

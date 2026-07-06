@@ -5,6 +5,7 @@ import {
 } from "@/lib/execution-dashboard";
 import { requireCurrentDbUser } from "@/lib/auth-user";
 import { seedDevelopmentWorkspace } from "@/lib/seed-data";
+import { seedDailyHealthTasks, getTodayExerciseLogs, getWorkoutForDay } from "@/lib/daily-health";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -17,7 +18,26 @@ export const dynamic = "force-dynamic";
 export default async function DashboardPage() {
   const user = await requireCurrentDbUser();
   await seedDevelopmentWorkspace(user.id);
+  await seedDailyHealthTasks(user.id);
   const data = await getExecutionDashboardData(user.id);
+  const exerciseLogs = (await getTodayExerciseLogs(user.id)).map((log) => ({
+    exerciseName: log.exerciseName,
+    setsCompleted: log.setsCompleted,
+    totalSets: log.totalSets,
+    done: (log.setsCompleted ?? 0) >= (log.totalSets ?? 1),
+  }));
+  const dayOfWeek = new Date().getDay();
+  const workout = getWorkoutForDay(dayOfWeek);
 
-  return <ErrorBoundaryWrapper><Dashboard data={data} isDatabaseConfigured /></ErrorBoundaryWrapper>;
+  return (
+    <ErrorBoundaryWrapper>
+      <Dashboard
+        data={data}
+        isDatabaseConfigured
+        exerciseLogs={exerciseLogs}
+        dayOfWeek={dayOfWeek}
+        workout={workout ?? undefined}
+      />
+    </ErrorBoundaryWrapper>
+  );
 }

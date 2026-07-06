@@ -15,13 +15,30 @@ import { MissionProgress } from "@/components/dashboard/mission-progress";
 import { MissionScore } from "@/components/dashboard/mission-score";
 import { ExecutionQueue } from "@/components/dashboard/execution-queue";
 import { FocusMode } from "@/components/dashboard/focus-mode";
+import { DailyHealth } from "@/components/dashboard/daily-health";
+import { WorkoutLog } from "@/components/dashboard/workout-log";
+import type { WorkoutDay } from "@/lib/daily-health";
+import { logExerciseSetAction } from "@/app/dashboard/actions";
+
+type ExerciseLogItem = {
+  exerciseName: string;
+  setsCompleted: number;
+  totalSets: number;
+  done: boolean;
+};
 
 export function Dashboard({
   data,
-  isDatabaseConfigured
+  isDatabaseConfigured,
+  exerciseLogs,
+  dayOfWeek,
+  workout
 }: {
   data: ExecutionDashboardData;
   isDatabaseConfigured: boolean;
+  exerciseLogs?: ExerciseLogItem[];
+  dayOfWeek?: number;
+  workout?: WorkoutDay;
 }) {
   const router = useRouter();
   const [dashboardData, setDashboardData] = useState(data);
@@ -62,6 +79,17 @@ export function Dashboard({
     });
   }
 
+  function handleLogSet(exerciseName: string, setsCompleted: number, totalSets: number) {
+    startTransition(async () => {
+      const formData = new FormData();
+      formData.set("exerciseName", exerciseName);
+      formData.set("setsCompleted", String(setsCompleted));
+      formData.set("totalSets", String(totalSets));
+      await logExerciseSetAction(formData);
+      router.refresh();
+    });
+  }
+
   if (isFocusMode) {
     return (
       <FocusMode
@@ -89,6 +117,17 @@ export function Dashboard({
           primaryGisComplete={mission.primaryGisComplete}
         />
         <MorningBrief data={dashboardData} mission={mission} />
+      </div>
+
+      <div className="grid gap-4 md:grid-cols-2">
+        <DailyHealth tasks={dashboardData.todaysTasks} />
+        {workout && dayOfWeek !== undefined && (
+          <WorkoutLog
+            dayOfWeek={dayOfWeek}
+            todayLogs={exerciseLogs ?? []}
+            onLogSet={handleLogSet}
+          />
+        )}
       </div>
 
       <ExecutionRules

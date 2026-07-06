@@ -630,6 +630,18 @@ function priorityScore(title: string, isCompleted: boolean) {
     score += 35;
   }
 
+  if (normalized.includes("medication") || normalized.includes("health")) {
+    score += 50;
+  }
+
+  if (normalized.includes("water") || normalized.includes("hydration")) {
+    score += 30;
+  }
+
+  if (normalized.includes("workout") || normalized.includes("creatine") || normalized.includes("electrolytes")) {
+    score += 40;
+  }
+
   return isCompleted ? score - 1_000 : score;
 }
 
@@ -660,6 +672,18 @@ function taskScore(task: {
 
   if (text.includes("gym") || text.includes("training")) {
     score += 35;
+  }
+
+  if (text.includes("medication") || text.includes("health")) {
+    score += 50;
+  }
+
+  if (text.includes("water") || text.includes("hydration")) {
+    score += 30;
+  }
+
+  if (text.includes("workout") || text.includes("creatine") || text.includes("electrolytes")) {
+    score += 40;
   }
 
   return task.status === "Done" ? score - 1_000 : score;

@@ -10,6 +10,7 @@ import {
   studyTaskProgress,
   type ExecutionProject
 } from "@/db";
+import { seedDailyHealthTasks } from "@/lib/daily-health";
 
 type ProjectSeed = {
   color: string;
@@ -175,6 +176,8 @@ export async function seedDevelopmentWorkspace(userId: string) {
       title: "Prepare tomorrow's Personal Branding proof-of-work update"
     }, userId)
   ]);
+
+  await seedDailyHealthTasks(userId);
 
   await Promise.all([
     ensureMemory({
