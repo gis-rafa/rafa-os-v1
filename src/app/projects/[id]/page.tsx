@@ -15,12 +15,15 @@ export const metadata: Metadata = {
 
 export const dynamic = "force-dynamic";
 
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
 type ProjectDetailProps = {
   params: Promise<{ id: string }>;
 };
 
 export default async function ProjectDetailPage({ params }: ProjectDetailProps) {
   const { id } = await params;
+  if (!UUID_RE.test(id)) { notFound(); }
   const user = await requireCurrentDbUser();
   const project = await getProjectForUser(id, user.id);
 

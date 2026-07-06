@@ -123,13 +123,17 @@ export async function listProjectsWithStats(
 export async function getProjectForUser(id: string, userId: string) {
   if (!isDatabaseConfigured()) return null;
 
-  const [project] = await getDb()
-    .select()
-    .from(executionProjects)
-    .where(and(eq(executionProjects.id, id), eq(executionProjects.userId, userId)))
-    .limit(1);
+  try {
+    const [project] = await getDb()
+      .select()
+      .from(executionProjects)
+      .where(and(eq(executionProjects.id, id), eq(executionProjects.userId, userId)))
+      .limit(1);
 
-  return project ?? null;
+    return project ?? null;
+  } catch {
+    return null;
+  }
 }
 
 export async function createProject(userId: string, values: ProjectFormValues) {
