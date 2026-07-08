@@ -1,8 +1,8 @@
 "use client";
 
+import { AlertTriangle } from "lucide-react";
 import type { ExecutionDashboardData } from "@/lib/execution-dashboard";
 import { formatDate } from "@/lib/dashboard-utils";
-import { BriefMetric } from "./brief-metric";
 
 export function MissionWarnings({ data }: { data: ExecutionDashboardData }) {
   if (data.recoveryPlan.daysBehind === 0) {
@@ -10,24 +10,39 @@ export function MissionWarnings({ data }: { data: ExecutionDashboardData }) {
   }
 
   return (
-    <section className="rounded-md border border-red-200 bg-red-50 p-5 text-red-950 shadow-sm">
-      <h3 className="text-base font-semibold">You are now behind schedule.</h3>
-      <div className="mt-3 grid gap-3 sm:grid-cols-3">
-        <BriefMetric label="Days behind" value={data.recoveryPlan.daysBehind} />
-        <BriefMetric
+    <section className="animate-slide-up rounded-xl border border-red-200/80 bg-gradient-to-br from-red-50/80 to-white p-5 shadow-sm sm:p-6" style={{ animationDelay: "0.55s" }}>
+      <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-red-600">
+        <AlertTriangle size={13} strokeWidth={2} />
+        Behind Schedule
+      </div>
+      <div className="mt-4 grid gap-3 sm:grid-cols-3">
+        <WarningCard label="Days behind" value={data.recoveryPlan.daysBehind} />
+        <WarningCard
           label="Projected completion"
           value={formatDate(data.recoveryPlan.projectedCompletionDate)}
         />
-        <BriefMetric label="Recovery state" value={data.executionPace} />
+        <WarningCard label="Recovery state" value={data.executionPace} />
       </div>
-      <div className="mt-4 rounded-md border border-red-200 bg-white p-4">
-        <p className="text-sm font-semibold">Recovery plan</p>
-        <ul className="mt-2 space-y-1 text-sm leading-6">
+      <div className="mt-4 rounded-lg border border-red-200/70 bg-white/80 p-4 backdrop-blur-sm">
+        <p className="text-sm font-semibold text-red-900">Recovery plan</p>
+        <ul className="mt-2 space-y-1.5">
           {data.recoveryPlan.steps.map((step) => (
-            <li key={step}>{step}</li>
+            <li key={step} className="flex items-start gap-2 text-sm leading-relaxed text-red-800">
+              <span className="mt-1.5 inline-block size-1.5 shrink-0 rounded-full bg-red-400" />
+              {step}
+            </li>
           ))}
         </ul>
       </div>
     </section>
+  );
+}
+
+function WarningCard({ label, value }: { label: string; value: string | number }) {
+  return (
+    <div className="rounded-lg border border-red-200/50 bg-red-50/50 px-4 py-3">
+      <p className="text-xs font-semibold uppercase tracking-wider text-red-500">{label}</p>
+      <p className="mt-1 text-lg font-semibold text-red-900">{value}</p>
+    </div>
   );
 }

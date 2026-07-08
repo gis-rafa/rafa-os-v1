@@ -1,7 +1,7 @@
 export function ProgressRing({
   progress,
   size = 72,
-  strokeWidth = 6,
+  strokeWidth = 5,
   className,
 }: {
   progress: number;
@@ -11,7 +11,8 @@ export function ProgressRing({
 }) {
   const radius = (size - strokeWidth) / 2;
   const circumference = 2 * Math.PI * radius;
-  const offset = circumference - (Math.min(100, Math.max(0, progress)) / 100) * circumference;
+  const clamped = Math.min(100, Math.max(0, progress));
+  const offset = circumference - (clamped / 100) * circumference;
 
   return (
     <svg
@@ -19,6 +20,8 @@ export function ProgressRing({
       height={size}
       viewBox={`0 0 ${size} ${size}`}
       className={className}
+      role="img"
+      aria-label={`${clamped}% mission completion`}
     >
       <circle
         cx={size / 2}
@@ -39,7 +42,7 @@ export function ProgressRing({
         strokeLinecap="round"
         strokeDasharray={circumference}
         strokeDashoffset={offset}
-        className="text-emerald-500 transition-all duration-700 ease-out"
+        className="text-emerald-500 transition-all duration-1000 ease-out"
         transform={`rotate(-90 ${size / 2} ${size / 2})`}
       />
     </svg>

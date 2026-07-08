@@ -125,10 +125,10 @@ export function Dashboard({
   }
 
   return (
-    <section className="mx-auto flex max-w-7xl flex-col gap-6 text-stone-950">
+    <section className="mx-auto flex max-w-7xl flex-col gap-5 sm:gap-6 text-stone-950">
       <GreetingSection data={dashboardData} mission={mission} timezone={timezone} />
 
-      <div className="grid gap-6 lg:grid-cols-[1.5fr_1fr]">
+      <div className="grid gap-5 sm:gap-6 lg:grid-cols-[1.5fr_1fr]">
         <TodaysMission
           data={dashboardData}
           mission={mission}
@@ -140,7 +140,7 @@ export function Dashboard({
 
       <DailyHealth tasks={dashboardData.todaysTasks} onToggle={handleToggledTask} />
 
-      <div className="grid gap-6 lg:grid-cols-2">
+      <div className="grid gap-5 sm:gap-6 lg:grid-cols-2">
         {workout && dayOfWeek !== undefined && (
           <WorkoutLog
             dayOfWeek={dayOfWeek}
@@ -153,7 +153,7 @@ export function Dashboard({
 
       <ActiveProjects projects={dashboardData.activeProjects} />
 
-      <div className="grid gap-6 lg:grid-cols-[1.5fr_1fr]">
+      <div className="grid gap-5 sm:gap-6 lg:grid-cols-[1.5fr_1fr]">
         <BrainRecommendation data={dashboardData} mission={mission} />
         <QuickActions />
       </div>

@@ -12,5 +12,4 @@ export { ExecutionRules } from "./execution-rules";
 export { MissionIntelligence } from "./mission-intelligence";
 export { MissionWarnings } from "./mission-warnings";
 export { ExecutionQueue } from "./execution-queue";
-export { DashboardHeader } from "./dashboard-header";
 export { ProgressRing } from "./progress-ring";

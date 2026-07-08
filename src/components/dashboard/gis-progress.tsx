@@ -11,35 +11,38 @@ export function GisProgress({
   mission: MissionView;
 }) {
   return (
-    <section className="animate-slide-up rounded-xl border border-stone-200/80 bg-white p-6 shadow-sm" style={{ animationDelay: "0.25s" }}>
+    <section
+      className="animate-slide-up rounded-xl border border-stone-200/80 bg-white p-5 shadow-sm transition-all duration-200 hover:shadow-md sm:p-6"
+      style={{ animationDelay: "0.25s" }}
+    >
       <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-stone-400">
         <Map size={13} strokeWidth={2} />
         GIS &amp; Portfolio
       </div>
-      <div className="mt-4 grid gap-4">
+      <div className="mt-5 grid gap-4">
         <ProgressItem
           label="GIS Roadmap"
           value={mission.roadmapCompletion}
           milestone={mission.milestones.roadmap}
-          color="emerald"
+          barColor="bg-emerald-500"
         />
         <ProgressItem
           label="GIS Portfolio"
           value={mission.portfolioCompletion}
           milestone={mission.milestones.portfolio}
-          color="blue"
+          barColor="bg-blue-500"
         />
         <ProgressItem
           label="Remote Job Readiness"
           value={mission.remoteJobReadiness}
           milestone={mission.milestones.remoteJobReadiness}
-          color="stone"
+          barColor="bg-stone-500"
         />
         <ProgressItem
           label="Personal Branding"
           value={mission.personalBrandingGrowth}
           milestone={mission.milestones.personalBranding}
-          color="violet"
+          barColor="bg-violet-500"
         />
       </div>
     </section>
@@ -50,29 +53,22 @@ function ProgressItem({
   label,
   value,
   milestone,
-  color,
+  barColor,
 }: {
   label: string;
   value: number;
   milestone: string;
-  color: "emerald" | "blue" | "stone" | "violet";
+  barColor: string;
 }) {
-  const barColor = {
-    emerald: "bg-emerald-500",
-    blue: "bg-blue-500",
-    stone: "bg-stone-500",
-    violet: "bg-violet-500",
-  }[color];
-
   return (
     <div>
       <div className="flex items-center justify-between text-sm">
         <span className="font-medium text-stone-700">{label}</span>
-        <span className="font-semibold text-stone-900">{value}%</span>
+        <span className="font-semibold tabular-nums text-stone-900">{value}%</span>
       </div>
-      <div className="mt-1.5 h-2 overflow-hidden rounded-full bg-stone-100">
+      <div className="mt-1.5 h-2 overflow-hidden rounded-full bg-stone-100" role="progressbar" aria-valuenow={value} aria-valuemin={0} aria-valuemax={100} aria-label={label}>
         <div
-          className={`h-full rounded-full transition-all duration-700 ${barColor}`}
+          className={`h-full rounded-full transition-all duration-1000 ease-out ${barColor} animate-progress`}
           style={{ width: `${value}%` }}
         />
       </div>
