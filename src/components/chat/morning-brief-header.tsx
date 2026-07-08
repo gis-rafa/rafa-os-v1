@@ -27,11 +27,11 @@ export function MorningBriefHeader({
   ];
 
   return (
-    <section className="rounded-md border border-stone-200 bg-stone-50 p-4">
+    <section className="animate-slide-up rounded-xl border border-stone-200/80 bg-white p-5 shadow-sm hover:shadow-md sm:p-6">
       <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-center gap-3">
-          <div className="flex size-9 items-center justify-center rounded-md bg-stone-950 text-white">
-            <Target size={17} strokeWidth={1.8} />
+          <div className="flex size-9 items-center justify-center rounded-lg bg-stone-900 text-white">
+            <Target size={17} strokeWidth={2} />
           </div>
           <div>
             <h3 className="text-sm font-semibold text-stone-950">
@@ -42,7 +42,7 @@ export function MorningBriefHeader({
             </p>
           </div>
         </div>
-        <p className="text-xs font-medium uppercase tracking-[0.12em] text-stone-600">
+        <p className="text-xs font-semibold uppercase tracking-wider text-stone-400">
           Local context
         </p>
       </div>
@@ -52,12 +52,12 @@ export function MorningBriefHeader({
 
           return (
             <article
-              className="rounded-md border border-stone-200 bg-white p-3"
+              className="rounded-xl border border-stone-200/80 bg-white p-3 shadow-sm"
               key={item.title}
             >
               <div className="mb-2 flex items-center gap-2 text-stone-600">
-                <Icon size={15} strokeWidth={1.8} />
-                <p className="text-xs font-semibold uppercase tracking-[0.1em]">
+                <Icon size={15} strokeWidth={2} />
+                <p className="text-xs font-semibold uppercase tracking-wider">
                   {item.title}
                 </p>
               </div>

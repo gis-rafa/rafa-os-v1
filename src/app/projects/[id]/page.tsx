@@ -58,7 +58,7 @@ export default async function ProjectDetailPage({ params }: ProjectDetailProps) 
           className="inline-flex items-center gap-2 text-sm font-medium text-stone-600 transition hover:text-stone-950"
           href="/projects"
         >
-          <ArrowLeft size={16} strokeWidth={1.8} />
+          <ArrowLeft size={16} strokeWidth={2} />
           Back to projects
         </Link>
       </div>
@@ -67,7 +67,7 @@ export default async function ProjectDetailPage({ params }: ProjectDetailProps) 
         <div className="min-w-0">
           <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
             <div>
-              <p className="text-sm font-medium uppercase tracking-[0.14em] text-stone-600">
+              <p className="text-sm font-medium uppercase tracking-wider text-stone-500">
                 {project.status}
               </p>
               <h2 className="mt-2 text-3xl font-semibold text-stone-950">
@@ -80,7 +80,7 @@ export default async function ProjectDetailPage({ params }: ProjectDetailProps) 
               ) : null}
             </div>
             <Link
-              className="inline-flex h-10 items-center gap-2 rounded-md bg-stone-950 px-4 text-sm font-medium text-white transition hover:bg-stone-800"
+              className="inline-flex h-10 items-center gap-2 rounded-lg bg-stone-900 px-4 text-sm font-semibold text-white hover:bg-stone-800 active:scale-[0.97]"
               href={`/projects?edit=${project.id}`}
             >
               Edit project
@@ -108,7 +108,7 @@ export default async function ProjectDetailPage({ params }: ProjectDetailProps) 
 
           <div className="grid gap-3">
             {tasks.length === 0 ? (
-              <div className="rounded-md border border-dashed border-stone-300 bg-white p-6 text-center">
+              <div className="rounded-xl border border-dashed border-stone-300 bg-white p-6 text-center">
                 <p className="text-sm font-medium text-stone-700">
                   No tasks yet.
                 </p>
@@ -131,7 +131,7 @@ export default async function ProjectDetailPage({ params }: ProjectDetailProps) 
               <div className="grid gap-3">
                 {memoryList.map((memory) => (
                   <Link
-                    className="rounded-md border border-stone-200 bg-white p-4 transition hover:border-stone-400"
+                    className="rounded-lg border border-stone-100 bg-stone-50/60 p-4 transition hover:border-stone-400"
                     href={`/memory?edit=${memory.id}`}
                     key={memory.id}
                   >
@@ -148,14 +148,14 @@ export default async function ProjectDetailPage({ params }: ProjectDetailProps) 
           <ProjectTaskForm projectId={project.id} />
 
           {knowledgeLinks.length > 0 ? (
-            <section className="rounded-md border border-stone-200 bg-white p-5 shadow-sm">
+            <section className="rounded-xl border border-stone-200/80 bg-white p-5 shadow-sm">
               <h3 className="mb-4 text-base font-semibold text-stone-950">
                 Knowledge Links ({knowledgeLinks.length})
               </h3>
               <div className="grid gap-2">
                 {knowledgeLinks.map((link) => (
                   <div
-                    className="rounded-md border border-stone-200 p-3"
+                    className="rounded-lg border border-stone-100 bg-stone-50/60 p-4"
                     key={link.id}
                   >
                     <p className="text-sm font-semibold text-stone-950">{link.title}</p>
@@ -173,8 +173,8 @@ export default async function ProjectDetailPage({ params }: ProjectDetailProps) 
 
 function StatCard({ label, value }: { label: string; value: string }) {
   return (
-    <div className="rounded-md border border-stone-200 bg-white p-4 shadow-sm">
-      <p className="text-xs font-semibold uppercase tracking-[0.12em] text-stone-600">{label}</p>
+    <div className="rounded-xl border border-stone-200/80 bg-white p-4 shadow-sm">
+      <p className="text-xs font-semibold uppercase tracking-wider text-stone-400">{label}</p>
       <p className="mt-2 text-xl font-semibold text-stone-950">{value}</p>
     </div>
   );
@@ -188,7 +188,7 @@ function TaskRow({ task }: { task: typeof executionTasks.$inferSelect }) {
   };
 
   return (
-    <article className="rounded-md border border-stone-200 bg-white p-4 shadow-sm">
+    <article className="rounded-lg border border-stone-100 bg-stone-50/60 p-4">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div className="min-w-0">
           <div className="mb-2 flex flex-wrap items-center gap-2">
@@ -215,10 +215,10 @@ function TaskRow({ task }: { task: typeof executionTasks.$inferSelect }) {
 
 function ProjectTaskForm({ projectId }: { projectId: string }) {
   return (
-    <section className="rounded-md border border-stone-200 bg-white p-5 shadow-sm">
+    <section className="rounded-xl border border-stone-200/80 bg-white p-5 shadow-sm">
       <div className="mb-4 flex items-center gap-3">
-        <div className="flex size-10 items-center justify-center rounded-md bg-stone-100 text-stone-700">
-          <Plus size={18} strokeWidth={1.8} />
+        <div className="flex size-10 items-center justify-center rounded-lg bg-stone-100 text-stone-700">
+          <Plus size={18} strokeWidth={2} />
         </div>
         <div>
           <h3 className="text-base font-semibold text-stone-950">Add Task</h3>
@@ -231,7 +231,7 @@ function ProjectTaskForm({ projectId }: { projectId: string }) {
         <label className="grid gap-1.5">
           <span className="text-sm font-medium text-stone-700">Title</span>
           <input
-            className="h-10 rounded-md border border-stone-200 bg-stone-50 px-3 text-sm text-stone-800 outline-none transition focus:border-stone-400 focus:bg-white"
+            className="h-10 rounded-lg border border-stone-200 bg-stone-50 px-3 text-sm text-stone-800 outline-none transition focus:border-stone-400 focus:bg-white"
             name="title"
             placeholder="What needs to be done?"
             required
@@ -241,7 +241,7 @@ function ProjectTaskForm({ projectId }: { projectId: string }) {
           <label className="grid gap-1.5">
             <span className="text-sm font-medium text-stone-700">Priority</span>
             <select
-              className="h-10 rounded-md border border-stone-200 bg-stone-50 px-3 text-sm text-stone-800 outline-none transition focus:border-stone-400 focus:bg-white"
+              className="h-10 rounded-lg border border-stone-200 bg-stone-50 px-3 text-sm text-stone-800 outline-none transition focus:border-stone-400 focus:bg-white"
               defaultValue="Medium"
               name="priority"
             >
@@ -253,7 +253,7 @@ function ProjectTaskForm({ projectId }: { projectId: string }) {
           <label className="grid gap-1.5">
             <span className="text-sm font-medium text-stone-700">Minutes</span>
             <input
-              className="h-10 rounded-md border border-stone-200 bg-stone-50 px-3 text-sm text-stone-800 outline-none transition focus:border-stone-400 focus:bg-white"
+              className="h-10 rounded-lg border border-stone-200 bg-stone-50 px-3 text-sm text-stone-800 outline-none transition focus:border-stone-400 focus:bg-white"
               defaultValue={30}
               min={5}
               name="estimatedMinutes"
@@ -262,7 +262,7 @@ function ProjectTaskForm({ projectId }: { projectId: string }) {
           </label>
         </div>
         <button
-          className="inline-flex h-10 items-center justify-center rounded-md bg-stone-950 px-4 text-sm font-medium text-white transition hover:bg-stone-800"
+          className="inline-flex h-10 items-center justify-center rounded-lg bg-stone-900 px-4 text-sm font-semibold text-white hover:bg-stone-800 active:scale-[0.97]"
           type="submit"
         >
           Add Task

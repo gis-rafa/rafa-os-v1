@@ -37,7 +37,7 @@ export function BrainPageView({ sections }: { sections: MasterBrainSection[] }) 
     <section className="mx-auto max-w-7xl overflow-hidden">
       <div className="mb-6 flex flex-col justify-between gap-3 sm:flex-row sm:items-end">
         <div>
-          <p className="text-sm font-medium uppercase tracking-[0.14em] text-stone-600">
+          <p className="text-xs font-semibold uppercase tracking-wider text-stone-400">
             Master Brain
           </p>
           <h2 className="mt-2 text-2xl font-semibold text-stone-950 sm:text-3xl">
@@ -49,28 +49,29 @@ export function BrainPageView({ sections }: { sections: MasterBrainSection[] }) 
             Loaded from MASTER-BRAIN.md
           </p>
           <Link
-            className="inline-flex h-10 items-center gap-2 rounded-md bg-stone-950 px-4 text-sm font-medium text-white transition hover:bg-stone-800"
+            className="inline-flex h-10 items-center gap-2 rounded-lg bg-stone-900 px-4 text-sm font-semibold text-white hover:bg-stone-800 active:scale-[0.97]"
             href="/brain?mode=edit"
           >
-            <Pencil size={16} strokeWidth={1.8} />
+            <Pencil size={16} strokeWidth={2} />
             Edit
           </Link>
         </div>
       </div>
 
       <div className="grid gap-4 lg:grid-cols-12">
-        {sections.map((section) => {
+        {sections.map((section, index) => {
           const style = sectionStyles[section.title as keyof typeof sectionStyles];
           const Icon = style.icon;
 
           return (
             <article
-              className={`rounded-md border border-stone-200 bg-white p-4 shadow-sm sm:p-5 ${style.className}`}
+              className={`animate-slide-up rounded-xl border border-stone-200/80 bg-white p-5 shadow-sm hover:shadow-md sm:p-6 ${style.className}`}
               key={section.title}
+              style={{ animationDelay: `${index * 0.1}s` }}
             >
               <div className="mb-4 flex items-center gap-3">
-                <div className="flex size-10 items-center justify-center rounded-md bg-stone-100 text-stone-700">
-                  <Icon size={19} strokeWidth={1.8} />
+                <div className="flex size-10 items-center justify-center rounded-lg bg-stone-50/60 text-stone-700">
+                  <Icon size={18} strokeWidth={2} />
                 </div>
                 <h3 className="text-base font-semibold text-stone-950">
                   {section.title}
@@ -93,7 +94,7 @@ function MarkdownSection({ content }: { content: string }) {
 
   if (content.trim() === "TODO") {
     return (
-      <div className="rounded-md border border-dashed border-stone-300 bg-stone-50 p-4 text-sm text-stone-600">
+      <div className="rounded-xl border border-dashed border-stone-300/80 bg-stone-50/60 p-4 text-sm text-stone-600">
         TODO
       </div>
     );
@@ -107,7 +108,7 @@ function MarkdownSection({ content }: { content: string }) {
             className="flex min-w-0 gap-3 text-sm leading-6 text-stone-700"
             key={item}
           >
-            <span className="flex size-6 shrink-0 items-center justify-center rounded-md bg-stone-950 text-xs font-semibold text-white">
+            <span className="flex size-6 shrink-0 items-center justify-center rounded-lg bg-stone-900 text-xs font-semibold text-white">
               {index + 1}
             </span>
             <span className="min-w-0">{item}</span>

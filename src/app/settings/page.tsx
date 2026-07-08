@@ -1,3 +1,4 @@
+import { Settings } from "lucide-react";
 import { isDatabaseConfigured } from "@/db";
 import { requireCurrentDbUser } from "@/lib/auth-user";
 import { getNotificationPreferences } from "@/lib/notification-preferences";
@@ -22,14 +23,19 @@ export default async function SettingsPage() {
 
   return (
     <section className="mx-auto max-w-4xl">
-      <div className="mb-6">
-        <p className="text-sm font-medium uppercase tracking-[0.14em] text-stone-600">
-          Settings
-        </p>
-        <h2 className="mt-2 text-3xl font-semibold text-stone-950">Settings</h2>
-        <p className="mt-3 max-w-2xl text-base leading-7 text-stone-600">
-          Manage your profile, workspace configuration, and preferences.
-        </p>
+      <div className="mb-6 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
+        <div>
+          <p className="text-sm font-medium uppercase tracking-wider text-stone-500">
+            Settings
+          </p>
+          <h2 className="mt-2 text-2xl sm:text-3xl font-semibold tracking-tight text-stone-900">Settings</h2>
+          <p className="mt-3 max-w-2xl text-base leading-7 text-stone-600">
+            Manage your profile, workspace configuration, and preferences.
+          </p>
+        </div>
+        <div className="flex size-12 shrink-0 items-center justify-center rounded-lg bg-stone-900 text-white">
+          <Settings size={22} strokeWidth={2} />
+        </div>
       </div>
 
       <div className="grid gap-6">
@@ -59,7 +65,7 @@ function ProfileSection({
   user: { id: string; name: string | null; email: string | null } | null;
 }) {
   return (
-    <section className="rounded-md border border-stone-200 bg-white p-5 shadow-sm">
+    <section className="rounded-xl border border-stone-200/80 bg-white p-5 shadow-sm hover:shadow-md transition-all duration-200">
       <div className="mb-5">
         <h3 className="text-base font-semibold text-stone-950">Profile</h3>
         <p className="mt-1 text-sm text-stone-600">
@@ -71,7 +77,7 @@ function ProfileSection({
         <label className="grid gap-1.5">
           <span className="text-sm font-medium text-stone-700">Name</span>
           <input
-            className="h-10 rounded-md border border-stone-200 bg-stone-50 px-3 text-sm text-stone-800 outline-none transition focus:border-stone-400 focus:bg-white"
+            className="h-10 rounded-lg border border-stone-200 bg-stone-50 px-3 text-sm text-stone-800 outline-none transition focus:border-stone-400 focus:bg-white"
             defaultValue={user?.name ?? ""}
             disabled={!isDatabaseConfigured}
             name="name"
@@ -82,7 +88,7 @@ function ProfileSection({
         <label className="grid gap-1.5">
           <span className="text-sm font-medium text-stone-700">Email</span>
           <input
-            className="h-10 rounded-md border border-stone-200 bg-stone-50 px-3 text-sm text-stone-800 outline-none transition focus:border-stone-400 focus:bg-white"
+            className="h-10 rounded-lg border border-stone-200 bg-stone-50 px-3 text-sm text-stone-800 outline-none transition focus:border-stone-400 focus:bg-white"
             defaultValue={user?.email ?? ""}
             disabled={!isDatabaseConfigured}
             name="email"
@@ -93,7 +99,7 @@ function ProfileSection({
         </label>
         <div>
           <button
-            className="inline-flex h-10 items-center justify-center rounded-md bg-stone-950 px-4 text-sm font-medium text-white transition hover:bg-stone-800 disabled:cursor-not-allowed disabled:bg-stone-300"
+            className="inline-flex h-10 items-center justify-center rounded-lg bg-stone-900 px-4 text-sm font-semibold text-white hover:bg-stone-800 active:scale-[0.97] disabled:cursor-not-allowed disabled:bg-stone-300"
             disabled={!isDatabaseConfigured}
             type="submit"
           >
@@ -120,7 +126,7 @@ function NotificationPreferencesSection({
   } | null;
 }) {
   return (
-    <section className="rounded-md border border-stone-200 bg-white p-5 shadow-sm">
+    <section className="rounded-xl border border-stone-200/80 bg-white p-5 shadow-sm hover:shadow-md transition-all duration-200">
       <div className="mb-5">
         <h3 className="text-base font-semibold text-stone-950">
           Notification Preferences
@@ -169,7 +175,7 @@ function NotificationPreferencesSection({
         />
         <div>
           <button
-            className="inline-flex h-10 items-center justify-center rounded-md bg-stone-950 px-4 text-sm font-medium text-white transition hover:bg-stone-800 disabled:cursor-not-allowed disabled:bg-stone-300"
+            className="inline-flex h-10 items-center justify-center rounded-lg bg-stone-900 px-4 text-sm font-semibold text-white hover:bg-stone-800 active:scale-[0.97] disabled:cursor-not-allowed disabled:bg-stone-300"
             disabled={!isDatabaseConfigured}
             type="submit"
           >
@@ -212,14 +218,14 @@ function DatabaseSection({
   isDatabaseConfigured: boolean;
 }) {
   return (
-    <section className="rounded-md border border-stone-200 bg-white p-5 shadow-sm">
+    <section className="rounded-xl border border-stone-200/80 bg-white p-5 shadow-sm hover:shadow-md transition-all duration-200">
       <div className="mb-5">
         <h3 className="text-base font-semibold text-stone-950">Database</h3>
         <p className="mt-1 text-sm text-stone-600">
           Current connection status for PostgreSQL.
         </p>
       </div>
-      <div className="flex items-center gap-3 rounded-md border border-stone-200 bg-stone-50 p-4">
+      <div className="flex items-center gap-3 rounded-lg border border-stone-100 bg-stone-50/60 p-3 sm:p-4">
         <div
           className={`size-3 rounded-full ${isDatabaseConfigured ? "bg-emerald-500" : "bg-amber-500"}`}
         />

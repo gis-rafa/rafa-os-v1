@@ -8,11 +8,11 @@ export function AppHeader({ onMenuClick }: { onMenuClick: () => void }) {
       <div className="flex min-w-0 items-center gap-3">
         <button
           aria-label="Open navigation"
-          className="flex size-10 shrink-0 items-center justify-center rounded-md border border-stone-200 text-stone-700 transition hover:bg-stone-50 lg:hidden"
+          className="flex size-10 shrink-0 items-center justify-center rounded-lg border border-stone-200 text-stone-500 transition-all duration-150 hover:bg-stone-100 active:scale-[0.97] lg:hidden"
           onClick={onMenuClick}
           type="button"
         >
-          <Menu size={19} strokeWidth={1.8} />
+          <Menu size={19} strokeWidth={2} />
         </button>
         <div className="min-w-0">
           <p className="text-sm font-medium text-stone-600">RAFA OS</p>
@@ -21,13 +21,13 @@ export function AppHeader({ onMenuClick }: { onMenuClick: () => void }) {
       <div className="flex items-center gap-2">
         <Link
           aria-label="Search"
-          className="flex size-10 items-center justify-center rounded-md border border-stone-200 text-stone-600 transition hover:bg-stone-50"
+          className="flex size-10 items-center justify-center rounded-lg border border-stone-200 text-stone-500 transition-all duration-150 hover:bg-stone-100 active:scale-[0.97]"
           href="/search"
         >
-          <Search size={18} strokeWidth={1.8} />
+          <Search size={18} strokeWidth={2} />
         </Link>
         <NotificationBadge />
-        <div className="flex size-10 items-center justify-center rounded-md bg-stone-950 text-sm font-semibold text-white">
+        <div className="flex size-10 items-center justify-center rounded-lg bg-stone-900 text-sm font-semibold text-white">
           R
         </div>
       </div>

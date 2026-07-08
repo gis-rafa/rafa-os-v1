@@ -36,38 +36,38 @@ export function MessageBubble({
         }`}
       >
         <div
-          className={`rounded-md px-4 py-3 text-sm leading-7 ${
+          className={`rounded-xl px-4 py-3 text-sm leading-7 ${
             isUser
-              ? "bg-stone-950 text-white"
-              : "border border-stone-200 bg-stone-50 text-stone-800"
+              ? "bg-stone-900 text-white"
+              : "border border-stone-200/80 bg-stone-50/60 text-stone-800"
           }`}
         >
           <MarkdownContent content={message.content} />
         </div>
         <div className="mt-2 flex flex-wrap gap-2 opacity-100 transition sm:opacity-0 sm:group-hover:opacity-100">
           <button
-            className="inline-flex h-8 items-center gap-2 rounded-md px-2 text-xs font-medium text-stone-600 transition hover:bg-stone-100 hover:text-stone-800"
+            className="inline-flex h-8 items-center gap-2 rounded-lg px-2 text-xs font-medium text-stone-600 transition hover:bg-stone-100 hover:text-stone-800"
             onClick={onCopy}
             type="button"
           >
             {copied ? (
-              <Check size={14} strokeWidth={1.8} />
+              <Check size={14} strokeWidth={2} />
             ) : (
-              <Copy size={14} strokeWidth={1.8} />
+              <Copy size={14} strokeWidth={2} />
             )}
             {copied ? "Copied" : "Copy"}
           </button>
           {!isUser ? (
             <button
-              className="inline-flex h-8 items-center gap-2 rounded-md px-2 text-xs font-medium text-stone-600 transition hover:bg-stone-100 hover:text-stone-800 disabled:cursor-not-allowed disabled:text-stone-400"
+              className="inline-flex h-8 items-center gap-2 rounded-lg px-2 text-xs font-medium text-stone-600 transition hover:bg-stone-100 hover:text-stone-800 disabled:cursor-not-allowed disabled:text-stone-400"
               disabled={savedToMemory || savingToMemory || !message.content.trim()}
               onClick={onSaveToMemory}
               type="button"
             >
               {savedToMemory ? (
-                <Check size={14} strokeWidth={1.8} />
+                <Check size={14} strokeWidth={2} />
               ) : (
-                <Database size={14} strokeWidth={1.8} />
+                <Database size={14} strokeWidth={2} />
               )}
               {savedToMemory
                 ? "Saved"

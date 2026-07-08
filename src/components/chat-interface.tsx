@@ -243,9 +243,9 @@ export function ChatInterface({
 
   return (
     <section className="mx-auto grid max-h-none min-h-[calc(100dvh-7rem)] max-w-7xl gap-4 overflow-visible xl:h-[calc(100vh-8.5rem)] xl:grid-cols-[minmax(0,1fr)_420px] xl:overflow-hidden">
-      <div className="flex min-h-[70dvh] flex-col overflow-hidden rounded-md border border-stone-200 bg-white shadow-sm xl:min-h-0">
-        <div className="border-b border-stone-200 px-4 py-4 sm:px-5">
-          <p className="text-sm font-medium uppercase tracking-[0.14em] text-stone-600">
+      <div className="flex min-h-[70dvh] flex-col overflow-hidden rounded-xl border border-stone-200/80 bg-white shadow-sm hover:shadow-md xl:min-h-0">
+        <div className="border-b border-stone-200/80 px-4 py-4 sm:px-5">
+          <p className="text-xs font-semibold uppercase tracking-wider text-stone-400">
             RAFA AI
           </p>
           <h2 className="mt-1 text-xl font-semibold text-stone-950 sm:text-2xl">
@@ -280,7 +280,7 @@ export function ChatInterface({
               />
             ) : null}
             {memoryError ? (
-              <p className="rounded-md border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
+              <p className="rounded-xl border border-red-200/80 bg-red-50 px-3 py-2 text-sm text-red-700">
                 {memoryError}
               </p>
             ) : null}
@@ -300,7 +300,7 @@ export function ChatInterface({
               Message
             </label>
             <textarea
-              className="max-h-32 min-h-12 flex-1 resize-none rounded-md border border-stone-200 bg-white px-3 py-3 text-sm leading-6 text-stone-800 outline-none transition placeholder:text-stone-400 focus:border-stone-400 sm:max-h-36 sm:px-4"
+              className="max-h-32 min-h-12 flex-1 resize-none rounded-xl border border-stone-200/80 bg-white px-3 py-3 text-sm leading-6 text-stone-800 outline-none transition placeholder:text-stone-400 focus:border-stone-400 sm:max-h-36 sm:px-4"
               id="chat-message"
               onChange={(event) => setInput(event.target.value)}
               onKeyDown={(event) => {
@@ -314,11 +314,11 @@ export function ChatInterface({
             />
             <button
               aria-label="Send message"
-              className="flex size-12 shrink-0 items-center justify-center rounded-md bg-stone-950 text-white transition hover:bg-stone-800 disabled:cursor-not-allowed disabled:bg-stone-300"
+              className="flex size-12 shrink-0 items-center justify-center rounded-lg bg-stone-900 text-white transition hover:bg-stone-800 active:scale-[0.97] disabled:cursor-not-allowed disabled:bg-stone-300"
               disabled={!input.trim() || isLoading}
               type="submit"
             >
-              <Send size={18} strokeWidth={1.8} />
+              <Send size={18} strokeWidth={2} />
             </button>
           </form>
         </div>

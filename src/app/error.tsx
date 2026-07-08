@@ -17,7 +17,7 @@ export default function RootError({
           {error.message ?? "An unexpected error occurred."}
         </p>
         <button
-          className="mt-4 rounded-md bg-stone-900 px-4 py-2 text-sm font-medium text-white transition hover:bg-stone-800"
+          className="mt-4 rounded-lg bg-stone-900 px-4 py-2 text-sm font-semibold text-white transition-all duration-150 hover:bg-stone-800 active:scale-[0.97]"
           onClick={reset}
           type="button"
         >

@@ -44,25 +44,25 @@ export function PaginationControls({
       <div className="flex gap-2">
         {prevPage ? (
           <Link
-            className="inline-flex h-9 items-center justify-center rounded-md border border-stone-200 bg-white px-3 text-sm font-medium text-stone-700 transition hover:bg-stone-50"
+            className="inline-flex h-9 items-center justify-center rounded-lg border border-stone-200 bg-white px-3 text-sm text-stone-600 hover:bg-stone-100"
             href={buildHref(prevPage)}
           >
             Previous
           </Link>
         ) : (
-          <span className="inline-flex h-9 items-center justify-center rounded-md border border-stone-200 bg-stone-50 px-3 text-sm font-medium text-stone-400">
+          <span className="inline-flex h-9 items-center justify-center rounded-lg border border-stone-200 bg-stone-50 px-3 text-sm text-stone-400">
             Previous
           </span>
         )}
         {nextPage ? (
           <Link
-            className="inline-flex h-9 items-center justify-center rounded-md border border-stone-200 bg-white px-3 text-sm font-medium text-stone-700 transition hover:bg-stone-50"
+            className="inline-flex h-9 items-center justify-center rounded-lg border border-stone-200 bg-white px-3 text-sm text-stone-600 hover:bg-stone-100"
             href={buildHref(nextPage)}
           >
             Next
           </Link>
         ) : (
-          <span className="inline-flex h-9 items-center justify-center rounded-md border border-stone-200 bg-stone-50 px-3 text-sm font-medium text-stone-400">
+          <span className="inline-flex h-9 items-center justify-center rounded-lg border border-stone-200 bg-stone-50 px-3 text-sm text-stone-400">
             Next
           </span>
         )}

@@ -30,28 +30,28 @@ export default async function NotificationsPage({ searchParams }: Props) {
     <section className="mx-auto max-w-4xl">
       <div className="mb-6 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
         <div>
-          <p className="text-sm font-medium uppercase tracking-[0.14em] text-stone-600">
+          <p className="text-sm font-medium uppercase tracking-wider text-stone-500">
             Notifications
           </p>
-          <h2 className="mt-2 text-3xl font-semibold text-stone-950">
+          <h2 className="mt-2 text-2xl sm:text-3xl font-semibold tracking-tight text-stone-900">
             Notifications
           </h2>
           <p className="mt-3 max-w-2xl text-base leading-7 text-stone-600">
             System alerts, reminders, and AI-generated notifications.
           </p>
         </div>
-        <div className="flex size-12 shrink-0 items-center justify-center rounded-md bg-stone-950 text-white">
-          <Bell size={22} strokeWidth={1.8} />
+        <div className="flex size-12 shrink-0 items-center justify-center rounded-lg bg-stone-900 text-white">
+          <Bell size={22} strokeWidth={2} />
         </div>
       </div>
 
       {notifications.length > 0 ? (
         <form action={markAllNotificationsReadAction} className="mb-4">
           <button
-            className="inline-flex h-10 items-center gap-2 rounded-md border border-stone-200 bg-white px-4 text-sm font-medium text-stone-700 transition hover:bg-stone-50"
+            className="inline-flex h-10 items-center gap-2 rounded-lg border border-stone-200 bg-white px-4 text-sm font-medium text-stone-600 hover:bg-stone-100 active:scale-[0.97]"
             type="submit"
           >
-            <CheckCheck size={16} strokeWidth={1.8} />
+            <CheckCheck size={16} strokeWidth={2} />
             Mark all as read
           </button>
         </form>
@@ -59,7 +59,7 @@ export default async function NotificationsPage({ searchParams }: Props) {
 
       <div className="grid gap-3">
         {notifications.length === 0 ? (
-          <div className="rounded-md border border-stone-200 bg-white p-8 text-center shadow-sm">
+          <div className="rounded-xl border border-dashed border-stone-300 bg-white p-8 text-center">
             <p className="text-sm font-medium text-stone-700">
               No notifications yet.
             </p>
@@ -70,10 +70,10 @@ export default async function NotificationsPage({ searchParams }: Props) {
         ) : (
           notifications.map((notification) => (
             <article
-              className={`rounded-md border bg-white p-5 shadow-sm ${
+              className={`rounded-xl border bg-white p-5 shadow-sm hover:shadow-md transition-all duration-200 ${
                 notification.read === 0
                   ? "border-stone-950"
-                  : "border-stone-200"
+                  : "border-stone-200/80"
               }`}
               key={notification.id}
             >
@@ -101,10 +101,10 @@ export default async function NotificationsPage({ searchParams }: Props) {
                       <input name="id" type="hidden" value={notification.id} />
                       <button
                         aria-label="Mark as read"
-                        className="inline-flex size-9 items-center justify-center rounded-md border border-stone-200 text-stone-600 transition hover:bg-stone-50"
+                        className="inline-flex size-9 items-center justify-center rounded-lg border border-stone-200 bg-white text-stone-600 hover:bg-stone-100 active:scale-[0.97]"
                         type="submit"
                       >
-                        <CheckCheck size={16} strokeWidth={1.8} />
+                        <CheckCheck size={16} strokeWidth={2} />
                       </button>
                     </form>
                   ) : null}
@@ -112,10 +112,10 @@ export default async function NotificationsPage({ searchParams }: Props) {
                     <input name="id" type="hidden" value={notification.id} />
                     <button
                       aria-label="Delete notification"
-                      className="inline-flex size-9 items-center justify-center rounded-md border border-stone-200 text-red-600 transition hover:bg-red-50"
+                      className="inline-flex size-9 items-center justify-center rounded-lg border border-stone-200 text-red-500 hover:bg-red-50 active:scale-[0.97]"
                       type="submit"
                     >
-                      <Trash2 size={16} strokeWidth={1.8} />
+                      <Trash2 size={16} strokeWidth={2} />
                     </button>
                   </form>
                 </div>
@@ -146,7 +146,7 @@ function NotificationTypeBadge({ type }: { type: string }) {
 
   return (
     <span
-      className={`rounded-md px-2 py-1 text-xs font-medium ${styles[type] ?? styles.info}`}
+      className={`rounded-md border px-2 py-1 text-xs font-semibold ${styles[type] ?? styles.info}`}
     >
       {type}
     </span>

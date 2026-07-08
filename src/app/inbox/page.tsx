@@ -29,27 +29,27 @@ export default async function InboxPage({ searchParams }: Props) {
     <section className="mx-auto max-w-4xl">
       <div className="mb-6 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
         <div>
-          <p className="text-sm font-medium uppercase tracking-[0.14em] text-stone-600">
+          <p className="text-sm font-medium uppercase tracking-wider text-stone-500">
             Quick Capture
           </p>
-          <h2 className="mt-2 text-3xl font-semibold text-stone-950">Inbox</h2>
+          <h2 className="mt-2 text-2xl sm:text-3xl font-semibold tracking-tight text-stone-900">Inbox</h2>
           <p className="mt-3 max-w-2xl text-base leading-7 text-stone-600">
             Dump thoughts, ideas, problems, or goals here as timestamped
             Markdown notes.
           </p>
         </div>
-        <div className="flex size-12 shrink-0 items-center justify-center rounded-md bg-stone-950 text-white">
-          <Inbox size={22} strokeWidth={1.8} />
+        <div className="flex size-12 shrink-0 items-center justify-center rounded-lg bg-stone-900 text-white">
+          <Inbox size={22} strokeWidth={2} />
         </div>
       </div>
 
       <form
         action={saveInboxEntryAction}
-        className="mb-8 rounded-md border border-stone-200 bg-white p-5 shadow-sm"
+        className="mb-8 rounded-xl border border-stone-200/80 bg-white p-5 shadow-sm hover:shadow-md transition-all duration-200"
       >
         <div className="mb-4 flex items-center gap-3">
-          <div className="flex size-10 items-center justify-center rounded-md bg-stone-100 text-stone-700">
-            <Inbox size={19} strokeWidth={1.8} />
+          <div className="flex size-10 items-center justify-center rounded-lg bg-stone-100 text-stone-700">
+            <Inbox size={19} strokeWidth={2} />
           </div>
           <div>
             <h3 className="text-base font-semibold text-stone-950">
@@ -65,7 +65,7 @@ export default async function InboxPage({ searchParams }: Props) {
           Inbox entry
         </label>
         <textarea
-          className="min-h-56 w-full resize-y rounded-md border border-stone-200 bg-stone-50 p-4 text-base leading-7 text-stone-800 outline-none transition placeholder:text-stone-400 focus:border-stone-400 focus:bg-white"
+          className="min-h-56 w-full resize-y rounded-lg border border-stone-200 bg-stone-50 p-4 text-base leading-7 text-stone-800 outline-none transition placeholder:text-stone-400 focus:border-stone-400 focus:bg-white"
           id="entry"
           name="entry"
           placeholder="Write anything you need to capture..."
@@ -74,10 +74,10 @@ export default async function InboxPage({ searchParams }: Props) {
 
         <div className="mt-4 flex justify-end">
           <button
-            className="inline-flex h-10 items-center gap-2 rounded-md bg-stone-950 px-4 text-sm font-medium text-white transition hover:bg-stone-800"
+            className="inline-flex h-10 items-center gap-2 rounded-lg bg-stone-900 px-4 text-sm font-semibold text-white hover:bg-stone-800 active:scale-[0.97]"
             type="submit"
           >
-            <Save size={16} strokeWidth={1.8} />
+            <Save size={16} strokeWidth={2} />
             Save Note
           </button>
         </div>
@@ -90,7 +90,7 @@ export default async function InboxPage({ searchParams }: Props) {
           </p>
           {entries.map((entry) => (
             <article
-              className="rounded-md border border-stone-200 bg-white p-5 shadow-sm"
+              className="rounded-xl border border-stone-200/80 bg-white p-5 shadow-sm hover:shadow-md transition-all duration-200"
               key={entry.id}
             >
               <div className="flex items-start justify-between gap-4">
@@ -110,10 +110,10 @@ export default async function InboxPage({ searchParams }: Props) {
                   />
                   <button
                     aria-label="Delete entry"
-                    className="inline-flex size-9 shrink-0 items-center justify-center rounded-md border border-stone-200 text-red-600 transition hover:bg-red-50"
+                    className="inline-flex size-9 shrink-0 items-center justify-center rounded-lg border border-stone-200 text-red-500 hover:bg-red-50 active:scale-[0.97]"
                     type="submit"
                   >
-                    <Trash2 size={16} strokeWidth={1.8} />
+                    <Trash2 size={16} strokeWidth={2} />
                   </button>
                 </form>
               </div>
@@ -121,7 +121,7 @@ export default async function InboxPage({ searchParams }: Props) {
           ))}
         </div>
       ) : (
-        <div className="rounded-md border border-dashed border-stone-300 bg-white p-8 text-center">
+        <div className="rounded-xl border border-dashed border-stone-300 bg-white p-8 text-center">
           <p className="text-sm font-medium text-stone-700">
             No inbox notes yet.
           </p>

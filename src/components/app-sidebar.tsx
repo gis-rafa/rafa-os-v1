@@ -41,7 +41,7 @@ export function AppSidebar({
   return (
     <>
       <div
-        className={`fixed inset-0 z-40 bg-stone-950/50 transition lg:hidden ${
+        className={`fixed inset-0 z-40 bg-stone-950/50 transition-opacity lg:hidden ${
           isOpen ? "opacity-100" : "pointer-events-none opacity-0"
         }`}
         onClick={onClose}
@@ -60,7 +60,7 @@ export function AppSidebar({
             href="/dashboard"
             onClick={onClose}
           >
-            <span className="flex size-9 items-center justify-center rounded-md bg-white text-sm font-bold text-stone-950">
+            <span className="flex size-9 items-center justify-center rounded-lg bg-white text-sm font-bold text-stone-950">
               R
             </span>
             <span>
@@ -69,18 +69,17 @@ export function AppSidebar({
             </span>
           </Link>
         </div>
-        <nav aria-label="Primary navigation" className="flex flex-col gap-1 p-3">
+        <nav aria-label="Primary navigation" className="flex flex-col gap-0.5 p-3">
           {navigation.map((item) => {
             const Icon = item.icon;
-
             return (
               <Link
-                className="flex h-11 items-center gap-3 rounded-md px-3 text-sm font-medium text-stone-300 transition hover:bg-white/10 hover:text-white"
+                className="flex h-11 items-center gap-3 rounded-lg px-3 text-sm font-medium text-stone-300 transition-all duration-150 hover:bg-white/10 hover:text-white active:scale-[0.98]"
                 href={item.href}
                 key={item.href}
                 onClick={onClose}
               >
-                <Icon size={18} strokeWidth={1.8} />
+                <Icon size={18} strokeWidth={2} />
                 {item.label}
               </Link>
             );

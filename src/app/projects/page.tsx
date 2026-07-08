@@ -95,7 +95,7 @@ function ProjectsShell({
       <div className="min-w-0">
         <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <p className="text-sm font-medium uppercase tracking-[0.14em] text-stone-600">
+            <p className="text-sm font-medium uppercase tracking-wider text-stone-500">
               Projects Hub
             </p>
             <h2 className="mt-2 text-3xl font-semibold text-stone-950">
@@ -106,8 +106,8 @@ function ProjectsShell({
               actually matters.
             </p>
           </div>
-          <div className="flex size-12 shrink-0 items-center justify-center rounded-md bg-stone-950 text-white">
-            <FolderKanban size={22} strokeWidth={1.8} />
+          <div className="flex size-12 shrink-0 items-center justify-center rounded-lg bg-stone-950 text-white">
+            <FolderKanban size={22} strokeWidth={2} />
           </div>
         </div>
 
@@ -126,7 +126,7 @@ function ProjectsShell({
 
         <div className="grid gap-4">
           {projects.length === 0 ? (
-            <div className="rounded-md border border-dashed border-stone-300 bg-white p-8 text-center">
+            <div className="rounded-xl border border-dashed border-stone-300 bg-white p-8 text-center">
               <p className="text-sm font-medium text-stone-700">
                 No projects found.
               </p>
@@ -161,7 +161,7 @@ function ProjectCard({
   project: ProjectWithStats;
 }) {
   return (
-    <article className="rounded-md border border-stone-200 bg-white p-5 shadow-sm">
+    <article className="rounded-xl border border-stone-200/80 bg-white p-5 shadow-sm hover:shadow-md transition-all duration-200">
       <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
         <div className="min-w-0">
           <div className="mb-3 flex flex-wrap items-center gap-2">
@@ -202,20 +202,20 @@ function ProjectCard({
         <div className="flex shrink-0 gap-2">
           <Link
             aria-label={`Edit ${project.name}`}
-            className="inline-flex size-9 items-center justify-center rounded-md border border-stone-200 text-stone-600 transition hover:bg-stone-50"
+            className="inline-flex size-9 items-center justify-center rounded-lg border border-stone-200 text-stone-500 hover:bg-stone-100 active:scale-[0.97]"
             href={`/projects?edit=${project.id}`}
           >
-            <Pencil size={16} strokeWidth={1.8} />
+            <Pencil size={16} strokeWidth={2} />
           </Link>
           {project.status !== "Archived" ? (
             <form action={archiveProjectAction}>
               <input name="id" type="hidden" value={project.id} />
               <button
                 aria-label={`Archive ${project.name}`}
-                className="inline-flex size-9 items-center justify-center rounded-md border border-stone-200 text-stone-600 transition hover:bg-stone-50"
+                className="inline-flex size-9 items-center justify-center rounded-lg border border-stone-200 text-stone-500 hover:bg-stone-100 active:scale-[0.97]"
                 type="submit"
               >
-                <Archive size={16} strokeWidth={1.8} />
+                <Archive size={16} strokeWidth={2} />
               </button>
             </form>
           ) : null}
@@ -223,10 +223,10 @@ function ProjectCard({
             <input name="id" type="hidden" value={project.id} />
             <button
               aria-label={`Delete ${project.name}`}
-              className="inline-flex size-9 items-center justify-center rounded-md border border-stone-200 text-red-600 transition hover:bg-red-50"
+              className="inline-flex size-9 items-center justify-center rounded-lg border border-stone-200 text-red-500 hover:bg-red-50 active:scale-[0.97]"
               type="submit"
             >
-              <Trash2 size={16} strokeWidth={1.8} />
+              <Trash2 size={16} strokeWidth={2} />
             </button>
           </form>
         </div>
@@ -277,10 +277,10 @@ function ProjectForm({ editingProject }: { editingProject: ExecutionProject | nu
   const action = editingProject ? updateProjectAction : createProjectAction;
 
   return (
-    <aside className="h-fit rounded-md border border-stone-200 bg-white p-5 shadow-sm">
+    <aside className="h-fit rounded-xl border border-stone-200/80 bg-white p-5 shadow-sm">
       <div className="mb-5 flex items-center gap-3">
-        <div className="flex size-10 items-center justify-center rounded-md bg-stone-100 text-stone-700">
-          <Plus size={18} strokeWidth={1.8} />
+        <div className="flex size-10 items-center justify-center rounded-lg bg-stone-100 text-stone-700">
+          <Plus size={18} strokeWidth={2} />
         </div>
         <div>
           <h3 className="text-base font-semibold text-stone-950">
@@ -413,7 +413,7 @@ function ProjectForm({ editingProject }: { editingProject: ExecutionProject | nu
             <span />
           )}
           <button
-            className="inline-flex h-10 items-center justify-center rounded-md bg-stone-950 px-4 text-sm font-medium text-white transition hover:bg-stone-800 disabled:cursor-not-allowed disabled:bg-stone-300"
+            className="inline-flex h-10 items-center justify-center rounded-lg bg-stone-900 px-4 text-sm font-semibold text-white hover:bg-stone-800 active:scale-[0.97] disabled:cursor-not-allowed disabled:bg-stone-300"
             
             type="submit"
           >
@@ -427,7 +427,7 @@ function ProjectForm({ editingProject }: { editingProject: ExecutionProject | nu
 
 function SummaryCard({ label, value }: { label: string; value: number }) {
   return (
-    <div className="rounded-md border border-stone-200 bg-white p-4 shadow-sm">
+    <div className="rounded-xl border border-stone-200/80 bg-white p-4 shadow-sm">
       <p className="text-sm text-stone-600">{label}</p>
       <p className="mt-2 text-3xl font-semibold text-stone-950">{value}</p>
     </div>
@@ -444,10 +444,10 @@ function MetricCard({
   value: number | string;
 }) {
   return (
-    <div className="rounded-md border border-stone-200 bg-stone-50 p-3">
-      <Icon className="mb-2 text-stone-600" size={17} strokeWidth={1.8} />
+    <div className="rounded-lg border border-stone-100 bg-stone-50/50 p-3">
+      <Icon className="mb-2 text-stone-600" size={16} strokeWidth={2} />
       <p className="text-sm font-semibold text-stone-950">{value}</p>
-      <p className="mt-1 text-xs font-medium uppercase tracking-[0.12em] text-stone-600">
+      <p className="mt-1 text-xs font-semibold uppercase tracking-wider text-stone-400">
         {label}
       </p>
     </div>
@@ -463,7 +463,7 @@ function InfoPill({
 }) {
   return (
     <span className="inline-flex items-center gap-1.5 rounded-md border border-stone-200 px-2 py-1">
-      <Icon size={14} strokeWidth={1.8} />
+      <Icon size={14} strokeWidth={2} />
       {label}
     </span>
   );
@@ -485,7 +485,7 @@ function ProjectIcon({ color, icon }: { color: string; icon: string }) {
       className={`inline-flex size-8 items-center justify-center rounded-md ${colorClassName}`}
       title={icon}
     >
-      <FolderKanban size={16} strokeWidth={1.8} />
+      <FolderKanban size={16} strokeWidth={2} />
     </span>
   );
 }
@@ -514,7 +514,7 @@ function Field({
 }
 
 const inputClassName =
-  "h-10 rounded-md border border-stone-200 bg-stone-50 px-3 text-sm text-stone-800 outline-none transition focus:border-stone-400 focus:bg-white disabled:cursor-not-allowed disabled:bg-stone-100";
+  "h-10 rounded-lg border border-stone-200 bg-stone-50 px-3 text-sm text-stone-800 outline-none transition focus:border-stone-400 focus:bg-white disabled:cursor-not-allowed disabled:bg-stone-100";
 
 function formatDateInput(date: Date | null) {
   if (!date) {
