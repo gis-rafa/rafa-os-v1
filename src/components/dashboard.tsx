@@ -1,23 +1,25 @@
 "use client";
 
-import { useMemo, useRef, useState, useTransition } from "react";
+import { useMemo, useState, useTransition, useRef } from "react";
 import { updateExecutionTaskStatusAction } from "@/app/dashboard/actions";
 import type { ExecutionDashboardData } from "@/lib/execution-dashboard";
+import type { WorkoutDay } from "@/lib/daily-health";
 import { buildMissionView } from "@/lib/dashboard-utils";
-import { DashboardHeader } from "@/components/dashboard/dashboard-header";
+import { logExerciseSetAction } from "@/app/dashboard/actions";
+import { GreetingSection } from "@/components/dashboard/greeting-section";
 import { TodaysMission } from "@/components/dashboard/todays-mission";
-import { MorningBrief } from "@/components/dashboard/morning-brief";
+import { TopPriorities } from "@/components/dashboard/top-priorities";
+import { DailyHealth } from "@/components/dashboard/daily-health";
+import { WorkoutLog } from "@/components/dashboard/workout-log";
+import { GisProgress } from "@/components/dashboard/gis-progress";
+import { ActiveProjects } from "@/components/dashboard/active-projects";
+import { BrainRecommendation } from "@/components/dashboard/brain-recommendation";
+import { QuickActions } from "@/components/dashboard/quick-actions";
+import { FocusMode } from "@/components/dashboard/focus-mode";
 import { ExecutionRules } from "@/components/dashboard/execution-rules";
 import { MissionIntelligence } from "@/components/dashboard/mission-intelligence";
 import { MissionWarnings } from "@/components/dashboard/mission-warnings";
-import { MissionProgress } from "@/components/dashboard/mission-progress";
-import { MissionScore } from "@/components/dashboard/mission-score";
 import { ExecutionQueue } from "@/components/dashboard/execution-queue";
-import { FocusMode } from "@/components/dashboard/focus-mode";
-import { DailyHealth } from "@/components/dashboard/daily-health";
-import { WorkoutLog } from "@/components/dashboard/workout-log";
-import type { WorkoutDay } from "@/lib/daily-health";
-import { logExerciseSetAction } from "@/app/dashboard/actions";
 
 type ExerciseLogItem = {
   exerciseName: string;
@@ -28,7 +30,6 @@ type ExerciseLogItem = {
 
 export function Dashboard({
   data,
-  isDatabaseConfigured,
   exerciseLogs,
   dayOfWeek,
   workout,
@@ -52,19 +53,16 @@ export function Dashboard({
   );
 
   function updateTask(taskId: string, status: string) {
-    const previousData = dashboardData;
-
     setDashboardData((current) => {
       const tasks = current.todaysTasks.map((task) =>
         task.id === taskId ? { ...task, status } : task
       );
       const doneCount = tasks.filter((task) => task.status === "Done").length;
-
       return {
         ...current,
         tasksCompletedToday: doneCount,
         tasksRemainingToday: tasks.length - doneCount,
-        todaysTasks: tasks
+        todaysTasks: tasks,
       };
     });
 
@@ -78,7 +76,15 @@ export function Dashboard({
         pendingAction.current = updateExecutionTaskStatusAction(formData);
         await pendingAction.current;
       } catch {
-        setDashboardData(previousData);
+        setDashboardData((current) => {
+          const tasks = current.todaysTasks.map((task) =>
+            task.id === taskId
+              ? { ...task, status: status === "Done" ? "Todo" : "Done" }
+              : task
+          );
+          const doneCount = tasks.filter((t) => t.status === "Done").length;
+          return { ...current, tasksCompletedToday: doneCount, tasksRemainingToday: tasks.length - doneCount, todaysTasks: tasks };
+        });
       } finally {
         pendingAction.current = null;
       }
@@ -91,7 +97,6 @@ export function Dashboard({
 
   function handleLogSet(exerciseName: string, setsCompleted: number, totalSets: number) {
     if (pendingAction.current) return;
-
     startTransition(async () => {
       try {
         const formData = new FormData();
@@ -120,30 +125,22 @@ export function Dashboard({
   }
 
   return (
-    <section className="mx-auto flex max-w-7xl flex-col gap-4 text-stone-950 dark:text-stone-50">
-      <DashboardHeader isDatabaseConfigured={isDatabaseConfigured} />
+    <section className="mx-auto flex max-w-7xl flex-col gap-6 text-stone-950">
+      <GreetingSection data={dashboardData} mission={mission} timezone={timezone} />
 
-      <MissionScore score={mission.missionScore} />
-
-      <div className="grid gap-4 xl:grid-cols-[1.15fr_0.85fr]">
+      <div className="grid gap-6 lg:grid-cols-[1.5fr_1fr]">
         <TodaysMission
           data={dashboardData}
           mission={mission}
           onStart={() => setIsFocusMode(true)}
           primaryGisComplete={mission.primaryGisComplete}
         />
-        <MorningBrief data={dashboardData} mission={mission} />
+        <TopPriorities priorities={dashboardData.priorities} />
       </div>
 
-      <div className="rounded-md border border-stone-200 bg-stone-50 px-3 py-2 text-xs text-stone-500 dark:border-stone-800 dark:bg-stone-900">
-        Today: {new Date(dashboardData.currentDate).toLocaleDateString("en", { timeZone: timezone, weekday: "long", year: "numeric", month: "long", day: "numeric" })}
-        {" · "} Day of week: {dayOfWeek ?? "?"}
-        {timezone ? <span> · Timezone: {timezone}</span> : null}
-        {" · "} Server: {new Date().toISOString().slice(0, 16)}Z
-      </div>
+      <DailyHealth tasks={dashboardData.todaysTasks} onToggle={handleToggledTask} />
 
-      <div className="grid gap-4 md:grid-cols-2">
-        <DailyHealth tasks={dashboardData.todaysTasks} onToggle={handleToggledTask} />
+      <div className="grid gap-6 lg:grid-cols-2">
         {workout && dayOfWeek !== undefined && (
           <WorkoutLog
             dayOfWeek={dayOfWeek}
@@ -151,7 +148,17 @@ export function Dashboard({
             onLogSet={handleLogSet}
           />
         )}
+        <GisProgress data={dashboardData} mission={mission} />
       </div>
+
+      <ActiveProjects projects={dashboardData.activeProjects} />
+
+      <div className="grid gap-6 lg:grid-cols-[1.5fr_1fr]">
+        <BrainRecommendation data={dashboardData} mission={mission} />
+        <QuickActions />
+      </div>
+
+      <MissionWarnings data={dashboardData} />
 
       <ExecutionRules
         brandingTasks={mission.brandingTasks}
@@ -161,10 +168,6 @@ export function Dashboard({
       />
 
       <MissionIntelligence data={dashboardData} mission={mission} />
-
-      <MissionWarnings data={dashboardData} />
-
-      <MissionProgress mission={mission} />
 
       <ExecutionQueue
         isPending={isPending}

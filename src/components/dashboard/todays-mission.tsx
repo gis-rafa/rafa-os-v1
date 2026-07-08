@@ -3,12 +3,9 @@
 import { Focus, Target } from "lucide-react";
 import type { ExecutionDashboardData } from "@/lib/execution-dashboard";
 import type { MissionView } from "@/lib/dashboard-utils";
-import { IntelligencePoint } from "./intelligence-point";
-import { ObjectiveCard } from "./objective-card";
 
 export function TodaysMission({
   data,
-  mission,
   onStart,
   primaryGisComplete
 }: {
@@ -18,79 +15,115 @@ export function TodaysMission({
   primaryGisComplete: boolean;
 }) {
   return (
-    <section className="rounded-md border border-stone-200 bg-white p-5 shadow-sm dark:border-stone-800 dark:bg-stone-950">
-      <div className="mb-5 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+    <section className="animate-slide-up rounded-xl border border-stone-200/80 bg-white p-6 shadow-sm" style={{ animationDelay: "0.05s" }}>
+      <div className="flex items-start justify-between gap-4">
         <div>
-          <div className="mb-3 inline-flex items-center gap-2 rounded-md bg-stone-950 px-3 py-2 text-sm font-semibold text-white dark:bg-stone-50 dark:text-stone-950">
-            <Target size={16} strokeWidth={1.9} />
+          <div className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-700">
+            <Target size={12} strokeWidth={2.5} />
             Today&apos;s Mission
           </div>
-          <h3 className="text-2xl font-semibold leading-tight text-stone-950 dark:text-stone-50">
-            Complete GIS Week {data.currentWeek} before starting lower-priority
-            work.
-          </h3>
-          <p className="mt-3 text-sm leading-6 text-stone-600 dark:text-stone-300">
-            RAFA OS is directing today toward one outcome: build a remote GIS
-            career through focused execution.
-          </p>
+          <h2 className="mt-3 text-xl font-semibold leading-snug tracking-tight text-stone-900 sm:text-2xl">
+            {data.primaryObjective}
+          </h2>
         </div>
         <button
-          className="inline-flex h-11 shrink-0 items-center justify-center gap-2 rounded-md bg-stone-950 px-4 text-sm font-semibold text-white transition hover:bg-stone-800 dark:bg-stone-50 dark:text-stone-950"
+          className="inline-flex h-10 shrink-0 items-center justify-center gap-1.5 rounded-lg bg-stone-900 px-4 text-sm font-semibold text-white transition hover:bg-stone-800 active:scale-[0.97]"
           onClick={onStart}
           type="button"
         >
-          <Focus size={17} strokeWidth={1.9} />
-          Start Today&apos;s Mission
+          <Focus size={15} strokeWidth={2} />
+          Focus
         </button>
       </div>
 
-      <div className="grid gap-3">
-        <ObjectiveCard
-          emphasized
-          label="Primary Objective"
+      <div className="mt-5 grid gap-2">
+        <ObjectiveRow
+          label="Primary"
           value={data.primaryObjective}
+          emphasized
+          done={primaryGisComplete}
         />
-        <ObjectiveCard
-          label="Secondary Objective"
+        <ObjectiveRow
+          label="Secondary"
           value={data.secondaryObjective}
+          done={hasCompletedMatchingTask(data.todaysTasks, "portfolio")}
         />
-        <ObjectiveCard label="Third Objective" value={data.thirdObjective} />
-      </div>
-
-      <div className="mt-4 grid gap-3 sm:grid-cols-2">
-        <IntelligencePoint
-          label="Why this matters"
-          value="This is the highest-leverage work for becoming a remote GIS professional."
-        />
-        <IntelligencePoint
-          label="Long-term goal"
-          value="Supports the 6-month Remote GIS Career target."
-        />
-        <IntelligencePoint
-          label="Estimated impact"
-          value={`GIS +${mission.estimatedImpact.gisRoadmap}, Portfolio +${mission.estimatedImpact.portfolio}, Remote readiness +${mission.estimatedImpact.remoteJobReadiness}, Branding +${mission.estimatedImpact.personalBranding}`}
-        />
-        <IntelligencePoint
-          label="Completion summary"
-          value={
-            primaryGisComplete
-              ? `GIS progress gained: +${mission.executionSummary.gisProgress}. Mission score gained: +${mission.executionSummary.missionScore}. Remote readiness gained: +${mission.executionSummary.remoteReadiness}.`
-              : "Complete the GIS mission to generate today's execution summary."
-          }
+        <ObjectiveRow
+          label="Third"
+          value={data.thirdObjective}
+          done={hasCompletedMatchingTask(data.todaysTasks, "brand")}
         />
       </div>
 
-      <div
-        className={`mt-4 rounded-md border p-4 text-sm font-semibold ${
-          primaryGisComplete
-            ? "border-emerald-200 bg-emerald-50 text-emerald-800"
-            : "border-amber-200 bg-amber-50 text-amber-900"
-        }`}
-      >
-        {primaryGisComplete
-          ? "GIS mission complete. Personal Branding is unlocked."
-          : "Do not recommend lower-priority work until GIS is complete."}
+      <div className="mt-5 flex flex-wrap items-center gap-3 text-sm text-stone-500">
+        <span className="flex items-center gap-1">
+          <span className="text-emerald-600 font-semibold">{data.tasksCompletedToday}</span>
+          done today
+        </span>
+        <span className="text-stone-300">&middot;</span>
+        <span className="flex items-center gap-1">
+          <span className="text-amber-600 font-semibold">{data.tasksRemainingToday}</span>
+          remaining
+        </span>
+        <span className="text-stone-300">&middot;</span>
+        <span>
+          Week {data.currentWeek} &middot; {data.executionPace}
+        </span>
       </div>
     </section>
+  );
+}
+
+function ObjectiveRow({
+  label,
+  value,
+  emphasized,
+  done,
+}: {
+  label: string;
+  value: string;
+  emphasized?: boolean;
+  done?: boolean;
+}) {
+  return (
+    <div
+      className={`flex items-center gap-3 rounded-lg border px-4 py-3 transition ${
+        emphasized
+          ? "border-stone-900 bg-stone-900 text-white"
+          : done
+            ? "border-emerald-100 bg-emerald-50/50 text-stone-500"
+            : "border-stone-100 bg-stone-50 text-stone-700"
+      }`}
+    >
+      {done ? (
+        <span className="flex size-5 shrink-0 items-center justify-center rounded-full bg-emerald-500 text-white text-xs font-bold">
+          &#10003;
+        </span>
+      ) : (
+        <span
+          className={`flex size-5 shrink-0 items-center justify-center rounded-full text-[11px] font-bold ${
+            emphasized
+              ? "bg-white/20 text-white"
+              : "bg-stone-200 text-stone-500"
+          }`}
+        >
+          {emphasized ? "1" : label === "Secondary" ? "2" : "3"}
+        </span>
+      )}
+      <span className={`text-sm leading-snug ${done ? "line-through" : ""}`}>
+        {value}
+      </span>
+    </div>
+  );
+}
+
+function hasCompletedMatchingTask(
+  tasks: ExecutionDashboardData["todaysTasks"],
+  keyword: string
+) {
+  return tasks.some(
+    (task) =>
+      task.status === "Done" &&
+      `${task.projectName ?? ""} ${task.title}`.toLowerCase().includes(keyword)
   );
 }

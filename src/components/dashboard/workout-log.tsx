@@ -1,6 +1,6 @@
 "use client";
 
-import { Dumbbell, Plus, Minus } from "lucide-react";
+import { Dumbbell, Plus, Minus, Check } from "lucide-react";
 
 type ExerciseLog = {
   exerciseName: string;
@@ -20,49 +20,56 @@ export function WorkoutLog({
 }) {
   const dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
   const dayName = dayNames[dayOfWeek];
-
-  const allDone = todayLogs.length > 0 && todayLogs.every((l) => l.done);
   const doneCount = todayLogs.filter((l) => l.done).length;
 
+  if (todayLogs.length === 0) return null;
+
   return (
-    <section className="rounded-md border border-stone-200 bg-white p-5 shadow-sm dark:border-stone-800 dark:bg-stone-950">
-      <div className="mb-4 flex items-center gap-3">
-        <div className="flex size-10 items-center justify-center rounded-md bg-orange-100 text-orange-700 dark:bg-orange-900 dark:text-orange-200">
-          <Dumbbell size={18} strokeWidth={1.9} />
+    <section className="animate-slide-up rounded-xl border border-stone-200/80 bg-white p-6 shadow-sm" style={{ animationDelay: "0.2s" }}>
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-stone-400">
+          <Dumbbell size={13} strokeWidth={2} />
+          Workout &mdash; {dayName}
         </div>
-        <div>
-          <h3 className="text-base font-semibold text-stone-950 dark:text-stone-50">
-            Workout Log &mdash; {dayName}
-          </h3>
-          <p className="mt-1 text-xs text-stone-500">
-            {doneCount}/{todayLogs.length} exercises done
-          </p>
-        </div>
+        <span className="text-sm font-medium text-stone-500">
+          {doneCount}/{todayLogs.length}
+        </span>
       </div>
 
-      {todayLogs.length === 0 && (
-        <p className="text-sm text-stone-500">No exercises logged yet today.</p>
-      )}
-
-      <div className="grid gap-2">
+      <div className="mt-4 grid gap-2">
         {todayLogs.map((log) => (
           <div
             key={log.exerciseName}
-            className="flex items-center justify-between rounded-md border border-stone-100 bg-stone-50 px-3 py-2 dark:border-stone-800 dark:bg-stone-900"
+            className={`flex items-center justify-between rounded-lg border px-4 py-3 transition ${
+              log.done
+                ? "border-emerald-100 bg-emerald-50/30"
+                : "border-stone-100 bg-stone-50/60"
+            }`}
           >
-            <div className="min-w-0 flex-1">
-              <p
-                className={`text-sm font-medium ${
+            <div className="flex items-center gap-3 min-w-0">
+              <span
+                className={`flex size-6 shrink-0 items-center justify-center rounded-full text-xs font-bold ${
                   log.done
-                    ? "text-stone-500 line-through"
-                    : "text-stone-800 dark:text-stone-200"
+                    ? "bg-emerald-500 text-white"
+                    : "bg-stone-200 text-stone-500"
                 }`}
               >
-                {log.exerciseName}
-              </p>
-              <p className="text-xs text-stone-400">
-                Sets: {log.setsCompleted}/{log.totalSets}
-              </p>
+                {log.done ? <Check size={12} strokeWidth={3} /> : log.totalSets}
+              </span>
+              <div className="min-w-0">
+                <p
+                  className={`text-sm font-medium ${
+                    log.done ? "text-stone-400 line-through" : "text-stone-800"
+                  }`}
+                >
+                  {log.exerciseName}
+                </p>
+                {!log.done && (
+                  <p className="text-xs text-stone-400">
+                    {log.totalSets} sets
+                  </p>
+                )}
+              </div>
             </div>
             {!log.done && (
               <SetCounter
@@ -72,18 +79,9 @@ export function WorkoutLog({
                 onLogSet={onLogSet}
               />
             )}
-            {log.done && (
-              <span className="text-xs font-semibold text-emerald-600">Done</span>
-            )}
           </div>
         ))}
       </div>
-
-      {allDone && todayLogs.length > 0 && (
-        <div className="mt-3 rounded-md bg-emerald-50 px-3 py-2 text-center text-sm font-semibold text-emerald-800 dark:bg-emerald-950 dark:text-emerald-200">
-          All exercises complete!
-        </div>
-      )}
     </section>
   );
 }
@@ -102,23 +100,23 @@ function SetCounter({
   return (
     <div className="flex items-center gap-1">
       <button
-        className="inline-flex size-7 items-center justify-center rounded-md border border-stone-200 bg-white text-stone-600 hover:bg-stone-100 disabled:opacity-40 dark:border-stone-700 dark:bg-stone-950 dark:text-stone-400"
+        className="inline-flex size-7 items-center justify-center rounded-md border border-stone-200 bg-white text-stone-500 transition hover:bg-stone-100 disabled:opacity-30"
         disabled={setsCompleted <= 0}
         onClick={() => onLogSet(exerciseName, Math.max(0, setsCompleted - 1), totalSets)}
         type="button"
       >
-        <Minus size={14} />
+        <Minus size={13} />
       </button>
-      <span className="w-8 text-center text-sm font-semibold tabular-nums text-stone-900 dark:text-stone-100">
+      <span className="w-8 text-center text-sm font-semibold tabular-nums text-stone-800">
         {setsCompleted}/{totalSets}
       </span>
       <button
-        className="inline-flex size-7 items-center justify-center rounded-md border border-stone-200 bg-white text-stone-600 hover:bg-stone-100 disabled:opacity-40 dark:border-stone-700 dark:bg-stone-950 dark:text-stone-400"
+        className="inline-flex size-7 items-center justify-center rounded-md border border-stone-200 bg-white text-stone-500 transition hover:bg-stone-100 disabled:opacity-30"
         disabled={setsCompleted >= totalSets}
         onClick={() => onLogSet(exerciseName, Math.min(totalSets, setsCompleted + 1), totalSets)}
         type="button"
       >
-        <Plus size={14} />
+        <Plus size={13} />
       </button>
     </div>
   );
