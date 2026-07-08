@@ -1,7 +1,6 @@
 "use client";
 
-import { useMemo, useState, useTransition } from "react";
-import { useRouter } from "next/navigation";
+import { useMemo, useRef, useState, useTransition } from "react";
 import { updateExecutionTaskStatusAction } from "@/app/dashboard/actions";
 import type { ExecutionDashboardData } from "@/lib/execution-dashboard";
 import { buildMissionView } from "@/lib/dashboard-utils";
@@ -40,16 +39,17 @@ export function Dashboard({
   dayOfWeek?: number;
   workout?: WorkoutDay;
 }) {
-  const router = useRouter();
   const [dashboardData, setDashboardData] = useState(data);
   const [isFocusMode, setIsFocusMode] = useState(false);
   const [isPending, startTransition] = useTransition();
+  const pendingAction = useRef<Promise<unknown> | null>(null);
+
   const mission = useMemo(
     () => buildMissionView(dashboardData),
     [dashboardData]
   );
 
-  function updateTask(taskId: string, status: "In Progress" | "Done") {
+  function updateTask(taskId: string, status: string) {
     const previousData = dashboardData;
 
     setDashboardData((current) => {
@@ -66,27 +66,41 @@ export function Dashboard({
       };
     });
 
+    if (pendingAction.current) return;
+
     startTransition(async () => {
       try {
         const formData = new FormData();
         formData.set("taskId", taskId);
         formData.set("status", status);
-        await updateExecutionTaskStatusAction(formData);
-        router.refresh();
+        pendingAction.current = updateExecutionTaskStatusAction(formData);
+        await pendingAction.current;
       } catch {
         setDashboardData(previousData);
+      } finally {
+        pendingAction.current = null;
       }
     });
   }
 
+  function handleToggledTask(taskId: string, currentStatus: string) {
+    updateTask(taskId, currentStatus === "Done" ? "Todo" : "Done");
+  }
+
   function handleLogSet(exerciseName: string, setsCompleted: number, totalSets: number) {
+    if (pendingAction.current) return;
+
     startTransition(async () => {
-      const formData = new FormData();
-      formData.set("exerciseName", exerciseName);
-      formData.set("setsCompleted", String(setsCompleted));
-      formData.set("totalSets", String(totalSets));
-      await logExerciseSetAction(formData);
-      router.refresh();
+      try {
+        const formData = new FormData();
+        formData.set("exerciseName", exerciseName);
+        formData.set("setsCompleted", String(setsCompleted));
+        formData.set("totalSets", String(totalSets));
+        pendingAction.current = logExerciseSetAction(formData);
+        await pendingAction.current;
+      } finally {
+        pendingAction.current = null;
+      }
     });
   }
 
@@ -120,7 +134,7 @@ export function Dashboard({
       </div>
 
       <div className="grid gap-4 md:grid-cols-2">
-        <DailyHealth tasks={dashboardData.todaysTasks} />
+        <DailyHealth tasks={dashboardData.todaysTasks} onToggle={handleToggledTask} />
         {workout && dayOfWeek !== undefined && (
           <WorkoutLog
             dayOfWeek={dayOfWeek}

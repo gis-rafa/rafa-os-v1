@@ -1,5 +1,6 @@
 import { and, asc, eq, gte, lt } from "drizzle-orm";
-import { getDb, isDatabaseConfigured, workoutExerciseLog, executionTasks, executionProjects, memories } from "@/db";
+import { getDb, isDatabaseConfigured, workoutExerciseLog, executionTasks, executionProjects } from "@/db";
+import { getToday, getTomorrow, addDays } from "@/lib/date-service";
 
 export type DailyMedication = {
   time: "morning" | "lunch" | "evening" | "workout" | "sleep";
@@ -123,8 +124,8 @@ export async function seedDailyHealthTasks(userId: string) {
   if (!isDatabaseConfigured()) return;
 
   const db = getDb();
-  const today = startOfDay(new Date());
-  const tomorrow = addDays(today, 1);
+  const today = getToday();
+  const tomorrow = getTomorrow();
 
   const [existingProject] = await db
     .select()
@@ -156,6 +157,9 @@ export async function seedDailyHealthTasks(userId: string) {
       .returning();
   }
 
+  const dayOfWeek = today.getDay();
+  const supplements = getDailySupplements(dayOfWeek);
+
   const existingHealthTasks = await db
     .select({ title: executionTasks.title })
     .from(executionTasks)
@@ -169,8 +173,9 @@ export async function seedDailyHealthTasks(userId: string) {
     );
 
   const existingTitles = new Set(existingHealthTasks.map((t) => t.title));
-  const dayOfWeek = today.getDay();
-  const supplements = getDailySupplements(dayOfWeek);
+  const hasAllSupplements = supplements.every((s) => existingTitles.has(s.title));
+
+  if (hasAllSupplements) return;
 
   for (const sup of supplements) {
     if (existingTitles.has(sup.title)) continue;
@@ -184,34 +189,14 @@ export async function seedDailyHealthTasks(userId: string) {
       status: "Todo",
     });
   }
-
-  await db
-    .delete(memories)
-    .where(
-      and(
-        eq(memories.userId, userId),
-        eq(memories.title, "Today's Health Status")
-      )
-    );
-
-  const supplementCount = supplements.length;
-  await db.insert(memories).values({
-    userId,
-    projectId: healthProject.id,
-    category: "Health",
-    title: "Today's Health Status",
-    content: `Daily health plan: ${supplementCount} items including medication, hydration, and workout supplements. Tracked as individual checkboxes in the execution system. Water goal: 4-5L daily.`,
-    importance: 3,
-    tags: ["health", "medication", "hydration", "daily"],
-  });
 }
 
 export async function getTodayExerciseLogs(userId: string) {
   if (!isDatabaseConfigured()) return [];
 
   const db = getDb();
-  const today = startOfDay(new Date());
-  const tomorrow = addDays(today, 1);
+  const today = getToday();
+  const tomorrow = getTomorrow();
 
   return db
     .select()
@@ -240,7 +225,7 @@ export async function logExerciseSet({
   if (!isDatabaseConfigured()) return;
 
   const db = getDb();
-  const today = startOfDay(new Date());
+  const today = getToday();
 
   const [existing] = await db
     .select()
@@ -274,14 +259,4 @@ export async function logExerciseSet({
       completedAt: setsCompleted >= totalSets ? new Date() : null,
     });
   }
-}
-
-function startOfDay(date: Date) {
-  return new Date(date.getFullYear(), date.getMonth(), date.getDate());
-}
-
-function addDays(date: Date, days: number) {
-  const nextDate = new Date(date);
-  nextDate.setDate(nextDate.getDate() + days);
-  return nextDate;
 }

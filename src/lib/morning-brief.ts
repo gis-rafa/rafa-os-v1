@@ -2,6 +2,7 @@ import type { ActiveContextField } from "@/lib/master-brain";
 import { getStudyPlanSummary } from "@/lib/study-plan";
 import { getDb, isDatabaseConfigured, executionTasks, executionProjects } from "@/db";
 import { and, eq, gte, lt } from "drizzle-orm";
+import { getToday, getTomorrow } from "@/lib/date-service";
 
 export type MorningBrief = {
   dateLabel: string;
@@ -21,7 +22,7 @@ export async function generateMorningBrief(
   userId: string
 ): Promise<MorningBrief> {
   const values = new Map(activeContext.map((field) => [field.label, field.value]));
-  const today = new Date();
+  const today = getToday();
   const studyPlan = await getStudyPlanSummary(userId);
   const roadmapTask = studyPlan.todayTask;
   const primaryObjective = valueFor(values, "Current Top Goal");
@@ -68,8 +69,8 @@ async function getTodayHealthSummary(userId: string): Promise<string | null> {
   if (!isDatabaseConfigured()) return null;
 
   const db = getDb();
-  const today = startOfDay(new Date());
-  const tomorrow = addDays(today, 1);
+  const today = getToday();
+  const tomorrow = getTomorrow();
 
   const [healthProject] = await db
     .select({ id: executionProjects.id })
@@ -101,14 +102,4 @@ async function getTodayHealthSummary(userId: string): Promise<string | null> {
 
   const done = todayHealthTasks.filter((t) => t.status === "Done").length;
   return `${done}/${todayHealthTasks.length} health items completed today.`;
-}
-
-function startOfDay(date: Date) {
-  return new Date(date.getFullYear(), date.getMonth(), date.getDate());
-}
-
-function addDays(date: Date, days: number) {
-  const nextDate = new Date(date);
-  nextDate.setDate(nextDate.getDate() + days);
-  return nextDate;
 }

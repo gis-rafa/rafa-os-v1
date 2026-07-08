@@ -1,18 +1,9 @@
 import { eq } from "drizzle-orm";
 import { getDb, isDatabaseConfigured, users } from "@/db";
 import type { User } from "@/db";
+import { now } from "@/lib/date-service";
 
 const workspaceUserId = "local-development-rafa";
-
-const staticFallbackUser: User = {
-  id: "00000000-0000-0000-0000-000000000001",
-  clerkUserId: workspaceUserId,
-  email: "rafa.local@rafa-os.dev",
-  name: "Abdallah Rafa",
-  imageUrl: null,
-  createdAt: new Date(),
-  updatedAt: new Date()
-};
 
 export const getLocalDevelopmentUser = (() => {
   let cachedUser: User | null = null;
@@ -21,7 +12,15 @@ export const getLocalDevelopmentUser = (() => {
     if (cachedUser) return cachedUser;
 
     if (!isDatabaseConfigured()) {
-      return staticFallbackUser;
+      return {
+        id: "00000000-0000-0000-0000-000000000001",
+        clerkUserId: workspaceUserId,
+        email: "rafa.local@rafa-os.dev",
+        name: "Abdallah Rafa",
+        imageUrl: null,
+        createdAt: now(),
+        updatedAt: now()
+      };
     }
 
     const db = getDb();

@@ -11,6 +11,7 @@ import {
   type ExecutionProject
 } from "@/db";
 import { seedDailyHealthTasks } from "@/lib/daily-health";
+import { getToday, getTomorrow, startOfDay, addDays } from "@/lib/date-service";
 
 type ProjectSeed = {
   color: string;
@@ -26,8 +27,24 @@ type ProjectSeed = {
 export async function seedDevelopmentWorkspace(userId: string) {
   if (!isDatabaseConfigured()) return;
 
-  const today = startOfDay(new Date());
-  const tomorrow = addDays(today, 1);
+  const today = getToday();
+  const tomorrow = getTomorrow();
+
+  const existingTodayTasks = await getDb()
+    .select({ id: executionTasks.id })
+    .from(executionTasks)
+    .where(
+      and(
+        eq(executionTasks.userId, userId),
+        gte(executionTasks.taskDate, today),
+        lt(executionTasks.taskDate, tomorrow)
+      )
+    )
+    .limit(1);
+
+  const todayTasksExist = existingTodayTasks.length > 0;
+
+  if (todayTasksExist) return;
 
   const gisStudyProject = await ensureProject(userId, {
     name: "GIS Study",
@@ -438,13 +455,4 @@ async function ensureKnowledgeLink(
   });
 }
 
-function startOfDay(date: Date) {
-  return new Date(date.getFullYear(), date.getMonth(), date.getDate());
-}
 
-function addDays(date: Date, days: number) {
-  const nextDate = new Date(date);
-  nextDate.setDate(nextDate.getDate() + days);
-
-  return nextDate;
-}

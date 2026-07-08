@@ -1,9 +1,6 @@
 "use client";
 
-import { useTransition } from "react";
-import { useRouter } from "next/navigation";
 import { Pill, Dumbbell, Droplets, Sun, Moon, Sunrise, Sunset } from "lucide-react";
-import { updateExecutionTaskStatusAction } from "@/app/dashboard/actions";
 import type { ExecutionDashboardData } from "@/lib/execution-dashboard";
 
 function categorizeTasks(tasks: ExecutionDashboardData["todaysTasks"]) {
@@ -29,25 +26,15 @@ function categorizeTasks(tasks: ExecutionDashboardData["todaysTasks"]) {
 
 export function DailyHealth({
   tasks,
+  onToggle,
 }: {
   tasks: ExecutionDashboardData["todaysTasks"];
+  onToggle: (taskId: string, status: string) => void;
 }) {
-  const router = useRouter();
-  const [isPending, startTransition] = useTransition();
   const cats = categorizeTasks(tasks);
   const allHealthTasks = [...cats.morning, ...cats.lunch, ...cats.evening, ...cats.sleep, ...cats.workout, ...cats.hydration];
   const doneCount = allHealthTasks.filter((t) => t.status === "Done").length;
   const progressPct = allHealthTasks.length > 0 ? Math.round((doneCount / allHealthTasks.length) * 100) : 0;
-
-  function toggleTask(taskId: string, status: string) {
-    startTransition(async () => {
-      const formData = new FormData();
-      formData.set("taskId", taskId);
-      formData.set("status", status === "Done" ? "Todo" : "Done");
-      await updateExecutionTaskStatusAction(formData);
-      router.refresh();
-    });
-  }
 
   return (
     <section className="rounded-md border border-stone-200 bg-white p-5 shadow-sm dark:border-stone-800 dark:bg-stone-950">
@@ -72,12 +59,12 @@ export function DailyHealth({
         />
       </div>
 
-      <HealthGroup icon={Sunrise} label="Morning" tasks={cats.morning} isPending={isPending} onToggle={toggleTask} />
-      <HealthGroup icon={Sun} label="Lunch" tasks={cats.lunch} isPending={isPending} onToggle={toggleTask} />
-      <HealthGroup icon={Sunset} label="Evening" tasks={cats.evening} isPending={isPending} onToggle={toggleTask} />
-      <HealthGroup icon={Moon} label="Before Sleep" tasks={cats.sleep} isPending={isPending} onToggle={toggleTask} />
-      <HealthGroup icon={Dumbbell} label="Workout" tasks={cats.workout} isPending={isPending} onToggle={toggleTask} />
-      <HealthGroup icon={Droplets} label="Hydration" tasks={cats.hydration} isPending={isPending} onToggle={toggleTask} />
+      <HealthGroup icon={Sunrise} label="Morning" tasks={cats.morning} onToggle={onToggle} />
+      <HealthGroup icon={Sun} label="Lunch" tasks={cats.lunch} onToggle={onToggle} />
+      <HealthGroup icon={Sunset} label="Evening" tasks={cats.evening} onToggle={onToggle} />
+      <HealthGroup icon={Moon} label="Before Sleep" tasks={cats.sleep} onToggle={onToggle} />
+      <HealthGroup icon={Dumbbell} label="Workout" tasks={cats.workout} onToggle={onToggle} />
+      <HealthGroup icon={Droplets} label="Hydration" tasks={cats.hydration} onToggle={onToggle} />
 
       {allHealthTasks.length === 0 && (
         <p className="text-sm text-stone-500">No health tasks for today.</p>
@@ -90,13 +77,11 @@ function HealthGroup({
   icon: Icon,
   label,
   tasks,
-  isPending,
   onToggle,
 }: {
   icon: React.ComponentType<{ size?: number; strokeWidth?: number }>;
   label: string;
   tasks: ExecutionDashboardData["todaysTasks"];
-  isPending: boolean;
   onToggle: (taskId: string, status: string) => void;
 }) {
   if (tasks.length === 0) return null;
@@ -117,7 +102,6 @@ function HealthGroup({
               className="size-4 accent-emerald-600"
               checked={task.status === "Done"}
               onChange={() => onToggle(task.id, task.status)}
-              disabled={isPending}
             />
             <span
               className={

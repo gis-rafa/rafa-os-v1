@@ -6,6 +6,7 @@ import {
 import { requireCurrentDbUser } from "@/lib/auth-user";
 import { seedDevelopmentWorkspace } from "@/lib/seed-data";
 import { getTodayExerciseLogs, getWorkoutForDay } from "@/lib/daily-health";
+import { getDayOfWeek } from "@/lib/date-service";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -25,7 +26,7 @@ export default async function DashboardPage() {
     totalSets: log.totalSets,
     done: (log.setsCompleted ?? 0) >= (log.totalSets ?? 1),
   }));
-  const dayOfWeek = new Date().getDay();
+  const dayOfWeek = getDayOfWeek();
   const workout = getWorkoutForDay(dayOfWeek);
 
   return (

@@ -8,6 +8,7 @@ import {
   memories
 } from "@/db";
 import { getStudyPlanSummary } from "@/lib/study-plan";
+import { getToday, getTomorrow, startOfDay, addDays, startOfWeek } from "@/lib/date-service";
 
 export type ExecutionTaskStatus = "Todo" | "In Progress" | "Done";
 
@@ -62,14 +63,14 @@ export type ExecutionDashboardData = {
 
 export async function getExecutionDashboardData(userId: string) {
   if (!isDatabaseConfigured()) {
-    const now = new Date();
+    const fallbackDate = getToday();
     return {
       activeFocus: "No active study task",
       activeProject: "GIS Study",
       activeProjects: [],
       activeStreak: 0,
       completionPercentageThisWeek: 0,
-      currentDate: now,
+      currentDate: fallbackDate,
       currentPhase: "GIS Foundation",
       currentWeek: 1,
       executionPace: "Maintain",
@@ -93,7 +94,7 @@ export async function getExecutionDashboardData(userId: string) {
       recoveryPlan: {
         daysBehind: 0,
         message: "Execution is on track. Protect the GIS deep work block.",
-        projectedCompletionDate: now,
+        projectedCompletionDate: fallbackDate,
         steps: ["Complete the primary GIS task before lower-priority work."]
       },
       personalBrandingGrowth: 0,
@@ -111,10 +112,9 @@ export async function getExecutionDashboardData(userId: string) {
   await adaptExecutionPlan(userId);
 
   const db = getDb();
-  const now = new Date();
-  const dayStart = startOfDay(now);
-  const dayEnd = addDays(dayStart, 1);
-  const weekStart = startOfWeek(now);
+  const dayStart = getToday();
+  const dayEnd = getTomorrow();
+  const weekStart = startOfWeek(dayStart);
   const weekEnd = addDays(weekStart, 7);
   const [
     priorities,
@@ -263,7 +263,7 @@ export async function getExecutionDashboardData(userId: string) {
   const activeProject = selectActiveMissionProject(activeProjects);
   const earliestProjectDate = activeProjects
     .map((project) => project.createdAt)
-    .sort((first, second) => first.getTime() - second.getTime())[0] ?? now;
+    .sort((first, second) => first.getTime() - second.getTime())[0] ?? dayStart;
 
   return {
     activeFocus: studyPlan.todayTask?.gisTask ?? "No active study task",
@@ -271,7 +271,7 @@ export async function getExecutionDashboardData(userId: string) {
     activeProjects,
     activeStreak: calculateActiveStreak(weeklyTasks),
     completionPercentageThisWeek: weeklyCompletionPercentage,
-    currentDate: now,
+    currentDate: dayStart,
     currentPhase: studyPlan.currentPhase,
     currentWeek: studyPlan.currentWeek,
     executionPace: calculateExecutionPace({
@@ -283,7 +283,7 @@ export async function getExecutionDashboardData(userId: string) {
       0,
       Math.ceil(
         (addDays(startOfDay(earliestProjectDate), 180).getTime() -
-          startOfDay(now).getTime()) /
+          dayStart.getTime()) /
           86_400_000
       )
     ),
@@ -370,7 +370,7 @@ export async function createExecutionTask({
       title,
       priority,
       estimatedMinutes,
-      taskDate: new Date()
+      taskDate: getToday()
     })
     .returning();
 
@@ -404,7 +404,7 @@ async function adaptExecutionPlan(userId: string) {
   if (!isDatabaseConfigured()) return;
 
   const db = getDb();
-  const today = startOfDay(new Date());
+  const today = getToday();
   const staleTasks = await db
     .select()
     .from(executionTasks)
@@ -551,7 +551,7 @@ function calculateActiveStreak(tasks: { status: string; taskDate: Date }[]) {
       .map((task) => startOfDay(task.taskDate).getTime())
   );
   let streak = 0;
-  let cursor = startOfDay(new Date());
+  let cursor = getToday();
 
   while (completedDays.has(cursor.getTime())) {
     streak += 1;
@@ -559,24 +559,6 @@ function calculateActiveStreak(tasks: { status: string; taskDate: Date }[]) {
   }
 
   return streak;
-}
-
-function startOfDay(date: Date) {
-  return new Date(date.getFullYear(), date.getMonth(), date.getDate());
-}
-
-function startOfWeek(date: Date) {
-  const day = date.getDay();
-  const mondayOffset = day === 0 ? -6 : 1 - day;
-
-  return addDays(startOfDay(date), mondayOffset);
-}
-
-function addDays(date: Date, days: number) {
-  const nextDate = new Date(date);
-  nextDate.setDate(nextDate.getDate() + days);
-
-  return nextDate;
 }
 
 function dayKey(date: Date) {
@@ -757,7 +739,7 @@ function buildRecoveryPlan(daysBehind: number) {
     return {
       daysBehind: 0,
       message: "Execution is on track. Protect the GIS deep work block.",
-      projectedCompletionDate: addDays(new Date(), 180),
+      projectedCompletionDate: addDays(getToday(), 180),
       steps: [
         "Complete the primary GIS task before lower-priority work.",
         "Keep portfolio and branding work after GIS execution."
@@ -768,7 +750,7 @@ function buildRecoveryPlan(daysBehind: number) {
   return {
     daysBehind,
     message: "You are now behind schedule.",
-    projectedCompletionDate: addDays(new Date(), 180 + daysBehind),
+    projectedCompletionDate: addDays(getToday(), 180 + daysBehind),
     steps: [
       "Preserve the 11:00 GIS Deep Work block.",
       "Move missed GIS work to the next available day.",
