@@ -120,12 +120,12 @@ function getDailySupplements(dayOfWeek: number): { title: string; category: stri
   return tasks;
 }
 
-export async function seedDailyHealthTasks(userId: string) {
+export async function seedDailyHealthTasks(userId: string, timezone?: string) {
   if (!isDatabaseConfigured()) return;
 
   const db = getDb();
-  const today = getToday();
-  const tomorrow = getTomorrow();
+  const today = getToday(timezone);
+  const tomorrow = getTomorrow(timezone);
 
   const [existingProject] = await db
     .select()
@@ -191,12 +191,12 @@ export async function seedDailyHealthTasks(userId: string) {
   }
 }
 
-export async function getTodayExerciseLogs(userId: string) {
+export async function getTodayExerciseLogs(userId: string, timezone?: string) {
   if (!isDatabaseConfigured()) return [];
 
   const db = getDb();
-  const today = getToday();
-  const tomorrow = getTomorrow();
+  const today = getToday(timezone);
+  const tomorrow = getTomorrow(timezone);
 
   return db
     .select()
@@ -216,16 +216,18 @@ export async function logExerciseSet({
   exerciseName,
   setsCompleted,
   totalSets,
+  timezone,
 }: {
   userId: string;
   exerciseName: string;
   setsCompleted: number;
   totalSets: number;
+  timezone?: string;
 }) {
   if (!isDatabaseConfigured()) return;
 
   const db = getDb();
-  const today = getToday();
+  const today = getToday(timezone);
 
   const [existing] = await db
     .select()

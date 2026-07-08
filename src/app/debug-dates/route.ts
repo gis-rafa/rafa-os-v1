@@ -1,69 +1,55 @@
 import { getDb } from "@/db";
 import { sql } from "drizzle-orm";
+import { cookies, headers } from "next/headers";
+import { getToday, getDayOfWeek } from "@/lib/date-service";
 
 export const dynamic = "force-dynamic";
 
 export async function GET() {
-  const db = getDb();
+  try {
+    const db = getDb();
 
-  const dbTimeResult = await db.execute(sql`
-    SELECT
-      CURRENT_DATE AS db_current_date,
-      NOW() AS db_now,
-      CURRENT_TIMESTAMP AS db_timestamp
-  `);
-  const dbTime = dbTimeResult.rows[0] as Record<string, unknown> | undefined;
+    const cookieTz = (await cookies()).get("__tz")?.value;
+    const vercelTz = (await headers()).get("x-vercel-ip-timezone") ?? undefined;
+    const effectiveTz = cookieTz ?? vercelTz;
 
-  const serverNow = new Date();
-  const serverOffset = serverNow.getTimezoneOffset();
+    const todayUtc = getToday();
+    const todayTz = getToday(effectiveTz);
 
-  const taskDatesResult = await db.execute(sql`
-    SELECT task_date::text, title, status, priority, project_id
-    FROM execution_tasks
-    ORDER BY task_date DESC
-    LIMIT 30
-  `);
-  const tasks = taskDatesResult.rows as Record<string, unknown>[];
+    const serverNow = new Date();
 
-  const taskCountResult = await db.execute(sql`
-    SELECT COUNT(*) AS total
-    FROM execution_tasks
-  `);
-  const taskCount = taskCountResult.rows[0] as Record<string, unknown> | undefined;
+    const dateResult = await db.execute(sql`SELECT CURRENT_DATE AS d, NOW() AS n`);
+    const dateRow = dateResult.rows[0] as Record<string, unknown> | undefined;
 
-  const studyProgressResult = await db.execute(sql`
-    SELECT date, status, task_id
-    FROM study_task_progress
-    ORDER BY date DESC
-    LIMIT 10
-  `);
-  const studyProgress = studyProgressResult.rows as Record<string, unknown>[];
+    const taskResult = await db.execute(sql`
+      SELECT task_date::text, title, status FROM execution_tasks ORDER BY task_date DESC LIMIT 25
+    `);
+    const tasks = taskResult.rows as Record<string, unknown>[];
 
-  return Response.json({
-    server: {
-      now: serverNow.toISOString(),
-      localeString: serverNow.toString(),
-      timezoneOffset: serverOffset,
-      timezoneOffsetHours: serverOffset / -60,
-    },
-    database: {
-      currentDate: dbTime?.db_current_date,
-      now: dbTime?.db_now,
-      timestamp: dbTime?.db_timestamp,
-    },
-    tasks: {
-      totalCount: taskCount?.total,
-      details: tasks.map((t) => ({
+    return Response.json({
+      server: {
+        now: serverNow.toISOString(),
+        localeString: serverNow.toString(),
+        timezoneOffset: serverNow.getTimezoneOffset(),
+        timezoneCookie: cookieTz,
+        timezoneVercel: vercelTz,
+        effectiveTimezone: effectiveTz,
+        getToday_UTC: todayUtc.toISOString(),
+        getToday_TZ: todayTz.toISOString(),
+        getDayOfWeek_UTC: getDayOfWeek(),
+        getDayOfWeek_TZ: getDayOfWeek(effectiveTz ?? undefined),
+      },
+      database: {
+        currentDate: dateRow?.d as string,
+        now: dateRow?.n as string,
+      },
+      tasks: tasks.map((t: Record<string, unknown>) => ({
         date: t.task_date,
         title: t.title,
         status: t.status,
-        priority: t.priority,
       })),
-    },
-    studyProgress: studyProgress.map((s) => ({
-      date: s.date,
-      status: s.status,
-      taskId: s.task_id,
-    })),
-  });
+    });
+  } catch (err) {
+    return Response.json({ error: String(err) }, { status: 500 });
+  }
 }

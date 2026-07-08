@@ -31,13 +31,15 @@ export function Dashboard({
   isDatabaseConfigured,
   exerciseLogs,
   dayOfWeek,
-  workout
+  workout,
+  timezone,
 }: {
   data: ExecutionDashboardData;
   isDatabaseConfigured: boolean;
   exerciseLogs?: ExerciseLogItem[];
   dayOfWeek?: number;
   workout?: WorkoutDay;
+  timezone?: string;
 }) {
   const [dashboardData, setDashboardData] = useState(data);
   const [isFocusMode, setIsFocusMode] = useState(false);
@@ -131,6 +133,13 @@ export function Dashboard({
           primaryGisComplete={mission.primaryGisComplete}
         />
         <MorningBrief data={dashboardData} mission={mission} />
+      </div>
+
+      <div className="rounded-md border border-stone-200 bg-stone-50 px-3 py-2 text-xs text-stone-500 dark:border-stone-800 dark:bg-stone-900">
+        Today: {new Date(dashboardData.currentDate).toLocaleDateString("en", { timeZone: timezone, weekday: "long", year: "numeric", month: "long", day: "numeric" })}
+        {" · "} Day of week: {dayOfWeek ?? "?"}
+        {timezone ? <span> · Timezone: {timezone}</span> : null}
+        {" · "} Server: {new Date().toISOString().slice(0, 16)}Z
       </div>
 
       <div className="grid gap-4 md:grid-cols-2">

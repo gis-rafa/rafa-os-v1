@@ -1,12 +1,40 @@
-export function getToday(): Date {
-  return startOfDay(new Date());
+export function getToday(timezone?: string): Date {
+  if (timezone) {
+    const formatter = new Intl.DateTimeFormat("en-CA", {
+      timeZone: timezone,
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+    });
+    const formatted = formatter.format(new Date());
+    const [year, month, day] = formatted.split("-").map(Number);
+
+    const noonUtc = Date.UTC(year, month - 1, day, 12, 0, 0);
+    const noonTz = new Intl.DateTimeFormat("en", {
+      timeZone: timezone,
+      hour: "numeric",
+      hour12: false,
+    }).format(new Date(noonUtc));
+    const offsetHours = parseInt(noonTz, 10) - 12;
+
+    return new Date(Date.UTC(year, month - 1, day, 0, 0, 0) - offsetHours * 3600000);
+  }
+  const d = new Date();
+  return new Date(d.getFullYear(), d.getMonth(), d.getDate());
 }
 
-export function getTomorrow(): Date {
-  return addDays(getToday(), 1);
+export function getTomorrow(timezone?: string): Date {
+  return addDays(getToday(timezone), 1);
 }
 
-export function getDayOfWeek(): number {
+export function getDayOfWeek(timezone?: string): number {
+  if (timezone) {
+    const dayName = new Intl.DateTimeFormat("en", {
+      timeZone: timezone,
+      weekday: "long",
+    }).format(new Date());
+    return ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"].indexOf(dayName);
+  }
   return new Date().getDay();
 }
 

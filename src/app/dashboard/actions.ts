@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { cookies } from "next/headers";
 import { getActionUser } from "@/lib/auth-user";
 import {
   executionTaskStatuses,
@@ -48,10 +49,12 @@ export async function logExerciseSetAction(formData: FormData) {
     const exerciseName = String(formData.get("exerciseName") ?? "");
     const setsCompleted = Number(formData.get("setsCompleted") ?? 0);
     const totalSets = Number(formData.get("totalSets") ?? 0);
+    const cookieStore = await cookies();
+    const timezone = cookieStore.get("__tz")?.value;
 
     if (!exerciseName) return;
 
-    await logExerciseSet({ userId: user.id, exerciseName, setsCompleted, totalSets });
+    await logExerciseSet({ userId: user.id, exerciseName, setsCompleted, totalSets, timezone });
     revalidatePath("/dashboard");
   } catch (error) {
     console.error("logExerciseSetAction failed:", error);

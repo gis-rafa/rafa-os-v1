@@ -23,6 +23,8 @@ import { requireCurrentDbUser } from "@/lib/auth-user";
 import { formatDate } from "@/lib/dashboard-utils";
 import { getProjectForUser, listProjectsWithStats, type ProjectWithStats } from "@/lib/projects";
 import { seedDevelopmentWorkspace } from "@/lib/seed-data";
+import { getRequestTimezone } from "@/lib/request-timezone";
+import { TimezoneProvider } from "@/components/timezone-provider";
 import type { Metadata } from "next";
 import { PaginationControls } from "@/components/pagination";
 
@@ -44,13 +46,14 @@ const colorOptions = ["stone", "blue", "green", "orange", "purple", "red"];
 const iconOptions = ["folder", "map", "target", "book", "briefcase", "heart"];
 
 export default async function ProjectsPage({ searchParams }: ProjectsPageProps) {
+  const timezone = await getRequestTimezone();
   const params = await searchParams;
   const page = Math.max(1, Number(params.page ?? 1));
   const limit = 50;
   const offset = (page - 1) * limit;
 
   const user = await requireCurrentDbUser();
-  await seedDevelopmentWorkspace(user.id);
+  await seedDevelopmentWorkspace(user.id, timezone);
   const [projectResult, editingProject] = await Promise.all([
     listProjectsWithStats(user.id, limit, offset),
     params.edit ? getProjectForUser(params.edit, user.id) : null
@@ -59,12 +62,15 @@ export default async function ProjectsPage({ searchParams }: ProjectsPageProps) 
   const { items: projects, total } = projectResult;
 
   return (
-    <ProjectsShell
-      editingProject={editingProject}
-      page={page}
-      projects={projects}
-      total={total}
-    />
+    <>
+      <TimezoneProvider />
+      <ProjectsShell
+        editingProject={editingProject}
+        page={page}
+        projects={projects}
+        total={total}
+      />
+    </>
   );
 }
 

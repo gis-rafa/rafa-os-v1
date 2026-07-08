@@ -61,9 +61,9 @@ export type ExecutionDashboardData = {
   weeklyCompletionPercentage: number;
 };
 
-export async function getExecutionDashboardData(userId: string) {
+export async function getExecutionDashboardData(userId: string, timezone?: string) {
   if (!isDatabaseConfigured()) {
-    const fallbackDate = getToday();
+    const fallbackDate = getToday(timezone);
     return {
       activeFocus: "No active study task",
       activeProject: "GIS Study",
@@ -109,11 +109,11 @@ export async function getExecutionDashboardData(userId: string) {
     };
   }
 
-  await adaptExecutionPlan(userId);
+  await adaptExecutionPlan(userId, timezone);
 
   const db = getDb();
-  const dayStart = getToday();
-  const dayEnd = getTomorrow();
+  const dayStart = getToday(timezone);
+  const dayEnd = getTomorrow(timezone);
   const weekStart = startOfWeek(dayStart);
   const weekEnd = addDays(weekStart, 7);
   const [
@@ -400,11 +400,11 @@ export async function updateExecutionTaskStatus({
   await updateProjectProgressFromTask(taskId, userId);
 }
 
-async function adaptExecutionPlan(userId: string) {
+async function adaptExecutionPlan(userId: string, timezone?: string) {
   if (!isDatabaseConfigured()) return;
 
   const db = getDb();
-  const today = getToday();
+  const today = getToday(timezone);
   const staleTasks = await db
     .select()
     .from(executionTasks)

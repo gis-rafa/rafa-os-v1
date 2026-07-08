@@ -24,11 +24,11 @@ type ProjectSeed = {
   targetDate: Date;
 };
 
-export async function seedDevelopmentWorkspace(userId: string) {
+export async function seedDevelopmentWorkspace(userId: string, timezone?: string) {
   if (!isDatabaseConfigured()) return;
 
-  const today = getToday();
-  const tomorrow = getTomorrow();
+  const today = getToday(timezone);
+  const tomorrow = getTomorrow(timezone);
 
   const existingTodayTasks = await getDb()
     .select({ id: executionTasks.id })
@@ -45,6 +45,22 @@ export async function seedDevelopmentWorkspace(userId: string) {
   const todayTasksExist = existingTodayTasks.length > 0;
 
   if (todayTasksExist) return;
+
+  if (timezone) {
+    const utcToday = getToday();
+    if (today.getTime() !== utcToday.getTime()) {
+      const utcTomorrow = getTomorrow();
+      await getDb()
+        .delete(executionTasks)
+        .where(
+          and(
+            eq(executionTasks.userId, userId),
+            gte(executionTasks.taskDate, utcToday),
+            lt(executionTasks.taskDate, utcTomorrow)
+          )
+        );
+    }
+  }
 
   const gisStudyProject = await ensureProject(userId, {
     name: "GIS Study",
@@ -187,7 +203,7 @@ export async function seedDevelopmentWorkspace(userId: string) {
     title: "Prepare tomorrow's Personal Branding proof-of-work update"
   }, userId);
 
-  await seedDailyHealthTasks(userId);
+  await seedDailyHealthTasks(userId, timezone);
 
   await getDb()
     .delete(memories)

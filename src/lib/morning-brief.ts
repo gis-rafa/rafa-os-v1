@@ -19,17 +19,18 @@ export type MorningBrief = {
 
 export async function generateMorningBrief(
   activeContext: ActiveContextField[],
-  userId: string
+  userId: string,
+  timezone?: string
 ): Promise<MorningBrief> {
   const values = new Map(activeContext.map((field) => [field.label, field.value]));
-  const today = getToday();
+  const today = getToday(timezone);
   const studyPlan = await getStudyPlanSummary(userId);
   const roadmapTask = studyPlan.todayTask;
   const primaryObjective = valueFor(values, "Current Top Goal");
   const weeklyPriority = valueFor(values, "Current Weekly Priority");
   const relationshipStatus = valueFor(values, "Current Relationship Status");
   const healthFocus = valueFor(values, "Current Health Focus");
-  const healthStatus = await getTodayHealthSummary(userId);
+  const healthStatus = await getTodayHealthSummary(userId, timezone);
 
   return {
     dateLabel: new Intl.DateTimeFormat("en", {
@@ -65,12 +66,12 @@ function isRelevantRelationshipStatus(value: string) {
   return value !== "TODO" && value.length > 0;
 }
 
-async function getTodayHealthSummary(userId: string): Promise<string | null> {
+async function getTodayHealthSummary(userId: string, timezone?: string): Promise<string | null> {
   if (!isDatabaseConfigured()) return null;
 
   const db = getDb();
-  const today = getToday();
-  const tomorrow = getTomorrow();
+  const today = getToday(timezone);
+  const tomorrow = getTomorrow(timezone);
 
   const [healthProject] = await db
     .select({ id: executionProjects.id })

@@ -8,6 +8,8 @@ import {
   type StudyTaskStatus,
   type StudyTaskWithProgress
 } from "@/lib/study-plan";
+import { getRequestTimezone } from "@/lib/request-timezone";
+import { TimezoneProvider } from "@/components/timezone-provider";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -24,13 +26,15 @@ const statusStyles: Record<StudyTaskStatus, string> = {
 };
 
 export default async function StudyPlanPage() {
+  const timezone = await getRequestTimezone();
   const user = await requireCurrentDbUser();
-  await seedDevelopmentWorkspace(user.id);
+  await seedDevelopmentWorkspace(user.id, timezone);
 
   const summary = await getStudyPlanSummary(user.id);
 
   return (
     <section className="mx-auto max-w-7xl">
+      <TimezoneProvider />
       <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
           <p className="text-sm font-medium uppercase tracking-[0.14em] text-stone-600">
