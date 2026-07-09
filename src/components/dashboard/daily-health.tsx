@@ -17,7 +17,7 @@ function categorizeTasks(tasks: ExecutionDashboardData["todaysTasks"]) {
     else if (t.includes("limitless") || t.includes("omega 3")) { lunch.push(task); }
     else if (t.includes("newnutrition")) { evening.push(task); }
     else if (t.includes("magnesium")) { sleep.push(task); }
-    else if (t.includes("creatine") || t.includes("electrolytes")) { workout.push(task); }
+    else if (t.includes("creatine") || t.includes("electrolytes") || t.includes("gym") || t.includes("workout") || t.includes("swim")) { workout.push(task); }
     else if (t.includes("water")) { hydration.push(task); }
   }
 

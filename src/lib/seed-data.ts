@@ -195,6 +195,14 @@ export async function seedDevelopmentWorkspace(userId: string, timezone?: string
     title: "09:00 Gym: follow the workout schedule"
   }, userId);
   await ensureTask({
+    estimatedMinutes: 30,
+    priority: "Medium",
+    projectId: trainingProject.id,
+    status: "Todo",
+    taskDate: today,
+    title: "08:30 Swimming: pool session"
+  }, userId);
+  await ensureTask({
     estimatedMinutes: 20,
     priority: "Medium",
     projectId: brandProject.id,
@@ -385,7 +393,8 @@ async function ensureTask(
     .where(
       and(
         eq(executionTasks.userId, userId),
-        eq(executionTasks.title, values.title)
+        eq(executionTasks.title, values.title),
+        eq(executionTasks.taskDate, values.taskDate)
       )
     )
     .limit(1);

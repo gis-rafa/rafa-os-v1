@@ -21,14 +21,26 @@ export const dynamic = "force-dynamic";
 export default async function DashboardPage() {
   const timezone = await getRequestTimezone();
   const user = await requireCurrentDbUser();
-  await seedDevelopmentWorkspace(user.id, timezone);
+
+  try {
+    await seedDevelopmentWorkspace(user.id, timezone);
+  } catch {
+    // seed failure is non-critical
+  }
+
   const data = await getExecutionDashboardData(user.id, timezone);
-  const exerciseLogs = (await getTodayExerciseLogs(user.id, timezone)).map((log) => ({
-    exerciseName: log.exerciseName,
-    setsCompleted: log.setsCompleted,
-    totalSets: log.totalSets,
-    done: (log.setsCompleted ?? 0) >= (log.totalSets ?? 1),
-  }));
+  let exerciseLogs: { exerciseName: string; setsCompleted: number; totalSets: number; done: boolean }[] = [];
+  try {
+    exerciseLogs = (await getTodayExerciseLogs(user.id, timezone)).map((log) => ({
+      exerciseName: log.exerciseName,
+      setsCompleted: log.setsCompleted,
+      totalSets: log.totalSets,
+      done: (log.setsCompleted ?? 0) >= (log.totalSets ?? 1),
+    }));
+  } catch {
+    // exercise logs are non-critical
+  }
+
   const dayOfWeek = getDayOfWeek(timezone);
   const workout = getWorkoutForDay(dayOfWeek);
 

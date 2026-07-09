@@ -5,6 +5,18 @@ import { now } from "@/lib/date-service";
 
 const workspaceUserId = "local-development-rafa";
 
+function buildFallbackUser(): User {
+  return {
+    id: "00000000-0000-0000-0000-000000000001",
+    clerkUserId: workspaceUserId,
+    email: "rafa.local@rafa-os.dev",
+    name: "Abdallah Rafa",
+    imageUrl: null,
+    createdAt: now(),
+    updatedAt: now()
+  };
+}
+
 export const getLocalDevelopmentUser = (() => {
   let cachedUser: User | null = null;
 
@@ -12,52 +24,51 @@ export const getLocalDevelopmentUser = (() => {
     if (cachedUser) return cachedUser;
 
     if (!isDatabaseConfigured()) {
-      return {
-        id: "00000000-0000-0000-0000-000000000001",
-        clerkUserId: workspaceUserId,
-        email: "rafa.local@rafa-os.dev",
-        name: "Abdallah Rafa",
-        imageUrl: null,
-        createdAt: now(),
-        updatedAt: now()
-      };
+      return buildFallbackUser();
     }
 
-    const db = getDb();
-    const [existingUser] = await db
-      .select()
-      .from(users)
-      .where(eq(users.clerkUserId, workspaceUserId))
-      .limit(1);
+    try {
+      const db = getDb();
+      const [existingUser] = await db
+        .select()
+        .from(users)
+        .where(eq(users.clerkUserId, workspaceUserId))
+        .limit(1);
 
-    if (existingUser) {
-      cachedUser = existingUser;
-      return existingUser;
+      if (existingUser) {
+        cachedUser = existingUser;
+        return existingUser;
+      }
+
+      const [createdUser] = await db
+        .insert(users)
+        .values({
+          clerkUserId: workspaceUserId,
+          email: "rafa.local@rafa-os.dev",
+          name: "Abdallah Rafa"
+        })
+        .onConflictDoNothing()
+        .returning();
+
+      if (createdUser) {
+        cachedUser = createdUser;
+        return createdUser;
+      }
+
+      const [fallbackUser] = await db
+        .select()
+        .from(users)
+        .where(eq(users.clerkUserId, workspaceUserId))
+        .limit(1);
+
+      if (fallbackUser) {
+        cachedUser = fallbackUser;
+        return fallbackUser;
+      }
+    } catch {
+      // DB unavailable — fall back to fake user
     }
 
-    const [createdUser] = await db
-      .insert(users)
-      .values({
-        clerkUserId: workspaceUserId,
-        email: "rafa.local@rafa-os.dev",
-        name: "Abdallah Rafa"
-      })
-      .onConflictDoNothing()
-      .returning();
-
-    if (createdUser) {
-      cachedUser = createdUser;
-      return createdUser;
-    }
-
-    const [fallbackUser] = await db
-      .select()
-      .from(users)
-      .where(eq(users.clerkUserId, workspaceUserId))
-      .limit(1);
-
-    if (!fallbackUser) throw new Error("Failed to create or find local development user");
-    cachedUser = fallbackUser;
-    return fallbackUser;
+    return buildFallbackUser();
   };
 })();

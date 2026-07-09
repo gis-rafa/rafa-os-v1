@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState, useTransition, useRef } from "react";
+import { useMemo, useState, useTransition } from "react";
 import { updateExecutionTaskStatusAction } from "@/app/dashboard/actions";
 import type { ExecutionDashboardData } from "@/lib/execution-dashboard";
 import type { WorkoutDay } from "@/lib/daily-health";
@@ -46,7 +46,6 @@ export function Dashboard({
   const [dashboardData, setDashboardData] = useState(data);
   const [isFocusMode, setIsFocusMode] = useState(false);
   const [isPending, startTransition] = useTransition();
-  const pendingAction = useRef<Promise<unknown> | null>(null);
 
   const mission = useMemo(
     () => buildMissionView(dashboardData),
@@ -67,15 +66,12 @@ export function Dashboard({
       };
     });
 
-    if (pendingAction.current) return;
-
     startTransition(async () => {
       try {
         const formData = new FormData();
         formData.set("taskId", taskId);
         formData.set("status", status);
-        pendingAction.current = updateExecutionTaskStatusAction(formData);
-        await pendingAction.current;
+        await updateExecutionTaskStatusAction(formData);
       } catch {
         setDashboardData((current) => {
           const tasks = current.todaysTasks.map((task) =>
@@ -86,8 +82,6 @@ export function Dashboard({
           const doneCount = tasks.filter((t) => t.status === "Done").length;
           return { ...current, tasksCompletedToday: doneCount, tasksRemainingToday: tasks.length - doneCount, todaysTasks: tasks };
         });
-      } finally {
-        pendingAction.current = null;
       }
     });
   }
@@ -97,17 +91,15 @@ export function Dashboard({
   }
 
   function handleLogSet(exerciseName: string, setsCompleted: number, totalSets: number) {
-    if (pendingAction.current) return;
     startTransition(async () => {
       try {
         const formData = new FormData();
         formData.set("exerciseName", exerciseName);
         formData.set("setsCompleted", String(setsCompleted));
         formData.set("totalSets", String(totalSets));
-        pendingAction.current = logExerciseSetAction(formData);
-        await pendingAction.current;
-      } finally {
-        pendingAction.current = null;
+        await logExerciseSetAction(formData);
+      } catch {
+        // log error silently
       }
     });
   }
@@ -143,9 +135,7 @@ export function Dashboard({
         </ErrorBoundary>
       </div>
 
-      <ErrorBoundary>
-        <DailyHealth tasks={dashboardData.todaysTasks} onToggle={handleToggledTask} />
-      </ErrorBoundary>
+      <DailyHealth tasks={dashboardData.todaysTasks} onToggle={handleToggledTask} />
 
       <div className="grid gap-5 sm:gap-6 lg:grid-cols-2">
         {workout && dayOfWeek !== undefined && (
