@@ -109,35 +109,51 @@ export async function getExecutionDashboardData(userId: string, timezone?: strin
     };
   }
 
-  await adaptExecutionPlan(userId, timezone);
-
   const db = getDb();
   const dayStart = getToday(timezone);
   const dayEnd = getTomorrow(timezone);
   const weekStart = startOfWeek(dayStart);
   const weekEnd = addDays(weekStart, 7);
-  const [
-    priorities,
-    activeProjects,
-    todaysTasks,
-    weeklyTasks,
-    latestImportantMemory,
-    latestMemories,
-    overdueTasks,
-    recentCompletedTasks,
-    studyPlan
-  ] = await Promise.all([
-    db
-      .select()
-      .from(executionPriorities)
-      .where(
-        and(
-          eq(executionPriorities.userId, userId),
-          gte(executionPriorities.priorityDate, dayStart),
-          lt(executionPriorities.priorityDate, dayEnd)
+
+  try {
+    await adaptExecutionPlan(userId, timezone);
+  } catch {
+    // plan adaptation is non-critical
+  }
+
+  let priorities: typeof executionPriorities.$inferSelect[] = [];
+  let activeProjects: typeof executionProjects.$inferSelect[] = [];
+  let todaysTasks: DashboardTask[] = [];
+  let weeklyTasks: { id: string; status: string; taskDate: Date }[] = [];
+  let latestImportantMemory: object | null = null;
+  let latestMemories: object[] = [];
+  let overdueTasks: object[] = [];
+  let recentCompletedTasks: object[] = [];
+  let studyPlan: Awaited<ReturnType<typeof getStudyPlanSummary>> = { todayTask: null, tomorrowTask: null, tasks: [], completionPercentage: 0, currentPhase: "", currentWeek: 1, doneCount: 0, totalCount: 0 };
+
+  try {
+    const [
+      fetchedPriorities,
+      fetchedActiveProjects,
+      fetchedTodaysTasks,
+      fetchedWeeklyTasks,
+      fetchedImportantMemory,
+      fetchedLatestMemories,
+      fetchedOverdueTasks,
+      fetchedRecentCompletedTasks,
+      fetchedStudyPlan
+    ] = await Promise.all([
+      db
+        .select()
+        .from(executionPriorities)
+        .where(
+          and(
+            eq(executionPriorities.userId, userId),
+            gte(executionPriorities.priorityDate, dayStart),
+            lt(executionPriorities.priorityDate, dayEnd)
+          )
         )
-      )
-      .orderBy(desc(executionPriorities.updatedAt)),
+        .orderBy(desc(executionPriorities.updatedAt)),
     db
       .select()
       .from(executionProjects)
@@ -241,6 +257,20 @@ export async function getExecutionDashboardData(userId: string, timezone?: strin
       .limit(5),
     getStudyPlanSummary(userId)
   ]);
+
+    priorities = fetchedPriorities;
+    activeProjects = fetchedActiveProjects;
+    todaysTasks = fetchedTodaysTasks;
+    weeklyTasks = fetchedWeeklyTasks;
+    latestImportantMemory = fetchedImportantMemory.at(0) ?? null;
+    latestMemories = fetchedLatestMemories;
+    overdueTasks = fetchedOverdueTasks;
+    recentCompletedTasks = fetchedRecentCompletedTasks;
+    studyPlan = fetchedStudyPlan;
+  } catch {
+    // dashboard data query failed; using empty defaults
+  }
+
   const sortedPriorities = sortMissionPriorities(priorities).slice(0, 3);
   const sortedTodaysTasks = sortMissionTasks(todaysTasks);
   const completedToday = sortedTodaysTasks.filter((task) => task.status === "Done");
@@ -288,7 +318,7 @@ export async function getExecutionDashboardData(userId: string, timezone?: strin
       )
     ),
     englishCompletion,
-    latestImportantMemory: latestImportantMemory.at(0) ?? null,
+    latestImportantMemory,
     latestMemories,
     missionCompletion,
     missionMilestones: {

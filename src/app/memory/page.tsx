@@ -12,6 +12,7 @@ import {
   listMemoryCategories
 } from "@/lib/memories";
 import type { Memory } from "@/db";
+import { PageHeader, EmptyState } from "@/components/ui";
 import type { Metadata } from "next";
 import { PaginationControls } from "@/components/pagination";
 
@@ -81,25 +82,14 @@ function MemoryShell({
   return (
     <section className="mx-auto grid max-w-7xl gap-6 xl:grid-cols-[minmax(0,1fr)_420px]">
       <div className="min-w-0">
-        <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-          <div>
-            <p className="text-sm font-medium uppercase tracking-[0.14em] text-stone-600">
-              Memory Engine
-            </p>
-            <h2 className="mt-2 text-3xl font-semibold text-stone-950">
-              Memories
-            </h2>
-            <p className="mt-3 max-w-2xl text-base leading-7 text-stone-600">
-                Store durable context as private PostgreSQL records tied to your workspace.
-            </p>
-          </div>
-          <div className="flex size-12 shrink-0 items-center justify-center rounded-md bg-stone-950 text-white">
-            <Database size={22} strokeWidth={1.8} />
-          </div>
-        </div>
+        <PageHeader
+          icon={<Database size={22} strokeWidth={2} />}
+          title="Memory Engine"
+          description="Store durable context as private PostgreSQL records tied to your workspace."
+        />
 
         <form
-          className="mb-5 grid gap-3 rounded-md border border-stone-200 bg-white p-4 shadow-sm md:grid-cols-[1fr_220px_auto]"
+          className="mb-5 grid gap-3 rounded-xl border border-stone-200/80 bg-white p-4 shadow-sm md:grid-cols-[1fr_220px_auto]"
           method="get"
         >
           <label className="relative block">
@@ -107,10 +97,10 @@ function MemoryShell({
             <Search
               className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-stone-400"
               size={17}
-              strokeWidth={1.8}
+              strokeWidth={2}
             />
             <input
-              className="h-11 w-full rounded-md border border-stone-200 bg-stone-50 pl-10 pr-3 text-sm text-stone-800 outline-none transition placeholder:text-stone-400 focus:border-stone-400 focus:bg-white"
+              className="h-11 w-full rounded-lg border border-stone-200 bg-stone-50 pl-10 pr-3 text-sm text-stone-800 outline-none transition placeholder:text-stone-400 focus:border-stone-400 focus:bg-white"
               defaultValue={searchParams.search}
               name="q"
               placeholder="Search title or content"
@@ -121,10 +111,10 @@ function MemoryShell({
             <Filter
               className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-stone-400"
               size={17}
-              strokeWidth={1.8}
+              strokeWidth={2}
             />
             <select
-              className="h-11 w-full appearance-none rounded-md border border-stone-200 bg-stone-50 pl-10 pr-3 text-sm text-stone-800 outline-none transition focus:border-stone-400 focus:bg-white"
+              className="h-11 w-full appearance-none rounded-lg border border-stone-200 bg-stone-50 pl-10 pr-3 text-sm text-stone-800 outline-none transition focus:border-stone-400 focus:bg-white"
               defaultValue={searchParams.category}
               name="category"
             >
@@ -137,7 +127,7 @@ function MemoryShell({
             </select>
           </label>
           <button
-            className="inline-flex h-11 items-center justify-center rounded-md bg-stone-950 px-5 text-sm font-medium text-white transition hover:bg-stone-800"
+            className="inline-flex h-11 items-center justify-center rounded-lg bg-stone-900 px-5 text-sm font-semibold text-white hover:bg-stone-800"
             type="submit"
           >
             Apply
@@ -146,18 +136,14 @@ function MemoryShell({
 
         <div className="grid gap-3">
           {memoryList.length === 0 ? (
-            <div className="rounded-md border border-dashed border-stone-300 bg-white p-8 text-center">
-              <p className="text-sm font-medium text-stone-700">
-                No memories found.
-              </p>
-              <p className="mt-2 text-sm text-stone-600">
-                Create the first memory from the panel on the right.
-              </p>
-            </div>
+            <EmptyState
+              title="No memories found."
+              description="Create the first memory from the panel on the right."
+            />
           ) : (
             memoryList.map((memory) => (
               <article
-                className="rounded-md border border-stone-200 bg-white p-5 shadow-sm"
+                className="rounded-xl border border-stone-200/80 bg-white p-5 shadow-sm"
                 key={memory.id}
               >
                 <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
@@ -192,19 +178,19 @@ function MemoryShell({
                   <div className="flex shrink-0 items-center gap-2">
                     <Link
                       aria-label={`Edit ${memory.title}`}
-                      className="inline-flex size-9 items-center justify-center rounded-md border border-stone-200 text-stone-600 transition hover:bg-stone-50"
+                      className="inline-flex size-9 items-center justify-center rounded-lg border border-stone-200 text-stone-600 transition hover:bg-stone-50"
                       href={`/memory?edit=${memory.id}`}
                     >
-                      <Pencil size={16} strokeWidth={1.8} />
+                      <Pencil size={16} strokeWidth={2} />
                     </Link>
                     <form action={deleteMemoryAction}>
                       <input name="id" type="hidden" value={memory.id} />
                       <button
                         aria-label={`Delete ${memory.title}`}
-                        className="inline-flex size-9 items-center justify-center rounded-md border border-stone-200 text-red-600 transition hover:bg-red-50"
+                        className="inline-flex size-9 items-center justify-center rounded-lg border border-stone-200 text-red-600 transition hover:bg-red-50"
                         type="submit"
                       >
-                        <Trash2 size={16} strokeWidth={1.8} />
+                        <Trash2 size={16} strokeWidth={2} />
                       </button>
                     </form>
                   </div>
@@ -232,10 +218,10 @@ function MemoryForm({ editingMemory }: { editingMemory: Memory | null }) {
   const action = editingMemory ? updateMemoryAction : createMemoryAction;
 
   return (
-    <aside className="h-fit rounded-md border border-stone-200 bg-white p-5 shadow-sm">
+    <aside className="h-fit rounded-xl border border-stone-200/80 bg-white p-5 shadow-sm">
       <div className="mb-5 flex items-center gap-3">
-        <div className="flex size-10 items-center justify-center rounded-md bg-stone-100 text-stone-700">
-          <Plus size={18} strokeWidth={1.8} />
+        <div className="flex size-10 items-center justify-center rounded-lg bg-stone-100 text-stone-700">
+          <Plus size={18} strokeWidth={2} />
         </div>
         <div>
           <h3 className="text-base font-semibold text-stone-950">
@@ -254,7 +240,7 @@ function MemoryForm({ editingMemory }: { editingMemory: Memory | null }) {
         <label className="grid gap-1.5">
           <span className="text-sm font-medium text-stone-700">Category</span>
           <input
-            className="h-10 rounded-md border border-stone-200 bg-stone-50 px-3 text-sm text-stone-800 outline-none transition focus:border-stone-400 focus:bg-white"
+            className="h-10 rounded-lg border border-stone-200 bg-stone-50 px-3 text-sm text-stone-800 outline-none transition focus:border-stone-400 focus:bg-white"
             defaultValue={editingMemory?.category ?? ""}
             name="category"
             placeholder="Health, Career, Relationship..."
@@ -264,7 +250,7 @@ function MemoryForm({ editingMemory }: { editingMemory: Memory | null }) {
         <label className="grid gap-1.5">
           <span className="text-sm font-medium text-stone-700">Title</span>
           <input
-            className="h-10 rounded-md border border-stone-200 bg-stone-50 px-3 text-sm text-stone-800 outline-none transition focus:border-stone-400 focus:bg-white"
+            className="h-10 rounded-lg border border-stone-200 bg-stone-50 px-3 text-sm text-stone-800 outline-none transition focus:border-stone-400 focus:bg-white"
             defaultValue={editingMemory?.title ?? ""}
             name="title"
             placeholder="Short memory title"
@@ -274,7 +260,7 @@ function MemoryForm({ editingMemory }: { editingMemory: Memory | null }) {
         <label className="grid gap-1.5">
           <span className="text-sm font-medium text-stone-700">Content</span>
           <textarea
-            className="min-h-40 resize-y rounded-md border border-stone-200 bg-stone-50 p-3 text-sm leading-6 text-stone-800 outline-none transition focus:border-stone-400 focus:bg-white"
+            className="min-h-40 resize-y rounded-lg border border-stone-200 bg-stone-50 p-3 text-sm leading-6 text-stone-800 outline-none transition focus:border-stone-400 focus:bg-white"
             defaultValue={editingMemory?.content ?? ""}
             name="content"
             placeholder="What should RAFA OS remember?"
@@ -284,7 +270,7 @@ function MemoryForm({ editingMemory }: { editingMemory: Memory | null }) {
         <label className="grid gap-1.5">
           <span className="text-sm font-medium text-stone-700">Tags</span>
           <input
-            className="h-10 rounded-md border border-stone-200 bg-stone-50 px-3 text-sm text-stone-800 outline-none transition focus:border-stone-400 focus:bg-white"
+            className="h-10 rounded-lg border border-stone-200 bg-stone-50 px-3 text-sm text-stone-800 outline-none transition focus:border-stone-400 focus:bg-white"
             defaultValue={editingMemory?.tags.join(", ") ?? ""}
             name="tags"
             placeholder="comma, separated, tags"
@@ -295,7 +281,7 @@ function MemoryForm({ editingMemory }: { editingMemory: Memory | null }) {
             Importance
           </span>
           <input
-            className="h-10 rounded-md border border-stone-200 bg-stone-50 px-3 text-sm text-stone-800 outline-none transition focus:border-stone-400 focus:bg-white"
+            className="h-10 rounded-lg border border-stone-200 bg-stone-50 px-3 text-sm text-stone-800 outline-none transition focus:border-stone-400 focus:bg-white"
             defaultValue={editingMemory?.importance ?? 3}
             max={5}
             min={1}
@@ -315,7 +301,7 @@ function MemoryForm({ editingMemory }: { editingMemory: Memory | null }) {
             <span />
           )}
           <button
-            className="inline-flex h-10 items-center justify-center rounded-md bg-stone-950 px-4 text-sm font-medium text-white transition hover:bg-stone-800"
+            className="inline-flex h-10 items-center justify-center rounded-lg bg-stone-900 px-4 text-sm font-semibold text-white hover:bg-stone-800"
             type="submit"
           >
             {editingMemory ? "Save Changes" : "Create Memory"}

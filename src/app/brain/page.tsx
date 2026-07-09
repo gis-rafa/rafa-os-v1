@@ -1,5 +1,7 @@
+import { Brain } from "lucide-react";
 import { BrainEditor } from "@/components/brain-editor";
 import { BrainPageView } from "@/components/brain-page";
+import { PageHeader } from "@/components/ui";
 import {
   getMasterBrainDocument,
   getMasterBrainSections
@@ -38,5 +40,14 @@ export default async function BrainPage({
 
   const sections = await getMasterBrainSections(user.id, brainSections);
 
-  return <BrainPageView sections={sections} />;
+  return (
+    <section className="mx-auto max-w-4xl">
+      <PageHeader
+        icon={<Brain size={22} strokeWidth={2} />}
+        title="Brain"
+        description="Master Brain document with identity, mission rules, and active context."
+      />
+      <BrainPageView sections={sections} />
+    </section>
+  );
 }

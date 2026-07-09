@@ -1,5 +1,6 @@
 import { Search, FileText, Brain, BookOpen, Sparkles, AlignLeft } from "lucide-react";
 import { globalSearchAction, semanticSearchAction } from "@/app/search/actions";
+import { PageHeader } from "@/components/ui";
 import Link from "next/link";
 import type { Metadata } from "next";
 
@@ -26,24 +27,13 @@ export default async function SearchPage({
 
   return (
     <section className="mx-auto max-w-4xl">
-      <div className="mb-6 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
-        <div>
-          <p className="text-sm font-medium uppercase tracking-wider text-stone-500">
-            Search
-          </p>
-          <h2 className="mt-2 text-2xl sm:text-3xl font-semibold tracking-tight text-stone-900">
-            Global Search
-          </h2>
-          <p className="mt-3 max-w-2xl text-base leading-7 text-stone-600">
-            {isSemantic
-              ? "Semantic search finds conceptually related results using vector embeddings."
-              : "Search across memories, journal entries, and knowledge files."}
-          </p>
-        </div>
-        <div className="flex size-12 shrink-0 items-center justify-center rounded-lg bg-stone-900 text-white">
-          <Search size={22} strokeWidth={2} />
-        </div>
-      </div>
+      <PageHeader
+        icon={<Search size={22} strokeWidth={2} />}
+        title="Search"
+        description={isSemantic
+          ? "Semantic search finds conceptually related results using vector embeddings."
+          : "Search across memories, journal entries, and knowledge files."}
+      />
 
       <form className="mb-8" method="get">
         <div className="flex gap-3">
@@ -155,7 +145,7 @@ function ResultCard({
 
   return (
     <Link href={result.url}>
-      <article className="rounded-lg border border-stone-200 bg-white p-5 shadow-sm hover:shadow-md transition-all duration-200">
+      <article className="rounded-xl border border-stone-200/80 bg-white p-5 shadow-sm hover:shadow-md transition-all duration-200">
         <div className="flex items-start gap-4">
           <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-stone-100 text-stone-600">
             <Icon size={18} strokeWidth={2} />

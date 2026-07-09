@@ -7,6 +7,7 @@ import {
   Flag
 } from "lucide-react";
 import { getReportDataAction } from "@/app/reports/actions";
+import { PageHeader, Card, EmptyState } from "@/components/ui";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -21,22 +22,11 @@ export default async function ReportsPage() {
 
   return (
     <section className="mx-auto max-w-5xl">
-      <div className="mb-8 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
-        <div>
-          <p className="text-sm font-medium uppercase tracking-wider text-stone-500">
-            Analytics
-          </p>
-          <h2 className="mt-2 text-2xl sm:text-3xl font-semibold tracking-tight text-stone-900">
-            Reports & Analytics
-          </h2>
-          <p className="mt-3 max-w-2xl text-base leading-7 text-stone-600">
-            Overview of your data across the system.
-          </p>
-        </div>
-        <div className="flex size-12 shrink-0 items-center justify-center rounded-lg bg-stone-900 text-white">
-          <BarChart3 size={22} strokeWidth={2} />
-        </div>
-      </div>
+      <PageHeader
+        icon={<BarChart3 size={22} strokeWidth={2} />}
+        title="Analytics"
+        description="Overview of your data across the system."
+      />
 
       <div className="animate-slide-up mb-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4" style={{ animationDelay: "0.1s" }}>
         <StatCard
@@ -64,15 +54,13 @@ export default async function ReportsPage() {
       </div>
 
       <div className="animate-slide-up grid gap-6 lg:grid-cols-2" style={{ animationDelay: "0.2s" }}>
-        <div className="rounded-xl border border-stone-200/80 bg-white p-5 shadow-sm hover:shadow-md transition-all duration-200">
+        <Card>
           <h3 className="mb-4 flex items-center gap-2 text-lg font-semibold text-stone-950">
             <Brain size={18} strokeWidth={2} />
             Memories by Category
           </h3>
           {data.memoryStats.byCategory.length === 0 ? (
-            <div className="rounded-xl border border-dashed border-stone-300 bg-white p-8 text-center">
-              <p className="text-sm font-medium text-stone-700">No memories yet.</p>
-            </div>
+            <EmptyState title="No memories yet." />
           ) : (
             <div className="space-y-3">
               {data.memoryStats.byCategory.map((cat) => (
@@ -95,17 +83,15 @@ export default async function ReportsPage() {
               ))}
             </div>
           )}
-        </div>
+        </Card>
 
-        <div className="rounded-xl border border-stone-200/80 bg-white p-5 shadow-sm hover:shadow-md transition-all duration-200">
+        <Card>
           <h3 className="mb-4 flex items-center gap-2 text-lg font-semibold text-stone-950">
             <FolderKanban size={18} strokeWidth={2} />
             Projects by Status
           </h3>
           {data.projectStats.byStatus.length === 0 ? (
-            <div className="rounded-xl border border-dashed border-stone-300 bg-white p-8 text-center">
-              <p className="text-sm font-medium text-stone-700">No projects yet.</p>
-            </div>
+            <EmptyState title="No projects yet." />
           ) : (
             <div className="space-y-3">
               {data.projectStats.byStatus.map((s) => (
@@ -128,17 +114,15 @@ export default async function ReportsPage() {
               ))}
             </div>
           )}
-        </div>
+        </Card>
 
-        <div className="rounded-xl border border-stone-200/80 bg-white p-5 shadow-sm hover:shadow-md transition-all duration-200">
+        <Card>
           <h3 className="mb-4 flex items-center gap-2 text-lg font-semibold text-stone-950">
             <BookOpen size={18} strokeWidth={2} />
             Journal Entries per Month
           </h3>
           {data.journalStats.byMonth.length === 0 ? (
-            <div className="rounded-xl border border-dashed border-stone-300 bg-white p-8 text-center">
-              <p className="text-sm font-medium text-stone-700">No journal entries yet.</p>
-            </div>
+            <EmptyState title="No journal entries yet." />
           ) : (
             <div className="space-y-3">
               {data.journalStats.byMonth.map((m) => {
@@ -167,17 +151,15 @@ export default async function ReportsPage() {
               })}
             </div>
           )}
-        </div>
+        </Card>
 
-        <div className="rounded-xl border border-stone-200/80 bg-white p-5 shadow-sm hover:shadow-md transition-all duration-200">
+        <Card>
           <h3 className="mb-4 flex items-center gap-2 text-lg font-semibold text-stone-950">
             <Flag size={18} strokeWidth={2} />
             Priority Completion
           </h3>
           {data.priorityStats.total === 0 ? (
-            <div className="rounded-xl border border-dashed border-stone-300 bg-white p-8 text-center">
-              <p className="text-sm font-medium text-stone-700">No priorities yet.</p>
-            </div>
+            <EmptyState title="No priorities yet." />
           ) : (
             <div className="flex flex-col items-center gap-4 py-6">
               <div className="relative flex size-32 items-center justify-center">
@@ -211,7 +193,7 @@ export default async function ReportsPage() {
               </p>
             </div>
           )}
-        </div>
+        </Card>
       </div>
     </section>
   );
@@ -229,7 +211,7 @@ function StatCard({
   subtext?: string;
 }) {
   return (
-    <div className="rounded-xl border border-stone-200/80 bg-white p-5 shadow-sm hover:shadow-md transition-all duration-200">
+    <Card>
       <div className="mb-2 flex items-center gap-2 text-stone-600">
         <Icon size={16} strokeWidth={2} />
         <span className="text-xs font-medium uppercase tracking-wider">
@@ -240,7 +222,7 @@ function StatCard({
       {subtext ? (
         <p className="mt-1 text-sm text-stone-600">{subtext}</p>
       ) : null}
-    </div>
+    </Card>
   );
 }
 

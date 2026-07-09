@@ -2,6 +2,7 @@ import { BarChart3, CalendarDays, CheckCircle2, Clock, Flag } from "lucide-react
 import { updateStudyTaskStatusAction } from "@/app/study-plan/actions";
 import { requireCurrentDbUser } from "@/lib/auth-user";
 import { seedDevelopmentWorkspace } from "@/lib/seed-data";
+import { PageHeader } from "@/components/ui";
 import {
   getStudyPlanSummary,
   studyTaskStatuses,
@@ -35,23 +36,11 @@ export default async function StudyPlanPage() {
   return (
     <section className="mx-auto max-w-7xl">
       <TimezoneProvider />
-      <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-        <div>
-          <p className="text-sm font-medium uppercase tracking-[0.14em] text-stone-600">
-            Execution Engine
-          </p>
-          <h2 className="mt-2 text-3xl font-semibold text-stone-950">
-            Study Plan
-          </h2>
-          <p className="mt-3 max-w-2xl text-base leading-7 text-stone-600">
-            Track the imported GIS roadmap day by day and keep the Morning Brief
-            aligned with real progress.
-          </p>
-        </div>
-        <div className="flex size-12 shrink-0 items-center justify-center rounded-md bg-stone-950 text-white">
-          <CalendarDays size={22} strokeWidth={1.8} />
-        </div>
-      </div>
+      <PageHeader
+        icon={<CalendarDays size={22} strokeWidth={2} />}
+        title="Execution Engine"
+        description="Track the imported GIS roadmap day by day and keep the Morning Brief aligned with real progress."
+      />
 
       <div className="mb-6 grid gap-3 md:grid-cols-2 xl:grid-cols-5">
         <MetricCard
@@ -76,8 +65,8 @@ export default async function StudyPlanPage() {
         <TaskPreviewCard label="Tomorrow's Task" task={summary.tomorrowTask} />
       </div>
 
-      <div className="overflow-hidden rounded-md border border-stone-200 bg-white shadow-sm">
-        <div className="border-b border-stone-200 px-4 py-4 sm:px-5">
+      <div className="rounded-xl border border-stone-200/80 bg-white shadow-sm">
+        <div className="border-b border-stone-200/80 px-5 py-4">
           <h3 className="text-base font-semibold text-stone-950">
             Roadmap Tasks
           </h3>
@@ -85,7 +74,7 @@ export default async function StudyPlanPage() {
             Progress is stored in PostgreSQL for the local workspace.
           </p>
         </div>
-        <div className="divide-y divide-stone-200">
+        <div className="divide-y divide-stone-200/80">
           {summary.tasks.map((task) => (
             <RoadmapTaskRow
               canUpdateProgress
@@ -111,10 +100,10 @@ function MetricCard({
   value: string;
 }) {
   return (
-    <article className="rounded-md border border-stone-200 bg-white p-4 shadow-sm">
+    <article className="rounded-xl border border-stone-200/80 bg-white p-4 shadow-sm">
       <div className="mb-3 flex items-center gap-2 text-stone-600">
-        <Icon size={17} strokeWidth={1.8} />
-        <p className="text-xs font-semibold uppercase tracking-[0.1em]">
+        <Icon size={16} strokeWidth={2} />
+        <p className="text-xs font-semibold uppercase tracking-wider">
           {label}
         </p>
       </div>
@@ -132,10 +121,10 @@ function TaskPreviewCard({
   task: StudyTaskWithProgress | null;
 }) {
   return (
-    <article className="rounded-md border border-stone-200 bg-white p-4 shadow-sm">
+    <article className="rounded-xl border border-stone-200/80 bg-white p-4 shadow-sm">
       <div className="mb-3 flex items-center gap-2 text-stone-600">
-        <Clock size={17} strokeWidth={1.8} />
-        <p className="text-xs font-semibold uppercase tracking-[0.1em]">
+        <Clock size={16} strokeWidth={2} />
+        <p className="text-xs font-semibold uppercase tracking-wider">
           {label}
         </p>
       </div>
@@ -163,7 +152,7 @@ function RoadmapTaskRow({
   task: StudyTaskWithProgress;
 }) {
   return (
-    <article className="grid gap-4 px-4 py-4 sm:px-5 lg:grid-cols-[90px_minmax(0,1fr)_220px] lg:items-start">
+    <article className="grid gap-4 px-5 py-4 lg:grid-cols-[90px_minmax(0,1fr)_220px] lg:items-start">
       <div>
         <p className="text-sm font-semibold text-stone-950">Day {task.day}</p>
         <p className="mt-1 text-xs text-stone-600">Week {task.week}</p>
@@ -193,7 +182,7 @@ function RoadmapTaskRow({
           Status
         </label>
         <select
-          className="h-10 rounded-md border border-stone-200 bg-stone-50 px-3 text-sm text-stone-800 outline-none transition focus:border-stone-400 focus:bg-white"
+          className="h-10 rounded-lg border border-stone-200 bg-stone-50 px-3 text-sm text-stone-800 outline-none transition focus:border-stone-400 focus:bg-white"
           defaultValue={task.status}
           disabled={!canUpdateProgress}
           id={`status-${task.day}`}
@@ -206,7 +195,7 @@ function RoadmapTaskRow({
           ))}
         </select>
         <button
-          className="inline-flex h-10 items-center justify-center rounded-md bg-stone-950 px-4 text-sm font-medium text-white transition hover:bg-stone-800 disabled:cursor-not-allowed disabled:bg-stone-300"
+          className="inline-flex h-10 items-center justify-center rounded-lg bg-stone-900 px-4 text-sm font-semibold text-white hover:bg-stone-800 disabled:cursor-not-allowed disabled:bg-stone-300"
           disabled={!canUpdateProgress}
           type="submit"
         >

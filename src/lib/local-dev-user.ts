@@ -56,7 +56,8 @@ export const getLocalDevelopmentUser = (() => {
       .where(eq(users.clerkUserId, workspaceUserId))
       .limit(1);
 
-    cachedUser = fallbackUser!;
-    return fallbackUser!;
+    if (!fallbackUser) throw new Error("Failed to create or find local development user");
+    cachedUser = fallbackUser;
+    return fallbackUser;
   };
 })();

@@ -2,10 +2,13 @@ import { Settings } from "lucide-react";
 import { isDatabaseConfigured } from "@/db";
 import { requireCurrentDbUser } from "@/lib/auth-user";
 import { getNotificationPreferences } from "@/lib/notification-preferences";
+import { getAIProviderStatus } from "@/lib/ai-provider";
 import {
   updateProfileAction,
   updateNotificationPreferencesAction
 } from "@/app/settings/actions";
+import { PageHeader, Card } from "@/components/ui";
+import { AISection } from "@/components/settings/ai-section";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -20,23 +23,15 @@ export default async function SettingsPage() {
   const prefs = await getNotificationPreferences(user.id);
 
   const hasDb = isDatabaseConfigured();
+  const aiStatus = getAIProviderStatus();
 
   return (
     <section className="mx-auto max-w-4xl">
-      <div className="mb-6 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
-        <div>
-          <p className="text-sm font-medium uppercase tracking-wider text-stone-500">
-            Settings
-          </p>
-          <h2 className="mt-2 text-2xl sm:text-3xl font-semibold tracking-tight text-stone-900">Settings</h2>
-          <p className="mt-3 max-w-2xl text-base leading-7 text-stone-600">
-            Manage your profile, workspace configuration, and preferences.
-          </p>
-        </div>
-        <div className="flex size-12 shrink-0 items-center justify-center rounded-lg bg-stone-900 text-white">
-          <Settings size={22} strokeWidth={2} />
-        </div>
-      </div>
+      <PageHeader
+        icon={<Settings size={22} strokeWidth={2} />}
+        title="Settings"
+        description="Manage your profile, workspace configuration, and preferences."
+      />
 
       <div className="grid gap-6">
         <ProfileSection
@@ -48,6 +43,8 @@ export default async function SettingsPage() {
           isDatabaseConfigured={hasDb}
           prefs={prefs}
         />
+
+        <AISection status={aiStatus} />
 
         <DatabaseSection
           isDatabaseConfigured={hasDb}
@@ -65,7 +62,7 @@ function ProfileSection({
   user: { id: string; name: string | null; email: string | null } | null;
 }) {
   return (
-    <section className="rounded-xl border border-stone-200/80 bg-white p-5 shadow-sm hover:shadow-md transition-all duration-200">
+    <Card>
       <div className="mb-5">
         <h3 className="text-base font-semibold text-stone-950">Profile</h3>
         <p className="mt-1 text-sm text-stone-600">
@@ -107,7 +104,7 @@ function ProfileSection({
           </button>
         </div>
       </form>
-    </section>
+    </Card>
   );
 }
 
@@ -126,7 +123,7 @@ function NotificationPreferencesSection({
   } | null;
 }) {
   return (
-    <section className="rounded-xl border border-stone-200/80 bg-white p-5 shadow-sm hover:shadow-md transition-all duration-200">
+    <Card>
       <div className="mb-5">
         <h3 className="text-base font-semibold text-stone-950">
           Notification Preferences
@@ -183,7 +180,7 @@ function NotificationPreferencesSection({
           </button>
         </div>
       </form>
-    </section>
+    </Card>
   );
 }
 
@@ -218,7 +215,7 @@ function DatabaseSection({
   isDatabaseConfigured: boolean;
 }) {
   return (
-    <section className="rounded-xl border border-stone-200/80 bg-white p-5 shadow-sm hover:shadow-md transition-all duration-200">
+    <Card>
       <div className="mb-5">
         <h3 className="text-base font-semibold text-stone-950">Database</h3>
         <p className="mt-1 text-sm text-stone-600">
@@ -240,6 +237,6 @@ function DatabaseSection({
           </p>
         </div>
       </div>
-    </section>
+    </Card>
   );
 }

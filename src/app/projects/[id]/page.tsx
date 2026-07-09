@@ -6,6 +6,7 @@ import { getDb, executionTasks, memories, projectKnowledgeLinks } from "@/db";
 import { requireCurrentDbUser } from "@/lib/auth-user";
 import { getProjectForUser } from "@/lib/projects";
 import { createTaskAction } from "@/app/projects/actions";
+import { Card, EmptyState } from "@/components/ui";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -108,14 +109,10 @@ export default async function ProjectDetailPage({ params }: ProjectDetailProps) 
 
           <div className="grid gap-3">
             {tasks.length === 0 ? (
-              <div className="rounded-xl border border-dashed border-stone-300 bg-white p-6 text-center">
-                <p className="text-sm font-medium text-stone-700">
-                  No tasks yet.
-                </p>
-                <p className="mt-2 text-sm text-stone-600">
-                  Add a task using the form on the right.
-                </p>
-              </div>
+            <EmptyState
+              title="No tasks yet."
+              description="Add a task using the form on the right."
+            />
             ) : (
               tasks.map((task) => (
                 <TaskRow key={task.id} task={task} />
@@ -131,7 +128,7 @@ export default async function ProjectDetailPage({ params }: ProjectDetailProps) 
               <div className="grid gap-3">
                 {memoryList.map((memory) => (
                   <Link
-                    className="rounded-lg border border-stone-100 bg-stone-50/60 p-4 transition hover:border-stone-400"
+                    className="rounded-xl border border-stone-200/80 bg-white p-4 shadow-sm transition hover:shadow-md"
                     href={`/memory?edit=${memory.id}`}
                     key={memory.id}
                   >
@@ -148,14 +145,14 @@ export default async function ProjectDetailPage({ params }: ProjectDetailProps) 
           <ProjectTaskForm projectId={project.id} />
 
           {knowledgeLinks.length > 0 ? (
-            <section className="rounded-xl border border-stone-200/80 bg-white p-5 shadow-sm">
+            <Card>
               <h3 className="mb-4 text-base font-semibold text-stone-950">
                 Knowledge Links ({knowledgeLinks.length})
               </h3>
               <div className="grid gap-2">
                 {knowledgeLinks.map((link) => (
                   <div
-                    className="rounded-lg border border-stone-100 bg-stone-50/60 p-4"
+                    className="rounded-xl border border-stone-200/80 bg-white p-4 shadow-sm"
                     key={link.id}
                   >
                     <p className="text-sm font-semibold text-stone-950">{link.title}</p>
@@ -163,7 +160,7 @@ export default async function ProjectDetailPage({ params }: ProjectDetailProps) 
                   </div>
                 ))}
               </div>
-            </section>
+            </Card>
           ) : null}
         </aside>
       </div>
@@ -188,7 +185,7 @@ function TaskRow({ task }: { task: typeof executionTasks.$inferSelect }) {
   };
 
   return (
-    <article className="rounded-lg border border-stone-100 bg-stone-50/60 p-4">
+    <article className="rounded-xl border border-stone-200/80 bg-white p-4 shadow-sm">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div className="min-w-0">
           <div className="mb-2 flex flex-wrap items-center gap-2">

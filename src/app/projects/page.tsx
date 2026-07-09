@@ -21,6 +21,7 @@ import {
 import type { ExecutionProject } from "@/db";
 import { requireCurrentDbUser } from "@/lib/auth-user";
 import { formatDate } from "@/lib/dashboard-utils";
+import { PageHeader, EmptyState } from "@/components/ui";
 import { getProjectForUser, listProjectsWithStats, type ProjectWithStats } from "@/lib/projects";
 import { seedDevelopmentWorkspace } from "@/lib/seed-data";
 import { getRequestTimezone } from "@/lib/request-timezone";
@@ -93,23 +94,11 @@ function ProjectsShell({
   return (
     <section className="mx-auto grid max-w-7xl gap-6 xl:grid-cols-[minmax(0,1fr)_420px]">
       <div className="min-w-0">
-        <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-          <div>
-            <p className="text-sm font-medium uppercase tracking-wider text-stone-500">
-              Projects Hub
-            </p>
-            <h2 className="mt-2 text-3xl font-semibold text-stone-950">
-              Projects
-            </h2>
-            <p className="mt-3 max-w-2xl text-base leading-7 text-stone-600">
-              Organize tasks, memories, and knowledge around the work that
-              actually matters.
-            </p>
-          </div>
-          <div className="flex size-12 shrink-0 items-center justify-center rounded-lg bg-stone-950 text-white">
-            <FolderKanban size={22} strokeWidth={2} />
-          </div>
-        </div>
+        <PageHeader
+          icon={<FolderKanban size={22} strokeWidth={2} />}
+          title="Projects Hub"
+          description="Organize tasks, memories, and knowledge around the work that actually matters."
+        />
 
         <div className="mb-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
           <SummaryCard label="Total projects" value={projects.length} />
@@ -126,29 +115,25 @@ function ProjectsShell({
 
         <div className="grid gap-4">
           {projects.length === 0 ? (
-            <div className="rounded-xl border border-dashed border-stone-300 bg-white p-8 text-center">
-              <p className="text-sm font-medium text-stone-700">
-                No projects found.
-              </p>
-              <p className="mt-2 text-sm text-stone-600">
-                Create the first project from the panel on the right.
-              </p>
-            </div>
+            <EmptyState
+              title="No projects found."
+              description="Create the first project from the panel on the right."
+            />
           ) : (
             projects.map((project) => (
               <ProjectCard key={project.id} project={project} />
             ))
           )}
         </div>
-      </div>
 
-      <PaginationControls
-        basePath="/projects"
-        page={page}
-        searchParams={{}}
-        total={total}
-        limit={50}
-      />
+        <PaginationControls
+          basePath="/projects"
+          page={page}
+          searchParams={{}}
+          total={total}
+          limit={50}
+        />
+      </div>
 
       <ProjectForm editingProject={editingProject} />
     </section>
@@ -199,77 +184,77 @@ function ProjectCard({
           </div>
         </div>
 
-        <div className="flex shrink-0 gap-2">
-          <Link
-            aria-label={`Edit ${project.name}`}
-            className="inline-flex size-9 items-center justify-center rounded-lg border border-stone-200 text-stone-500 hover:bg-stone-100 active:scale-[0.97]"
-            href={`/projects?edit=${project.id}`}
-          >
-            <Pencil size={16} strokeWidth={2} />
-          </Link>
-          {project.status !== "Archived" ? (
-            <form action={archiveProjectAction}>
+          <div className="flex shrink-0 gap-2">
+            <Link
+              aria-label={`Edit ${project.name}`}
+              className="inline-flex size-9 items-center justify-center rounded-lg border border-stone-200 text-stone-500 hover:bg-stone-100 active:scale-[0.97]"
+              href={`/projects?edit=${project.id}`}
+            >
+              <Pencil size={16} strokeWidth={2} />
+            </Link>
+            {project.status !== "Archived" ? (
+              <form action={archiveProjectAction}>
+                <input name="id" type="hidden" value={project.id} />
+                <button
+                  aria-label={`Archive ${project.name}`}
+                  className="inline-flex size-9 items-center justify-center rounded-lg border border-stone-200 text-stone-500 hover:bg-stone-100 active:scale-[0.97]"
+                  type="submit"
+                >
+                  <Archive size={16} strokeWidth={2} />
+                </button>
+              </form>
+            ) : null}
+            <form action={deleteProjectAction}>
               <input name="id" type="hidden" value={project.id} />
               <button
-                aria-label={`Archive ${project.name}`}
-                className="inline-flex size-9 items-center justify-center rounded-lg border border-stone-200 text-stone-500 hover:bg-stone-100 active:scale-[0.97]"
+                aria-label={`Delete ${project.name}`}
+                className="inline-flex size-9 items-center justify-center rounded-lg border border-stone-200 text-red-500 hover:bg-red-50 active:scale-[0.97]"
                 type="submit"
               >
-                <Archive size={16} strokeWidth={2} />
+                <Trash2 size={16} strokeWidth={2} />
               </button>
             </form>
-          ) : null}
-          <form action={deleteProjectAction}>
-            <input name="id" type="hidden" value={project.id} />
-            <button
-              aria-label={`Delete ${project.name}`}
-              className="inline-flex size-9 items-center justify-center rounded-lg border border-stone-200 text-red-500 hover:bg-red-50 active:scale-[0.97]"
-              type="submit"
-            >
-              <Trash2 size={16} strokeWidth={2} />
-            </button>
-          </form>
+          </div>
         </div>
-      </div>
 
-      <div className="mt-5">
-        <div className="mb-2 flex items-center justify-between gap-3 text-sm">
-          <span className="font-medium text-stone-700">Progress</span>
-          <span className="font-semibold text-stone-950">
-            {project.progress}%
-          </span>
+        <div className="mt-5">
+          <div className="mb-2 flex items-center justify-between gap-3 text-sm">
+            <span className="font-medium text-stone-700">Progress</span>
+            <span className="font-semibold text-stone-950">
+              {project.progress}%
+            </span>
+          </div>
+          <div className="h-2 overflow-hidden rounded-full bg-stone-100">
+            <div
+              className="h-full rounded-full bg-stone-950"
+              style={{ width: `${project.progress}%` }}
+            />
+          </div>
         </div>
-        <div className="h-2 overflow-hidden rounded-full bg-stone-100">
-          <div
-            className="h-full rounded-full bg-stone-950"
-            style={{ width: `${project.progress}%` }}
+
+        <div className="mt-5 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+          <MetricCard
+            icon={CheckCircle2}
+            label="Tasks"
+            value={`${project.completedTasks}/${project.taskCount}`}
+          />
+          <MetricCard
+            icon={MemoryStick}
+            label="Memories"
+            value={project.memoriesCount}
+          />
+          <MetricCard
+            icon={Layers3}
+            label="Knowledge"
+            value={project.knowledgeCount}
+          />
+          <MetricCard
+            icon={Flag}
+            label="Phase"
+            value={project.currentPhase}
           />
         </div>
-      </div>
-
-      <div className="mt-5 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-        <MetricCard
-          icon={CheckCircle2}
-          label="Tasks"
-          value={`${project.completedTasks}/${project.taskCount}`}
-        />
-        <MetricCard
-          icon={MemoryStick}
-          label="Memories"
-          value={project.memoriesCount}
-        />
-        <MetricCard
-          icon={Layers3}
-          label="Knowledge"
-          value={project.knowledgeCount}
-        />
-        <MetricCard
-          icon={Flag}
-          label="Phase"
-          value={project.currentPhase}
-        />
-      </div>
-    </article>
+      </article>
   );
 }
 
@@ -318,7 +303,6 @@ function ProjectForm({ editingProject }: { editingProject: ExecutionProject | nu
             <select
               className={inputClassName}
               defaultValue={editingProject?.status ?? "Active"}
-              
               name="status"
             >
               <option>Active</option>
@@ -331,7 +315,6 @@ function ProjectForm({ editingProject }: { editingProject: ExecutionProject | nu
             <select
               className={inputClassName}
               defaultValue={editingProject?.priority ?? "Medium"}
-              
               name="priority"
             >
               <option>High</option>
@@ -344,7 +327,6 @@ function ProjectForm({ editingProject }: { editingProject: ExecutionProject | nu
           <input
             className={inputClassName}
             defaultValue={editingProject?.currentPhase ?? "Planning"}
-            
             name="currentPhase"
             placeholder="Planning"
           />
@@ -354,7 +336,6 @@ function ProjectForm({ editingProject }: { editingProject: ExecutionProject | nu
             <input
               className={inputClassName}
               defaultValue={editingProject?.progress ?? 0}
-              
               max={100}
               min={0}
               name="progress"
@@ -365,7 +346,6 @@ function ProjectForm({ editingProject }: { editingProject: ExecutionProject | nu
             <input
               className={inputClassName}
               defaultValue={formatDateInput(editingProject?.targetDate ?? null)}
-              
               name="targetDate"
               type="date"
             />
@@ -376,7 +356,6 @@ function ProjectForm({ editingProject }: { editingProject: ExecutionProject | nu
             <select
               className={inputClassName}
               defaultValue={editingProject?.color ?? "stone"}
-              
               name="color"
             >
               {colorOptions.map((color) => (
@@ -390,7 +369,6 @@ function ProjectForm({ editingProject }: { editingProject: ExecutionProject | nu
             <select
               className={inputClassName}
               defaultValue={editingProject?.icon ?? "folder"}
-              
               name="icon"
             >
               {iconOptions.map((icon) => (
@@ -414,7 +392,6 @@ function ProjectForm({ editingProject }: { editingProject: ExecutionProject | nu
           )}
           <button
             className="inline-flex h-10 items-center justify-center rounded-lg bg-stone-900 px-4 text-sm font-semibold text-white hover:bg-stone-800 active:scale-[0.97] disabled:cursor-not-allowed disabled:bg-stone-300"
-            
             type="submit"
           >
             {editingProject ? "Save Changes" : "Create Project"}
@@ -444,7 +421,7 @@ function MetricCard({
   value: number | string;
 }) {
   return (
-    <div className="rounded-lg border border-stone-100 bg-stone-50/50 p-3">
+    <div className="rounded-xl border border-stone-100 bg-stone-50/50 p-3">
       <Icon className="mb-2 text-stone-600" size={16} strokeWidth={2} />
       <p className="text-sm font-semibold text-stone-950">{value}</p>
       <p className="mt-1 text-xs font-semibold uppercase tracking-wider text-stone-400">
@@ -492,7 +469,7 @@ function ProjectIcon({ color, icon }: { color: string; icon: string }) {
 
 function StatusBadge({ status }: { status: string }) {
   return (
-    <span className="rounded-md bg-stone-950 px-2 py-1 text-xs font-medium text-white">
+    <span className="rounded-md bg-stone-900 px-2 py-1 text-xs font-medium text-white">
       {status}
     </span>
   );

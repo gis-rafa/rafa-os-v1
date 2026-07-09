@@ -95,7 +95,7 @@ export function ChatInterface({
 
       if (!response.ok || !response.body) {
         const errorText = await response.text();
-        throw new Error(errorText || "OpenAI API request failed.");
+        throw new Error(errorText || "AI request failed.");
       }
 
       const reader = response.body.getReader();
@@ -131,8 +131,8 @@ export function ChatInterface({
     } catch (error) {
       const errorContent =
         error instanceof Error
-          ? `OpenAI API error: ${error.message}`
-          : "OpenAI API error: I could not generate a response.";
+          ? `AI error: ${error.message}`
+          : "AI error: I could not generate a response.";
 
       if (assistantMessageId) {
         setMessages((currentMessages) =>

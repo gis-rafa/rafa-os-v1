@@ -5,6 +5,7 @@ import {
   markAllNotificationsRead as markAllNotificationsReadAction,
   markNotificationRead as markNotificationReadAction
 } from "@/app/notifications/actions";
+import { PageHeader, EmptyState } from "@/components/ui";
 import type { Metadata } from "next";
 import { PaginationControls } from "@/components/pagination";
 
@@ -28,45 +29,31 @@ export default async function NotificationsPage({ searchParams }: Props) {
 
   return (
     <section className="mx-auto max-w-4xl">
-      <div className="mb-6 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
-        <div>
-          <p className="text-sm font-medium uppercase tracking-wider text-stone-500">
-            Notifications
-          </p>
-          <h2 className="mt-2 text-2xl sm:text-3xl font-semibold tracking-tight text-stone-900">
-            Notifications
-          </h2>
-          <p className="mt-3 max-w-2xl text-base leading-7 text-stone-600">
-            System alerts, reminders, and AI-generated notifications.
-          </p>
-        </div>
-        <div className="flex size-12 shrink-0 items-center justify-center rounded-lg bg-stone-900 text-white">
-          <Bell size={22} strokeWidth={2} />
-        </div>
-      </div>
-
-      {notifications.length > 0 ? (
-        <form action={markAllNotificationsReadAction} className="mb-4">
-          <button
-            className="inline-flex h-10 items-center gap-2 rounded-lg border border-stone-200 bg-white px-4 text-sm font-medium text-stone-600 hover:bg-stone-100 active:scale-[0.97]"
-            type="submit"
-          >
-            <CheckCheck size={16} strokeWidth={2} />
-            Mark all as read
-          </button>
-        </form>
-      ) : null}
+      <PageHeader
+        icon={<Bell size={22} strokeWidth={2} />}
+        title="Notifications"
+        description="System alerts, reminders, and AI-generated notifications."
+        action={
+          notifications.length > 0 ? (
+            <form action={markAllNotificationsReadAction}>
+              <button
+                className="inline-flex h-10 items-center gap-2 rounded-lg border border-stone-200 bg-white px-4 text-sm font-medium text-stone-600 hover:bg-stone-100 active:scale-[0.97]"
+                type="submit"
+              >
+                <CheckCheck size={16} strokeWidth={2} />
+                Mark all as read
+              </button>
+            </form>
+          ) : undefined
+        }
+      />
 
       <div className="grid gap-3">
         {notifications.length === 0 ? (
-          <div className="rounded-xl border border-dashed border-stone-300 bg-white p-8 text-center">
-            <p className="text-sm font-medium text-stone-700">
-              No notifications yet.
-            </p>
-            <p className="mt-2 text-sm text-stone-600">
-              Notifications will appear here when there are updates.
-            </p>
-          </div>
+          <EmptyState
+            title="No notifications yet."
+            description="Notifications will appear here when there are updates."
+          />
         ) : (
           notifications.map((notification) => (
             <article

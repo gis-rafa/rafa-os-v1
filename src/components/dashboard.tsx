@@ -6,6 +6,7 @@ import type { ExecutionDashboardData } from "@/lib/execution-dashboard";
 import type { WorkoutDay } from "@/lib/daily-health";
 import { buildMissionView } from "@/lib/dashboard-utils";
 import { logExerciseSetAction } from "@/app/dashboard/actions";
+import { ErrorBoundary } from "@/components/error-boundary";
 import { GreetingSection } from "@/components/dashboard/greeting-section";
 import { TodaysMission } from "@/components/dashboard/todays-mission";
 import { TopPriorities } from "@/components/dashboard/top-priorities";
@@ -126,55 +127,79 @@ export function Dashboard({
 
   return (
     <section className="mx-auto flex max-w-7xl flex-col gap-5 sm:gap-6 text-stone-950">
-      <GreetingSection data={dashboardData} mission={mission} timezone={timezone} />
+      <ErrorBoundary>
+        <GreetingSection data={dashboardData} mission={mission} timezone={timezone} />
+      </ErrorBoundary>
 
       <div className="grid gap-5 sm:gap-6 lg:grid-cols-[1.5fr_1fr]">
-        <TodaysMission
+        <ErrorBoundary>
+          <TodaysMission
           data={dashboardData}
           mission={mission}
           onStart={() => setIsFocusMode(true)}
           primaryGisComplete={mission.primaryGisComplete}
         />
         <TopPriorities priorities={dashboardData.priorities} />
+        </ErrorBoundary>
       </div>
 
-      <DailyHealth tasks={dashboardData.todaysTasks} onToggle={handleToggledTask} />
+      <ErrorBoundary>
+        <DailyHealth tasks={dashboardData.todaysTasks} onToggle={handleToggledTask} />
+      </ErrorBoundary>
 
       <div className="grid gap-5 sm:gap-6 lg:grid-cols-2">
         {workout && dayOfWeek !== undefined && (
-          <WorkoutLog
-            dayOfWeek={dayOfWeek}
-            todayLogs={exerciseLogs ?? []}
-            onLogSet={handleLogSet}
-          />
+          <ErrorBoundary>
+            <WorkoutLog
+              dayOfWeek={dayOfWeek}
+              todayLogs={exerciseLogs ?? []}
+              onLogSet={handleLogSet}
+            />
+          </ErrorBoundary>
         )}
-        <GisProgress data={dashboardData} mission={mission} />
+        <ErrorBoundary>
+          <GisProgress data={dashboardData} mission={mission} />
+        </ErrorBoundary>
       </div>
 
-      <ActiveProjects projects={dashboardData.activeProjects} />
+      <ErrorBoundary>
+        <ActiveProjects projects={dashboardData.activeProjects} />
+      </ErrorBoundary>
 
       <div className="grid gap-5 sm:gap-6 lg:grid-cols-[1.5fr_1fr]">
-        <BrainRecommendation data={dashboardData} mission={mission} />
-        <QuickActions />
+        <ErrorBoundary>
+          <BrainRecommendation data={dashboardData} mission={mission} />
+        </ErrorBoundary>
+        <ErrorBoundary>
+          <QuickActions />
+        </ErrorBoundary>
       </div>
 
-      <MissionWarnings data={dashboardData} />
+      <ErrorBoundary>
+        <MissionWarnings data={dashboardData} />
+      </ErrorBoundary>
 
-      <ExecutionRules
+      <ErrorBoundary>
+        <ExecutionRules
         brandingTasks={mission.brandingTasks}
         isPending={isPending}
         onTaskDone={(taskId) => updateTask(taskId, "Done")}
         primaryGisComplete={mission.primaryGisComplete}
       />
+      </ErrorBoundary>
 
-      <MissionIntelligence data={dashboardData} mission={mission} />
+      <ErrorBoundary>
+        <MissionIntelligence data={dashboardData} mission={mission} />
+      </ErrorBoundary>
 
-      <ExecutionQueue
+      <ErrorBoundary>
+        <ExecutionQueue
         isPending={isPending}
         onTaskDone={(taskId) => updateTask(taskId, "Done")}
         onTaskStart={(taskId) => updateTask(taskId, "In Progress")}
         tasks={dashboardData.todaysTasks}
       />
+      </ErrorBoundary>
     </section>
   );
 }
